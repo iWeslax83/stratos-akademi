@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <body className={`${sora.variable} ${jakarta.variable} font-sans`}>
+      <body className={`${sora.variable} ${jakarta.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
