@@ -32,6 +32,10 @@ create policy "allowlist adminlere okunur"
   on public.allowlist for select
   using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
 
+-- Tablo-düzeyi yetkiler (RLS satırları zaten kısıtlar; PostgREST için GRANT şart).
+grant select, update on public.profiles to authenticated;
+grant select on public.allowlist to authenticated;
+
 -- Yeni auth kullanıcısı: izin listesinde mi diye bak, değilse reddet; varsa profil oluştur.
 create or replace function public.handle_new_user()
 returns trigger
