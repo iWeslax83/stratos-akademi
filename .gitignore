@@ -1,0 +1,23 @@
+# Brainstorm / araçlar (geçici)
+.superpowers/
+.playwright-mcp/
+.omc/
+
+# Python
+__pycache__/
+*.pyc
+
+# Node / Next.js (ileride)
+node_modules/
+.next/
+out/
+dist/
+
+# Ortam değişkenleri (gizli)
+.env
+.env.local
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
