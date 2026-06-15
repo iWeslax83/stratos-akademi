@@ -21,3 +21,16 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# İHA drone takımı dosyaları — bu repo Stratos Akademi (web app) içindir.
+# Bu dosyalar yerelde tutulur, repoya dahil değildir. (Akademi UI görselleri web/public altına konur.)
+/*.pdf
+/*.pptx
+/*.png
+/*.jpeg
+/*.jpg
+/TAKIM.txt
+/materials.txt
+/WEIGHT_LIST.md
+/software/
+/Atölyenin fotoğrafları/
