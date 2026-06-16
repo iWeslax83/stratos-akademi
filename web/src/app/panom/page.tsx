@@ -12,6 +12,9 @@ import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
 import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
+import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
+import { CompetencyToast } from "@/components/dashboard/CompetencyToast";
+import { syncCompetencies } from "@/app/actions/competencies";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +43,11 @@ export default async function PanomPage() {
   });
 
   const leaderboard = await getLeaderboard(supabase);
+
+  const { yeni } = await syncCompetencies(user!.id, stats.earnedCompetencies);
+  const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
+  const trackBySlug = new Map(stats.perTrack.map((t) => [t.slug, t.ad]));
+  const yeniAdlar = yeni.map((s) => trackBySlug.get(s) ?? s);
 
   // Kaldığın yer + modül ilerlemesi
   const resumeId = resumeLessonId(curriculum, completedIds);
@@ -78,7 +86,11 @@ export default async function PanomPage() {
             <StatCard icon="🔥" value={stats.streak} label="Günlük seri (gün)" />
           </Card>
           <Card className="col-span-2">
-            <StatCard icon="⭐" value={stats.points} label="Toplam puan" gold />
+            <CompetencyShelf
+              tracks={stats.perTrack.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon }))}
+              earned={stats.earnedCompetencies}
+              rank={myRank}
+            />
           </Card>
         </div>
 
@@ -90,6 +102,7 @@ export default async function PanomPage() {
           <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
         </Card>
       </div>
+      <CompetencyToast adlar={yeniAdlar} />
     </AppShell>
   );
 }
