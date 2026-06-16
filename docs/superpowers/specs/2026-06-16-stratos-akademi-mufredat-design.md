@@ -37,11 +37,13 @@ devam et"te ilerleme yansır.
 
 - **Yaklaşım A (seçilen):** YouTube **IFrame Player API** + Next **server action**.
 - İstemci `LessonPlayer` bileşeni: IFrame Player API'sini yükler, oynatıcıyı `youtube_video_id` ile
-  kurar, periyodik (`~5 sn`) `getCurrentTime()/getDuration()` ile oranı hesaplar.
-- Oran **≥ 0.9** olunca `markLessonComplete(lessonId)` server action'ı çağrılır → `lesson_progress`
-  **upsert** (`completed=true, completed_at=now()`). İdempotent: zaten tamamlıysa tekrar yazmaz.
+  kurar, her `~1 sn` `getCurrentTime()/getDuration()` örnekler; yalnız normal oynatma ilerlemesini
+  (küçük ileri adım) **kümülatif izlenen süreye** ekler — ileri atlama/geri sarma sayılmaz.
+- Tamamlanma: **konum ≥%90 VE kümülatif izlenen ≥%20** olunca `markLessonComplete(lessonId)` server
+  action'ı çağrılır → `lesson_progress` **upsert** (`completed=true, completed_at=now()`). İdempotent.
+  *(Sona atlayıp otomatik "izlendi" sayılmasını engeller.)*
 - **Manuel yedek:** "İzledim" butonu aynı action'ı çağırır (API olayları kaçarsa).
-- Eşik mantığı (`isComplete(current, duration) => current/duration >= 0.9`) **saf fonksiyon**, ayrı test edilir.
+- Saf fonksiyonlar ayrı test edilir: `isComplete(current, duration, watched)` (konum ≥%90 VE izlenen ≥%20) ve `accumulateWatched(prev, lastTime, currentTime)` (yalnız normal oynatma deltasını biriktirir).
 
 ## 4. Sayfalar
 
