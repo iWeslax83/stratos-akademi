@@ -8,7 +8,7 @@ const curriculum: Curriculum = [
   {
     id: "t1", slug: "ortak", ad: "Ortak Temel", aciklama: null, ikon: "🚀", sira: 1,
     modules: [
-      { id: "m1", ad: "Drone Temelleri", aciklama: null, sira: 1, lessons: [
+      { id: "m1", ad: "Drone Temelleri", aciklama: null, sira: 1, quiz: null, lessons: [
         { id: "a", baslik: "Ders A", youtube_video_id: "x", aciklama: null, sure_sn: null, sira: 1 },
         { id: "b", baslik: "Ders B", youtube_video_id: "y", aciklama: null, sure_sn: null, sira: 2 },
       ] },

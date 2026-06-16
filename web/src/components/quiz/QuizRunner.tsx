@@ -1,0 +1,124 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import Link from "next/link";
+import { clsx } from "clsx";
+import { Button } from "@/components/ui/Button";
+import { submitQuiz, type SubmitResult } from "@/app/actions/quiz";
+import type { Quiz } from "@/lib/quiz/types";
+
+export function QuizRunner({
+  quiz,
+  best,
+}: {
+  quiz: Quiz;
+  best: { puan: number; gecti: boolean } | null;
+}) {
+  const [selected, setSelected] = useState<Record<string, Set<string>>>({});
+  const [result, setResult] = useState<SubmitResult | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function toggle(qid: string, oid: string) {
+    setSelected((prev) => {
+      const set = new Set(prev[qid] ?? []);
+      if (set.has(oid)) set.delete(oid);
+      else set.add(oid);
+      return { ...prev, [qid]: set };
+    });
+  }
+
+  function submit() {
+    const answers: Record<string, string[]> = {};
+    for (const q of quiz.questions) answers[q.id] = Array.from(selected[q.id] ?? []);
+    startTransition(async () => {
+      const res = await submitQuiz(quiz.id, answers);
+      if (res.ok && res.result) setResult(res.result);
+    });
+  }
+
+  function retry() {
+    setResult(null);
+    setSelected({});
+  }
+
+  const resByQuestion = new Map((result?.perQuestion ?? []).map((r) => [r.questionId, r]));
+
+  return (
+    <div className="space-y-6">
+      {best && !result && (
+        <p className="text-sm text-muted">
+          En iyi puanın: <b className="text-navy dark:text-white">%{best.puan}</b>
+          {best.gecti && " · ✓ geçtin"}
+        </p>
+      )}
+
+      {result && (
+        <div
+          className={clsx(
+            "rounded-core p-4 font-display font-bold",
+            result.gecti
+              ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
+              : "bg-gold-soft text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]",
+          )}
+        >
+          Puanın: %{result.puan} —{" "}
+          {result.gecti ? "Geçtin! 🎉" : `Geçer not %${quiz.gecme_esigi}, tekrar deneyebilirsin.`}
+        </div>
+      )}
+
+      {quiz.questions.map((q, i) => {
+        const r = resByQuestion.get(q.id);
+        const correctIds = result?.correctByQuestion[q.id] ?? [];
+        return (
+          <div key={q.id} className="rounded-core border border-[var(--line)] p-4">
+            <div className="mb-3 flex items-start gap-2 font-semibold text-navy dark:text-white">
+              <span>{i + 1}.</span>
+              <span>{q.metin}</span>
+              {r && <span className="ml-auto">{r.dogruMu ? "✓" : "✗"}</span>}
+            </div>
+            <div className="space-y-2">
+              {q.options.map((o) => {
+                const checked = (selected[q.id] ?? new Set<string>()).has(o.id);
+                const isCorrect = result ? correctIds.includes(o.id) : false;
+                return (
+                  <label
+                    key={o.id}
+                    className={clsx(
+                      "flex items-center gap-3 rounded-xl px-3 py-2 text-sm",
+                      result && isCorrect && "bg-green-50 dark:bg-green-900/20",
+                      result && checked && !isCorrect && "bg-red-50 dark:bg-red-900/20",
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      disabled={!!result || isPending}
+                      onChange={() => toggle(q.id, o.id)}
+                    />
+                    <span>{o.metin}</span>
+                    {result && isCorrect && <span className="ml-auto text-xs text-green-600">doğru</span>}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="flex gap-3">
+        {!result ? (
+          <Button variant="gold" onClick={submit} disabled={isPending}>
+            {isPending ? "Gönderiliyor…" : "Gönder"}
+          </Button>
+        ) : (
+          <Button variant="ghost" onClick={retry}>
+            Tekrar dene
+          </Button>
+        )}
+        <Link href="/mufredat">
+          <Button variant="ghost">Müfredata dön</Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
