@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { isComplete, accumulateWatched } from "@/lib/curriculum/progress";
+import { isComplete, accumulateWatched, hasWatchedEnough } from "@/lib/curriculum/progress";
 
 declare global {
   interface Window {
@@ -38,13 +38,16 @@ function loadYouTubeApi(): Promise<void> {
 export function LessonPlayer({
   videoId,
   onComplete,
+  onManualEligible,
 }: {
   videoId: string;
   onComplete: () => void;
+  onManualEligible?: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YtPlayer | null>(null);
   const firedRef = useRef(false);
+  const eligibleFiredRef = useRef(false);
   const lastTimeRef = useRef(0);
   const watchedRef = useRef(0);
   const [done, setDone] = useState(false);
@@ -53,6 +56,7 @@ export function LessonPlayer({
     let interval: ReturnType<typeof setInterval> | null = null;
     let cancelled = false;
     firedRef.current = false;
+    eligibleFiredRef.current = false;
     lastTimeRef.current = 0;
     watchedRef.current = 0;
 
@@ -73,6 +77,10 @@ export function LessonPlayer({
               const dur = p.getDuration();
               watchedRef.current = accumulateWatched(watchedRef.current, lastTimeRef.current, cur);
               lastTimeRef.current = cur;
+              if (!eligibleFiredRef.current && hasWatchedEnough(watchedRef.current, dur)) {
+                eligibleFiredRef.current = true;
+                onManualEligible?.();
+              }
               if (!firedRef.current && isComplete(cur, dur, watchedRef.current)) {
                 firedRef.current = true;
                 setDone(true);
@@ -91,7 +99,7 @@ export function LessonPlayer({
       playerRef.current?.destroy?.();
       playerRef.current = null;
     };
-  }, [videoId, onComplete]);
+  }, [videoId, onComplete, onManualEligible]);
 
   return (
     <div>

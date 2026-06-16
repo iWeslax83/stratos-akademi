@@ -6,6 +6,12 @@ const MAX_PLAYBACK_STEP = 1.5;
 
 // Tamamlanma: hem videonun sonuna gelinmeli (konum ≥%90) HEM de gerçekten
 // oynatılarak izlenen süre toplamı ≥%20 olmalı. Böylece sona atlamak yetmez.
+// Kümülatif gerçekten izlenen süre videonun ≥%20'si mi? (manuel butonun da kapısı)
+export function hasWatchedEnough(watchedSeconds: number, durationSeconds: number): boolean {
+  if (!durationSeconds || durationSeconds <= 0) return false;
+  return watchedSeconds / durationSeconds >= WATCHED_THRESHOLD;
+}
+
 export function isComplete(
   currentSeconds: number,
   durationSeconds: number,
@@ -14,7 +20,7 @@ export function isComplete(
   if (!durationSeconds || durationSeconds <= 0) return false;
   return (
     currentSeconds / durationSeconds >= POSITION_THRESHOLD &&
-    watchedSeconds / durationSeconds >= WATCHED_THRESHOLD
+    hasWatchedEnough(watchedSeconds, durationSeconds)
   );
 }
 

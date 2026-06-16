@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   isComplete,
   accumulateWatched,
+  hasWatchedEnough,
   flatten,
   computeStatuses,
   resumeLessonId,
@@ -61,6 +62,19 @@ describe("accumulateWatched", () => {
   });
   it("geri sarmayı saymaz", () => {
     expect(accumulateWatched(5, 10, 8)).toBe(5);
+  });
+});
+
+describe("hasWatchedEnough", () => {
+  it("kümülatif izlenen ≥%20 ise true", () => {
+    expect(hasWatchedEnough(20, 100)).toBe(true);
+    expect(hasWatchedEnough(50, 100)).toBe(true);
+  });
+  it("<%20 ise false", () => {
+    expect(hasWatchedEnough(19, 100)).toBe(false);
+  });
+  it("süre 0/negatifse false", () => {
+    expect(hasWatchedEnough(50, 0)).toBe(false);
   });
 });
 
