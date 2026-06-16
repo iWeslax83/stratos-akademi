@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   isComplete,
+  accumulateWatched,
   flatten,
   computeStatuses,
   resumeLessonId,
@@ -34,16 +35,32 @@ const curriculum: Curriculum = [
 ];
 
 describe("isComplete", () => {
-  it("%90 ve üzeri için true", () => {
-    expect(isComplete(90, 100)).toBe(true);
-    expect(isComplete(95, 100)).toBe(true);
+  it("konum ≥%90 ve izlenen ≥%20 ise true", () => {
+    expect(isComplete(90, 100, 20)).toBe(true);
+    expect(isComplete(95, 100, 50)).toBe(true);
   });
-  it("%90 altı için false", () => {
-    expect(isComplete(89, 100)).toBe(false);
+  it("konum <%90 ise false", () => {
+    expect(isComplete(89, 100, 80)).toBe(false);
+  });
+  it("izlenen <%20 ise false (sona atlama engeli)", () => {
+    expect(isComplete(99, 100, 10)).toBe(false);
   });
   it("süre 0/negatifse false (sıfıra bölme koruması)", () => {
-    expect(isComplete(10, 0)).toBe(false);
-    expect(isComplete(10, -5)).toBe(false);
+    expect(isComplete(10, 0, 10)).toBe(false);
+    expect(isComplete(10, -5, 10)).toBe(false);
+  });
+});
+
+describe("accumulateWatched", () => {
+  it("normal oynatma ilerlemesini biriktirir", () => {
+    expect(accumulateWatched(0, 0, 1)).toBe(1);
+    expect(accumulateWatched(5, 10, 11)).toBe(6);
+  });
+  it("ileri atlamayı (büyük sıçrama) saymaz", () => {
+    expect(accumulateWatched(5, 10, 60)).toBe(5);
+  });
+  it("geri sarmayı saymaz", () => {
+    expect(accumulateWatched(5, 10, 8)).toBe(5);
   });
 });
 

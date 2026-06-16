@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { isComplete } from "@/lib/curriculum/progress";
+import { isComplete, accumulateWatched } from "@/lib/curriculum/progress";
 
 declare global {
   interface Window {
@@ -45,12 +45,16 @@ export function LessonPlayer({
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YtPlayer | null>(null);
   const firedRef = useRef(false);
+  const lastTimeRef = useRef(0);
+  const watchedRef = useRef(0);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     let cancelled = false;
     firedRef.current = false;
+    lastTimeRef.current = 0;
+    watchedRef.current = 0;
 
     loadYouTubeApi().then(() => {
       if (cancelled || !containerRef.current || !window.YT) return;
@@ -65,13 +69,17 @@ export function LessonPlayer({
             interval = setInterval(() => {
               const p = playerRef.current;
               if (!p || typeof p.getCurrentTime !== "function") return;
-              if (!firedRef.current && isComplete(p.getCurrentTime(), p.getDuration())) {
+              const cur = p.getCurrentTime();
+              const dur = p.getDuration();
+              watchedRef.current = accumulateWatched(watchedRef.current, lastTimeRef.current, cur);
+              lastTimeRef.current = cur;
+              if (!firedRef.current && isComplete(cur, dur, watchedRef.current)) {
                 firedRef.current = true;
                 setDone(true);
                 onComplete();
                 if (interval) clearInterval(interval);
               }
-            }, 5000);
+            }, 1000);
           },
         },
       });

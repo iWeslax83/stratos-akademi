@@ -1,8 +1,34 @@
 import type { Curriculum, FlatLesson, LessonStatus } from "./types";
 
-export function isComplete(currentSeconds: number, durationSeconds: number): boolean {
+export const POSITION_THRESHOLD = 0.9;
+export const WATCHED_THRESHOLD = 0.2;
+const MAX_PLAYBACK_STEP = 1.5;
+
+// Tamamlanma: hem videonun sonuna gelinmeli (konum ≥%90) HEM de gerçekten
+// oynatılarak izlenen süre toplamı ≥%20 olmalı. Böylece sona atlamak yetmez.
+export function isComplete(
+  currentSeconds: number,
+  durationSeconds: number,
+  watchedSeconds: number,
+): boolean {
   if (!durationSeconds || durationSeconds <= 0) return false;
-  return currentSeconds / durationSeconds >= 0.9;
+  return (
+    currentSeconds / durationSeconds >= POSITION_THRESHOLD &&
+    watchedSeconds / durationSeconds >= WATCHED_THRESHOLD
+  );
+}
+
+// Yalnız normal oynatma ilerlemesini (küçük, ileri adım) biriktirir;
+// ileri atlama (büyük sıçrama) ve geri sarma sayılmaz.
+export function accumulateWatched(
+  prevWatched: number,
+  lastTime: number,
+  currentTime: number,
+  maxStep: number = MAX_PLAYBACK_STEP,
+): number {
+  const delta = currentTime - lastTime;
+  if (delta > 0 && delta <= maxStep) return prevWatched + delta;
+  return prevWatched;
 }
 
 export function flatten(curriculum: Curriculum): FlatLesson[] {
