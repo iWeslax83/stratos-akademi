@@ -16,6 +16,7 @@ export function QuizRunner({
 }) {
   const [selected, setSelected] = useState<Record<string, Set<string>>>({});
   const [result, setResult] = useState<SubmitResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function toggle(qid: string, oid: string) {
@@ -30,14 +31,17 @@ export function QuizRunner({
   function submit() {
     const answers: Record<string, string[]> = {};
     for (const q of quiz.questions) answers[q.id] = Array.from(selected[q.id] ?? []);
+    setError(null);
     startTransition(async () => {
       const res = await submitQuiz(quiz.id, answers);
       if (res.ok && res.result) setResult(res.result);
+      else setError(res.error ?? "Quiz gönderilemedi, tekrar dene.");
     });
   }
 
   function retry() {
     setResult(null);
+    setError(null);
     setSelected({});
   }
 
@@ -45,6 +49,11 @@ export function QuizRunner({
 
   return (
     <div className="space-y-6">
+      {error && (
+        <div className="rounded-core bg-red-50 p-4 text-sm font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+          {error}
+        </div>
+      )}
       {best && !result && (
         <p className="text-sm text-muted">
           En iyi puanın: <b className="text-navy dark:text-white">%{best.puan}</b>
