@@ -3,9 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { scoreQuiz } from "@/lib/quiz/score";
-import type { AnswerMap, QuizResult, ScorableQuestion } from "@/lib/quiz/types";
-
-export type SubmitResult = QuizResult & { correctByQuestion: Record<string, string[]> };
+import type { AnswerMap, ScorableQuestion, SubmitResult } from "@/lib/quiz/types";
 
 export async function submitQuiz(
   quizId: string,

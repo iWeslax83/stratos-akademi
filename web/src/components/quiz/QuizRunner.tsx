@@ -4,8 +4,8 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/Button";
-import { submitQuiz, type SubmitResult } from "@/app/actions/quiz";
-import type { Quiz } from "@/lib/quiz/types";
+import { submitQuiz } from "@/app/actions/quiz";
+import type { Quiz, SubmitResult } from "@/lib/quiz/types";
 
 export function QuizRunner({
   quiz,
