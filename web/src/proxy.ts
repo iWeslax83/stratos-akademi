@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 const PUBLIC_PATHS = ["/login", "/auth"];
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,15 +24,21 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims: token'ı yerel doğrular (asimetrik anahtarlarda ağ yok), gerekirse yeniler.
+  // Bu, her istekte getUser ağ-yenilemesinin yarattığı "refresh token already used" yarışını azaltır.
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
 
   const path = request.nextUrl.pathname;
   const isPublic = PUBLIC_PATHS.some((p) => path.startsWith(p));
 
-  if (!user && !isPublic) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!claims && !isPublic) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    const redirect = NextResponse.redirect(url);
+    // Yenilenen oturum çerezlerini redirect yanıtına taşı (Supabase önerisi).
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
   }
 
   return response;

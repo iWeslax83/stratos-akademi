@@ -15,10 +15,9 @@ export async function submitQuiz(
     }
 
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return { ok: false, error: "Oturum bulunamadı." };
+    const { data: claimsData } = await supabase.auth.getClaims();
+    const userId = claimsData?.claims?.sub as string | undefined;
+    if (!userId) return { ok: false, error: "Oturum bulunamadı." };
 
     const svc = createServiceClient();
     const { data: quiz, error: quizErr } = await svc
@@ -50,7 +49,7 @@ export async function submitQuiz(
     const result = scoreQuiz(scorable, answers, (quiz as { gecme_esigi: number }).gecme_esigi);
 
     const { error: insertError } = await supabase.from("quiz_attempts").insert({
-      user_id: user.id,
+      user_id: userId,
       quiz_id: quizId,
       puan: result.puan,
       gecti: result.gecti,
