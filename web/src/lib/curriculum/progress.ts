@@ -1,4 +1,4 @@
-import type { Curriculum, FlatLesson, LessonStatus } from "./types";
+import type { Curriculum, FlatLesson, LessonStatus, Module, TrackProgress } from "./types";
 
 export const POSITION_THRESHOLD = 0.9;
 export const WATCHED_THRESHOLD = 0.2;
@@ -90,4 +90,42 @@ export function findNext(curriculum: Curriculum, lessonId: string): FlatLesson |
   const idx = all.findIndex((f) => f.lesson.id === lessonId);
   if (idx === -1 || idx + 1 >= all.length) return null;
   return all[idx + 1];
+}
+
+export function trackProgress(curriculum: Curriculum, completedIds: Set<string>): TrackProgress[] {
+  return [...curriculum]
+    .sort((a, b) => a.sira - b.sira)
+    .map((track) => {
+      let done = 0;
+      let total = 0;
+      for (const m of track.modules) {
+        for (const l of m.lessons) {
+          total++;
+          if (completedIds.has(l.id)) done++;
+        }
+      }
+      return {
+        slug: track.slug,
+        ad: track.ad,
+        ikon: track.ikon,
+        moduleCount: track.modules.length,
+        done,
+        total,
+        pct: total ? Math.round((done / total) * 100) : 0,
+      };
+    });
+}
+
+export function moduleProgress(
+  module: Module,
+  completedIds: Set<string>,
+): { done: number; total: number; pct: number; kalanSure_sn: number } {
+  let done = 0;
+  let kalanSure_sn = 0;
+  const total = module.lessons.length;
+  for (const l of module.lessons) {
+    if (completedIds.has(l.id)) done++;
+    else kalanSure_sn += l.sure_sn ?? 0;
+  }
+  return { done, total, pct: total ? Math.round((done / total) * 100) : 0, kalanSure_sn };
 }
