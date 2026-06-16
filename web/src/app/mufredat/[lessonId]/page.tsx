@@ -1,0 +1,54 @@
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/shell/AppShell";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { LessonSection } from "@/components/curriculum/LessonSection";
+import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
+import { flatten, findNext } from "@/lib/curriculum/progress";
+
+export const dynamic = "force-dynamic";
+
+export default async function LessonPage({
+  params,
+}: {
+  params: Promise<{ lessonId: string }>;
+}) {
+  const { lessonId } = await params;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const curriculum = await getCurriculum(supabase);
+  const found = flatten(curriculum).find((f) => f.lesson.id === lessonId);
+  if (!found) notFound();
+
+  const completed = user ? await getCompletedLessonIds(supabase, user.id) : new Set<string>();
+  const next = findNext(curriculum, lessonId);
+
+  return (
+    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()}>
+      <div className="mb-4">
+        <Eyebrow>
+          {found.track.ad} · {found.module.ad}
+        </Eyebrow>
+        <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
+          {found.lesson.baslik}
+        </h1>
+      </div>
+
+      <LessonSection
+        lessonId={found.lesson.id}
+        videoId={found.lesson.youtube_video_id}
+        initiallyCompleted={completed.has(found.lesson.id)}
+        nextHref={next ? `/mufredat/${next.lesson.id}` : null}
+      />
+
+      {found.lesson.aciklama && (
+        <p className="mt-6 max-w-[65ch] whitespace-pre-line text-[15px] leading-7 text-[#46526b] dark:text-[#9fb0c9]">
+          {found.lesson.aciklama}
+        </p>
+      )}
+    </AppShell>
+  );
+}
