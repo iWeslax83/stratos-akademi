@@ -10,6 +10,8 @@ import { getCurriculum } from "@/lib/curriculum/queries";
 import { flatten, resumeLessonId, moduleProgress } from "@/lib/curriculum/progress";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
+import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
+import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +38,8 @@ export default async function PanomPage() {
     activityDates,
     today: new Date(),
   });
+
+  const leaderboard = await getLeaderboard(supabase);
 
   // Kaldığın yer + modül ilerlemesi
   const resumeId = resumeLessonId(curriculum, completedIds);
@@ -80,6 +84,10 @@ export default async function PanomPage() {
 
         <Card className="lg:col-span-7">
           <TrackList tracks={stats.perTrack} />
+        </Card>
+
+        <Card className="lg:col-span-5">
+          <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
         </Card>
       </div>
     </AppShell>
