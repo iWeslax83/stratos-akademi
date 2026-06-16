@@ -1,9 +1,19 @@
 import { Nav } from "./Nav";
 
-export function AppShell({ children, initial }: { children: React.ReactNode; initial?: string }) {
+export function AppShell({
+  children,
+  initial,
+  streak,
+  points,
+}: {
+  children: React.ReactNode;
+  initial?: string;
+  streak?: number;
+  points?: number;
+}) {
   return (
     <div className="mx-auto max-w-[1180px] px-6 pb-12 pt-6">
-      <Nav initial={initial} />
+      <Nav initial={initial} streak={streak} points={points} />
       <main className="mt-6">{children}</main>
     </div>
   );
