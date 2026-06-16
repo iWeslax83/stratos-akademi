@@ -14,13 +14,9 @@ export async function submitQuiz(
       return { ok: false, error: "Sunucu yapılandırması eksik (servis anahtarı)." };
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const userId = user?.id;
-    if (!userId) return { ok: false, error: "Oturum bulunamadı." };
-
+    // NOT: Burada getUser çağırmıyoruz. getUser oturum yenilemesi tetikleyip server action
+    // sırasında çerez kalıcılığı sorunu yarattığından ("refresh token already used"), kullanıcı
+    // doğrulaması proxy + RLS'e bırakılır. user_id'yi DB tarafı `default auth.uid()` doldurur.
     const svc = createServiceClient();
     const { data: quiz, error: quizErr } = await svc
       .from("quizzes")
@@ -50,8 +46,9 @@ export async function submitQuiz(
     }));
     const result = scoreQuiz(scorable, answers, (quiz as { gecme_esigi: number }).gecme_esigi);
 
+    // user_id'yi göndermiyoruz; DB column default'u auth.uid() ile doldurur (RLS de doğrular).
+    const supabase = await createClient();
     const { error: insertError } = await supabase.from("quiz_attempts").insert({
-      user_id: userId,
       quiz_id: quizId,
       puan: result.puan,
       gecti: result.gecti,
