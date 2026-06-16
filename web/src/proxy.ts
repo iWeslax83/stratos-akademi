@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 const PUBLIC_PATHS = ["/login", "/auth"];
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,15 +15,20 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set(name, value);
-            response.cookies.set(name, value, options);
-          });
+          // Kanonik Supabase kalıbı: önce request'e yaz, sonra response'u YENİDEN OLUŞTUR ki
+          // yenilenen oturum çerezleri downstream (RSC + server action) isteğe iletilsin.
+          // Aksi halde action eski refresh token'ı kullanır → "refresh token already used".
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
     },
   );
 
+  // createServerClient ile getUser arasına kod KOYMA (Supabase uyarısı).
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -32,10 +37,12 @@ export async function proxy(request: NextRequest) {
   const isPublic = PUBLIC_PATHS.some((p) => path.startsWith(p));
 
   if (!user && !isPublic) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
 
-  return response;
+  return supabaseResponse;
 }
 
 export const config = {

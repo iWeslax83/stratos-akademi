@@ -12,6 +12,7 @@ export type Module = {
   ad: string;
   aciklama: string | null;
   sira: number;
+  quiz: { id: string; baslik: string } | null;
   lessons: Lesson[];
 };
 

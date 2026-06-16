@@ -3,7 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { LessonSection } from "@/components/curriculum/LessonSection";
+import { ModuleQuizCard } from "@/components/curriculum/ModuleQuizCard";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
+import { getBestScore } from "@/lib/quiz/queries";
 import { flatten, findNext } from "@/lib/curriculum/progress";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +27,8 @@ export default async function LessonPage({
 
   const completed = user ? await getCompletedLessonIds(supabase, user.id) : new Set<string>();
   const next = findNext(curriculum, lessonId);
+  const quiz = found.module.quiz;
+  const quizBest = quiz && user ? await getBestScore(supabase, user.id, quiz.id) : null;
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()}>
@@ -49,6 +53,8 @@ export default async function LessonPage({
           {found.lesson.aciklama}
         </p>
       )}
+
+      {quiz && <ModuleQuizCard quizId={quiz.id} baslik={quiz.baslik} best={quizBest} />}
     </AppShell>
   );
 }

@@ -29,8 +29,8 @@ const curriculum: Curriculum = [
     ikon: null,
     sira: 1,
     modules: [
-      { id: "m1", ad: "M1", aciklama: null, sira: 1, lessons: [L("a", 1), L("b", 2)] },
-      { id: "m2", ad: "M2", aciklama: null, sira: 2, lessons: [L("c", 1)] },
+      { id: "m1", ad: "M1", aciklama: null, sira: 1, quiz: null, lessons: [L("a", 1), L("b", 2)] },
+      { id: "m2", ad: "M2", aciklama: null, sira: 2, quiz: null, lessons: [L("c", 1)] },
     ],
   },
 ];
