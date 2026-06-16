@@ -24,15 +24,14 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // getClaims: token'ı yerel doğrular (asimetrik anahtarlarda ağ yok), gerekirse yeniler.
-  // Bu, her istekte getUser ağ-yenilemesinin yarattığı "refresh token already used" yarışını azaltır.
-  const { data } = await supabase.auth.getClaims();
-  const claims = data?.claims;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
   const isPublic = PUBLIC_PATHS.some((p) => path.startsWith(p));
 
-  if (!claims && !isPublic) {
+  if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     const redirect = NextResponse.redirect(url);

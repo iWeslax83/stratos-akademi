@@ -15,8 +15,10 @@ export async function submitQuiz(
     }
 
     const supabase = await createClient();
-    const { data: claimsData } = await supabase.auth.getClaims();
-    const userId = claimsData?.claims?.sub as string | undefined;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const userId = user?.id;
     if (!userId) return { ok: false, error: "Oturum bulunamadı." };
 
     const svc = createServiceClient();
