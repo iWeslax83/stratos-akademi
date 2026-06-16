@@ -21,12 +21,15 @@ export async function submitQuiz(
     if (!user) return { ok: false, error: "Oturum bulunamadı." };
 
     const svc = createServiceClient();
-    const { data: quiz } = await svc
+    const { data: quiz, error: quizErr } = await svc
       .from("quizzes")
       .select("gecme_esigi")
       .eq("id", quizId)
       .single();
-    if (!quiz) return { ok: false, error: "Quiz bulunamadı." };
+    if (!quiz) {
+      console.error("submitQuiz: quiz bulunamadı", { quizId, quizErr });
+      return { ok: false, error: "Quiz bulunamadı." };
+    }
 
     const { data: questions } = await svc.from("questions").select("id").eq("quiz_id", quizId);
     const qids = (questions ?? []).map((q: { id: string }) => q.id);

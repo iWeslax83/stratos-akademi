@@ -50,3 +50,8 @@ grant select on public.questions to authenticated;
 -- DİKKAT: dogru sütunu HARİÇ (cevaplar istemciye gönderilmez).
 grant select (id, question_id, metin, sira) on public.question_options to authenticated;
 grant select, insert on public.quiz_attempts to authenticated;
+
+-- service_role (submitQuiz puanlaması) doğru cevapları okur; tablo-grant'i de gerekli.
+grant select on public.quizzes to service_role;
+grant select on public.questions to service_role;
+grant select on public.question_options to service_role;
