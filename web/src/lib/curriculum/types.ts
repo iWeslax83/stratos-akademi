@@ -31,3 +31,13 @@ export type Curriculum = Track[];
 export type LessonStatus = "done" | "current" | "todo";
 
 export type FlatLesson = { lesson: Lesson; module: Module; track: Track };
+
+export type TrackProgress = {
+  slug: string;
+  ad: string;
+  ikon: string | null;
+  moduleCount: number;
+  done: number;
+  total: number;
+  pct: number;
+};
