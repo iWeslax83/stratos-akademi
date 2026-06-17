@@ -68,8 +68,8 @@ export default async function PanomPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-[18px] lg:grid-cols-12">
-        <Card className="lg:col-span-7">
+      <div className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-12">
+        <Card outerClassName="h-full lg:col-span-7" className="h-full">
           <ResumeCard
             resume={resume}
             modulePct={modProg?.pct ?? 0}
@@ -79,13 +79,13 @@ export default async function PanomPage() {
         </Card>
 
         <div className="grid grid-cols-2 gap-[18px] lg:col-span-5">
-          <Card>
+          <Card outerClassName="h-full" className="h-full">
             <StatRing pct={stats.overall.pct} label="Toplam ilerleme" />
           </Card>
-          <Card>
+          <Card outerClassName="h-full" className="h-full">
             <StatCard icon="🔥" value={stats.streak} label="Günlük seri (gün)" />
           </Card>
-          <Card className="col-span-2">
+          <Card outerClassName="col-span-2">
             <CompetencyShelf
               tracks={stats.perTrack.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon }))}
               earned={stats.earnedCompetencies}
@@ -94,11 +94,11 @@ export default async function PanomPage() {
           </Card>
         </div>
 
-        <Card className="lg:col-span-7">
+        <Card outerClassName="lg:col-span-7">
           <TrackList tracks={stats.perTrack} />
         </Card>
 
-        <Card className="lg:col-span-5">
+        <Card outerClassName="lg:col-span-5">
           <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
         </Card>
       </div>
