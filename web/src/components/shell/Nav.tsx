@@ -6,10 +6,12 @@ export function Nav({
   initial = "E",
   streak,
   points,
+  isAdmin = false,
 }: {
   initial?: string;
   streak?: number;
   points?: number;
+  isAdmin?: boolean;
 }) {
   return (
     <nav className="flex items-center gap-4 rounded-full border border-white/60 bg-white/70 px-4 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)] backdrop-blur-md dark:border-white/10 dark:bg-[rgba(20,32,56,0.6)]">
@@ -30,6 +32,11 @@ export function Nav({
         <Link href="/liderlik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
           Liderlik
         </Link>
+        {isAdmin && (
+          <Link href="/admin/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+            Yönetim
+          </Link>
+        )}
       </div>
       <div className="ml-auto flex items-center gap-2.5">
         {streak != null && <Chip>Seri · {streak} gün</Chip>}

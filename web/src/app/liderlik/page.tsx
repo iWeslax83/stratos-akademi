@@ -14,15 +14,16 @@ export default async function LiderlikPage() {
   } = await supabase.auth.getUser();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("ad, email")
+    .select("ad, email, role")
     .eq("id", user!.id)
     .single();
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
+  const isAdmin = profile?.role === "admin";
 
   const rows = await getLeaderboard(supabase);
 
   return (
-    <AppShell initial={initial}>
+    <AppShell initial={initial} isAdmin={isAdmin}>
       <div className="mb-5">
         <Eyebrow>Liderlik</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
