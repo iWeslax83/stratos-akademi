@@ -13,7 +13,6 @@ export function CompetencyShelf({
   return (
     <div className="flex items-start justify-between gap-4 p-5">
       <div>
-        <div className="mb-2 text-lg">🏅</div>
         <div className="text-xs font-semibold text-muted">
           Yetkinliklerin · {earned.length} / {tracks.length}
         </div>
@@ -31,7 +30,7 @@ export function CompetencyShelf({
                     : "border-[var(--line)] bg-black/[0.04] opacity-50 grayscale dark:bg-white/[0.04]",
                 )}
               >
-                {has ? t.ikon ?? "✓" : "🔒"}
+                {has ? t.ikon ?? "✓" : "–"}
               </span>
             );
           })}

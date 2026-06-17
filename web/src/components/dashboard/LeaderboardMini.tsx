@@ -2,9 +2,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import type { LeaderRow } from "@/lib/dashboard/leaderboard";
 
-const MEDALS = ["🥇", "🥈", "🥉"];
-
-function Row({ row, medal, me }: { row: LeaderRow; medal?: string; me: boolean }) {
+function Row({ row, me }: { row: LeaderRow; me: boolean }) {
   return (
     <div
       className={clsx(
@@ -12,8 +10,13 @@ function Row({ row, medal, me }: { row: LeaderRow; medal?: string; me: boolean }
         me && "-mx-2.5 rounded-xl border-b-0 bg-gold-soft px-2.5 dark:bg-gold-dark",
       )}
     >
-      <span className="w-6 text-center font-display text-sm font-extrabold text-muted">
-        {medal ?? row.sira}
+      <span
+        className={clsx(
+          "w-6 text-center font-display text-sm font-extrabold",
+          row.sira <= 3 ? "text-gold" : "text-muted",
+        )}
+      >
+        {row.sira}
       </span>
       <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
         {row.gorunenAd.charAt(0)}
@@ -39,8 +42,8 @@ export function LeaderboardMini({ rows, meUserId }: { rows: LeaderRow[]; meUserI
         <p className="text-sm text-muted">Liderlik şu an yüklenemedi.</p>
       ) : (
         <>
-          {rows.slice(0, 3).map((r, i) => (
-            <Row key={r.userId} row={r} medal={MEDALS[i]} me={r.userId === meUserId} />
+          {rows.slice(0, 3).map((r) => (
+            <Row key={r.userId} row={r} me={r.userId === meUserId} />
           ))}
           {(() => {
             const me = rows.find((r) => r.userId === meUserId);

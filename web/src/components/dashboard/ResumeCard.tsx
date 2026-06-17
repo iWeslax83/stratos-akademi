@@ -17,7 +17,7 @@ export function ResumeCard({
     return (
       <div className="flex h-full items-center justify-between gap-4 p-6">
         <p className="text-sm font-semibold text-green-700 dark:text-green-400">
-          {allDone ? "🎉 Tüm dersleri tamamladın!" : "Müfredat yakında eklenecek."}
+          {allDone ? "Tüm dersleri tamamladın." : "Müfredat yakında eklenecek."}
         </p>
         {allDone && (
           <Link href="/mufredat">

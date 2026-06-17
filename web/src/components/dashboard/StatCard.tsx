@@ -6,14 +6,14 @@ export function StatCard({
   label,
   gold = false,
 }: {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   value: React.ReactNode;
   label: string;
   gold?: boolean;
 }) {
   return (
     <div className="flex h-full flex-col justify-center p-5">
-      <div className="mb-2 text-lg">{icon}</div>
+      {icon != null && <div className="mb-2 text-lg">{icon}</div>}
       <div
         className={clsx(
           "font-display text-3xl font-extrabold leading-none",

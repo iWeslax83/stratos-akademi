@@ -32,8 +32,8 @@ export function Nav({
         </Link>
       </div>
       <div className="ml-auto flex items-center gap-2.5">
-        {streak != null && <Chip>🔥 {streak} gün</Chip>}
-        {points != null && <Chip gold>⭐ {points} puan</Chip>}
+        {streak != null && <Chip>Seri · {streak} gün</Chip>}
+        {points != null && <Chip gold>{points} puan</Chip>}
         <ThemeToggle />
         <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-sm font-bold text-white dark:bg-gold dark:text-navy">
           {initial}

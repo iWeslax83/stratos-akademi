@@ -61,7 +61,7 @@ export default async function PanomPage() {
       <div className="mb-5">
         <Eyebrow>Panom</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
-          Tekrar hoş geldin, {ad} 👋
+          Tekrar hoş geldin, {ad}
         </h1>
         <p className="mt-1.5 text-muted">
           Toplam ilerleme: {stats.overall.done}/{stats.overall.total} ders · %{stats.overall.pct}
@@ -83,7 +83,7 @@ export default async function PanomPage() {
             <StatRing pct={stats.overall.pct} label="Toplam ilerleme" />
           </Card>
           <Card outerClassName="h-full" className="h-full">
-            <StatCard icon="🔥" value={stats.streak} label="Günlük seri (gün)" />
+            <StatCard value={stats.streak} label="Günlük seri (gün)" />
           </Card>
           <Card outerClassName="col-span-2">
             <CompetencyShelf

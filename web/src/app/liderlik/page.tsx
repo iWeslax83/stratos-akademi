@@ -7,8 +7,6 @@ import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 
 export const dynamic = "force-dynamic";
 
-const MEDALS = ["🥇", "🥈", "🥉"];
-
 export default async function LiderlikPage() {
   const supabase = await createClient();
   const {
@@ -37,7 +35,7 @@ export default async function LiderlikPage() {
         {rows.length === 0 ? (
           <p className="text-sm text-muted">Liderlik şu an yüklenemedi.</p>
         ) : (
-          rows.map((r, i) => (
+          rows.map((r) => (
             <div
               key={r.userId}
               className={clsx(
@@ -45,8 +43,13 @@ export default async function LiderlikPage() {
                 r.userId === user!.id && "-mx-3 rounded-xl border-b-0 bg-gold-soft px-3 dark:bg-gold-dark",
               )}
             >
-              <span className="w-7 text-center font-display text-sm font-extrabold text-muted">
-                {MEDALS[i] ?? r.sira}
+              <span
+                className={clsx(
+                  "w-7 text-center font-display text-sm font-extrabold",
+                  r.sira <= 3 ? "text-gold" : "text-muted",
+                )}
+              >
+                {r.sira}
               </span>
               <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
                 {r.gorunenAd.charAt(0)}
