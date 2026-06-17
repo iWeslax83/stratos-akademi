@@ -7,6 +7,7 @@ import { ModuleQuizCard } from "@/components/curriculum/ModuleQuizCard";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { getBestScore } from "@/lib/quiz/queries";
 import { flatten, findNext } from "@/lib/curriculum/progress";
+import { isAdminUser } from "@/lib/auth/is-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +30,10 @@ export default async function LessonPage({
   const next = findNext(curriculum, lessonId);
   const quiz = found.module.quiz;
   const quizBest = quiz && user ? await getBestScore(supabase, user.id, quiz.id) : null;
+  const isAdmin = await isAdminUser(supabase, user?.id);
 
   return (
-    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()}>
+    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <div className="mb-4">
         <Eyebrow>
           {found.track.ad} · {found.module.ad}

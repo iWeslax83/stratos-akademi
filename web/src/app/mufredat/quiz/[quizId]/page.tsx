@@ -4,6 +4,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { QuizRunner } from "@/components/quiz/QuizRunner";
 import { getQuiz, getBestScore } from "@/lib/quiz/queries";
+import { isAdminUser } from "@/lib/auth/is-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,10 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
   if (!quiz) notFound();
 
   const best = user ? await getBestScore(supabase, user.id, quizId) : null;
+  const isAdmin = await isAdminUser(supabase, user?.id);
 
   return (
-    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()}>
+    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <div className="mb-5">
         <Eyebrow>Modül Quizi</Eyebrow>
         <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">

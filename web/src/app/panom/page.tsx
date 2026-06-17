@@ -26,10 +26,11 @@ export default async function PanomPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("ad, email")
+    .select("ad, email, role")
     .eq("id", user!.id)
     .single();
   const ad = profile?.ad ?? profile?.email ?? "üye";
+  const isAdmin = profile?.role === "admin";
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
 
   const curriculum = await getCurriculum(supabase);
@@ -57,7 +58,7 @@ export default async function PanomPage() {
   const allDone = curriculum.length > 0 && resume === null;
 
   return (
-    <AppShell initial={initial} streak={stats.streak} points={stats.points}>
+    <AppShell initial={initial} streak={stats.streak} points={stats.points} isAdmin={isAdmin}>
       <div className="mb-5">
         <Eyebrow>Panom</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">

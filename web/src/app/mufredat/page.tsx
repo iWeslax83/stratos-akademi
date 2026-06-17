@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CurriculumTree } from "@/components/curriculum/CurriculumTree";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { computeStatuses, overallProgress } from "@/lib/curriculum/progress";
+import { isAdminUser } from "@/lib/auth/is-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,10 @@ export default async function MufredatPage() {
   const completed = user ? await getCompletedLessonIds(supabase, user.id) : new Set<string>();
   const statuses = computeStatuses(curriculum, completed);
   const progress = overallProgress(curriculum, completed);
+  const isAdmin = await isAdminUser(supabase, user?.id);
 
   return (
-    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()}>
+    <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <div className="mb-4">
         <Eyebrow>Müfredat</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
