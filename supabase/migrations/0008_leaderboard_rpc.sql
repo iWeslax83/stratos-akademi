@@ -3,9 +3,10 @@
 create or replace function public.leaderboard()
 returns table (user_id uuid, gorunen_ad text, puan int, sira bigint)
 language sql
+stable
 security definer
 set search_path = public
-as $$
+as $func$
   with ders as (
     select user_id, count(*) * 20 as p
     from lesson_progress where completed = true group by user_id
@@ -35,7 +36,7 @@ as $$
          rank() over (order by puan desc) as sira
   from toplam
   order by puan desc;
-$$;
+$func$;
 
 revoke execute on function public.leaderboard() from public;
 grant execute on function public.leaderboard() to authenticated;
