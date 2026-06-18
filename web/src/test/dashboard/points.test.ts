@@ -14,4 +14,8 @@ describe("computePoints", () => {
   it("sadece quizler", () => {
     expect(computePoints(0, [90, 75])).toBe(165);
   });
+  it("onaylı görev puanı eklenir", () => {
+    expect(computePoints(8, [90, 75], 60)).toBe(385);
+    expect(computePoints(0, [], 30)).toBe(30);
+  });
 });
