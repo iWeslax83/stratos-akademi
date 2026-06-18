@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ReviewControls } from "@/components/tasks/ReviewControls";
 import { getPendingSubmissions } from "@/lib/tasks/queries";
+import { signedUrlMap } from "@/lib/tasks/signed";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,9 @@ export default async function OnaylarPage() {
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
 
   const pending = await getPendingSubmissions(supabase);
+  const urlMap = await signedUrlMap(
+    pending.map((s) => s.dosya_yolu).filter((p): p is string => !!p),
+  );
 
   return (
     <AppShell initial={initial} isAdmin>
@@ -50,6 +54,16 @@ export default async function OnaylarPage() {
                   <span className="whitespace-pre-line">{s.icerik}</span>
                 )}
               </div>
+              {s.dosya_yolu && urlMap.get(s.dosya_yolu) && (
+                <a
+                  href={urlMap.get(s.dosya_yolu)!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-3 inline-block text-sm font-semibold text-gold underline"
+                >
+                  Yüklenen dosya →
+                </a>
+              )}
               <ReviewControls submissionId={s.id} adminId={user!.id} />
             </Card>
           ))}
