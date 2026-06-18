@@ -19,7 +19,7 @@ export async function Nav({
   const supabase = await createClient();
   const unread = await unreadCount(supabase);
   return (
-    <nav className="flex items-center gap-4 rounded-full border border-white/60 bg-white/70 px-4 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)] backdrop-blur-md dark:border-white/10 dark:bg-[rgba(20,32,56,0.6)]">
+    <nav className="flex items-center gap-4 rounded-full border border-[var(--line)] bg-[var(--panel)] px-4 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)]">
       <Link
         href="/panom"
         className="flex items-center gap-2 font-display text-base font-extrabold text-navy dark:text-white"

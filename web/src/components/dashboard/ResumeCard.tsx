@@ -30,7 +30,7 @@ export function ResumeCard({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="relative m-[7px] grid aspect-[21/8] place-items-center overflow-hidden rounded-2xl bg-[radial-gradient(120%_140%_at_25%_15%,#1d2f52,#0a1424_72%)]">
+      <div className="relative m-[7px] grid aspect-[21/8] place-items-center overflow-hidden rounded-2xl bg-navy-deep">
         <span className="absolute left-3.5 top-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#cdd8ec]">
           Kaldığın yerden
         </span>
@@ -46,10 +46,7 @@ export function ResumeCard({
           {resume.lesson.baslik}
         </h3>
         <div className="mb-2.5 h-2 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-gold to-[#e6cf86]"
-            style={{ width: `${modulePct}%` }}
-          />
+          <div className="h-full rounded-full bg-gold" style={{ width: `${modulePct}%` }} />
         </div>
         <div className="flex items-center justify-between gap-3">
           <span className="text-[13px] font-semibold text-muted">
