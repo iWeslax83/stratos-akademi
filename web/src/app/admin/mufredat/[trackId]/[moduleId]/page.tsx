@@ -54,6 +54,18 @@ export default async function AdminLessonsPage({
         {modul.ad} · Dersler
       </h1>
 
+      <Card className="mt-5 p-5">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold text-navy dark:text-white">Modül Quizi</span>
+          <a
+            href={`/admin/mufredat/${trackId}/${moduleId}/quiz`}
+            className="rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
+          >
+            Quiz'i düzenle →
+          </a>
+        </div>
+      </Card>
+
       <Card className="mt-5 p-6">
         {list.length === 0 ? (
           <p className="text-sm text-muted">Henüz ders yok.</p>
