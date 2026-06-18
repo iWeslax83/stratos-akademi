@@ -19,11 +19,9 @@
 }
 
 body {
-  background:
-    radial-gradient(900px 420px at 85% -10%, rgba(201, 162, 58, 0.1), transparent 60%),
-    radial-gradient(800px 500px at -5% 110%, rgba(22, 36, 63, 0.1), transparent 55%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   min-height: 100dvh;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }

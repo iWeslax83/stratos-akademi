@@ -71,7 +71,7 @@ export function QuizRunner({
           )}
         >
           Puanın: %{result.puan} —{" "}
-          {result.gecti ? "Geçtin! 🎉" : `Geçer not %${quiz.gecme_esigi}, tekrar deneyebilirsin.`}
+          {result.gecti ? "Geçtin!" : `Geçer not %${quiz.gecme_esigi}, tekrar deneyebilirsin.`}
         </div>
       )}
 
