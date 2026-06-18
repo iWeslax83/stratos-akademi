@@ -33,9 +33,14 @@ export function Nav({
           Liderlik
         </Link>
         {isAdmin && (
-          <Link href="/admin/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-            Yönetim
-          </Link>
+          <>
+            <Link href="/admin/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+              Yönetim
+            </Link>
+            <Link href="/admin/uyeler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+              Üyeler
+            </Link>
+          </>
         )}
       </div>
       <div className="ml-auto flex items-center gap-2.5">
