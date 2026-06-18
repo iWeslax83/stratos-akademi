@@ -7,6 +7,7 @@ export type Submission = {
   icerik: string;
   durum: SubmissionStatus;
   geri_bildirim: string | null;
+  dosya_yolu: string | null;
 };
 export type ModuleTask = { task: PracticalTask; submission: Submission | null };
 
@@ -26,7 +27,7 @@ export async function getModuleTasks(
   const ids = list.map((t) => t.id);
   const { data: subs } = await supabase
     .from("task_submissions")
-    .select("id, task_id, icerik, durum, geri_bildirim")
+    .select("id, task_id, icerik, durum, geri_bildirim, dosya_yolu")
     .eq("user_id", userId)
     .in("task_id", ids);
 
@@ -41,6 +42,7 @@ export async function getModuleTasks(
 export type PendingSubmission = {
   id: string;
   icerik: string;
+  dosya_yolu: string | null;
   created_at: string;
   taskBaslik: string;
   modulAd: string;
@@ -53,6 +55,7 @@ type PendingRow = {
   icerik: string;
   created_at: string;
   user_id: string;
+  dosya_yolu: string | null;
   practical_tasks: {
     baslik: string;
     modules: { ad: string; tracks: { ad: string } | null } | null;
@@ -62,7 +65,7 @@ type PendingRow = {
 export async function getPendingSubmissions(supabase: SupabaseClient): Promise<PendingSubmission[]> {
   const { data } = await supabase
     .from("task_submissions")
-    .select("id, icerik, created_at, user_id, practical_tasks ( baslik, modules ( ad, tracks ( ad ) ) )")
+    .select("id, icerik, created_at, user_id, dosya_yolu, practical_tasks ( baslik, modules ( ad, tracks ( ad ) ) )")
     .eq("durum", "beklemede")
     .order("created_at");
   const rows = (data ?? []) as unknown as PendingRow[];
@@ -77,6 +80,7 @@ export async function getPendingSubmissions(supabase: SupabaseClient): Promise<P
   return rows.map((r) => ({
     id: r.id,
     icerik: r.icerik,
+    dosya_yolu: r.dosya_yolu,
     created_at: r.created_at,
     taskBaslik: r.practical_tasks?.baslik ?? "(görev)",
     modulAd: r.practical_tasks?.modules?.ad ?? "",

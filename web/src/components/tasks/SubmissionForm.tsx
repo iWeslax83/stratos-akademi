@@ -27,7 +27,7 @@ export function SubmissionForm({
     const icerik = (fd.get("icerik") as string | null) ?? "";
     setError(null);
     start(async () => {
-      const r = await submitTask(taskId, icerik, userId);
+      const r = await submitTask(taskId, icerik, userId, null);
       if (!r.ok) { setError(r.error ?? "Hata"); return; }
       router.refresh();
     });

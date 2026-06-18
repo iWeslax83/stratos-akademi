@@ -23,10 +23,11 @@ export async function submitTask(
   taskId: string,
   icerik: string,
   userId: string,
+  dosyaYolu: string | null,
 ): Promise<ActionResult> {
   try {
     const metin = (icerik ?? "").trim();
-    if (!metin) return { ok: false, error: "İçerik boş olamaz." };
+    if (!metin && !dosyaYolu) return { ok: false, error: "Link/metin veya dosya gerekli." };
     const supabase = await createClient();
     const { error } = await supabase
       .from("task_submissions")
@@ -35,6 +36,7 @@ export async function submitTask(
           user_id: userId,
           task_id: taskId,
           icerik: metin,
+          dosya_yolu: dosyaYolu,
           durum: "beklemede",
           geri_bildirim: null,
           reviewed_by: null,
