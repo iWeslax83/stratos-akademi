@@ -19,7 +19,8 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Müfredat:** Dal → Modül → Ders hiyerarşisi; YouTube IFrame ile izleme; anti-skip tamamlama (konum ≥%90 **ve** gerçekten izlenen ≥%20).
 - **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat).
 - **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, günlük seri (streak), puan, mini liderlik, dal yetkinlikleri.
-- **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı.
+- **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
+- **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini.
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir.
 - **Bildirimler:** görev onay/red → üyeye in-app bildirim; Nav'da okunmamış sayacı.
 - **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/silme), görev tanımı CRUD, onay kuyruğu.
@@ -69,6 +70,7 @@ uygulanmalı:
 | 0014 | task_points | practical_tasks.puan + leaderboard'a görev puanı |
 | 0015 | gorev_dosya | gorev-dosyalari bucket + dosya_yolu + storage RLS |
 | 0016 | notifications | notifications tablosu + RLS |
+| 0017 | leaderboard_ranged | zaman aralıklı liderlik RPC (tüm/30g/7g) |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen
