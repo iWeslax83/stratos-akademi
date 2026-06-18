@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { SubmissionStatus } from "./status";
 
-export type PracticalTask = { id: string; baslik: string; aciklama: string | null; sira: number };
+export type PracticalTask = { id: string; baslik: string; aciklama: string | null; sira: number; puan: number };
 export type Submission = {
   id: string;
   icerik: string;
@@ -17,7 +17,7 @@ export async function getModuleTasks(
 ): Promise<ModuleTask[]> {
   const { data: tasks } = await supabase
     .from("practical_tasks")
-    .select("id, baslik, aciklama, sira")
+    .select("id, baslik, aciklama, sira, puan")
     .eq("module_id", moduleId)
     .order("sira");
   const list = (tasks ?? []) as PracticalTask[];

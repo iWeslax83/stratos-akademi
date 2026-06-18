@@ -34,13 +34,14 @@ export default async function PanomPage() {
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
 
   const curriculum = await getCurriculum(supabase);
-  const { completedIds, bestQuizScores, activityDates } = await getDashboardData(supabase, user!.id);
+  const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = await getDashboardData(supabase, user!.id);
   const stats = buildStats({
     curriculum,
     completedIds,
     bestQuizScores,
     activityDates,
     today: new Date(),
+    approvedTaskPoints,
   });
 
   const leaderboard = await getLeaderboard(supabase);

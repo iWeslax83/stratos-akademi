@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export async function getDashboardData(
   supabase: SupabaseClient,
   userId: string,
-): Promise<{ completedIds: Set<string>; bestQuizScores: number[]; activityDates: Date[] }> {
+): Promise<{ completedIds: Set<string>; bestQuizScores: number[]; activityDates: Date[]; approvedTaskPoints: number }> {
   const [{ data: prog }, { data: attempts }] = await Promise.all([
     supabase
       .from("lesson_progress")
@@ -35,5 +35,17 @@ export async function getDashboardData(
     if (a.created_at) activityDates.push(new Date(a.created_at));
   }
 
-  return { completedIds, bestQuizScores, activityDates };
+  const { data: approved } = await supabase
+    .from("task_submissions")
+    .select("practical_tasks(puan)")
+    .eq("user_id", userId)
+    .eq("durum", "onay");
+  type ApprovedRow = { practical_tasks: { puan: number } | { puan: number }[] | null };
+  let approvedTaskPoints = 0;
+  for (const r of (approved ?? []) as unknown as ApprovedRow[]) {
+    const pt = Array.isArray(r.practical_tasks) ? r.practical_tasks[0]?.puan : r.practical_tasks?.puan;
+    approvedTaskPoints += pt ?? 0;
+  }
+
+  return { completedIds, bestQuizScores, activityDates, approvedTaskPoints };
 }

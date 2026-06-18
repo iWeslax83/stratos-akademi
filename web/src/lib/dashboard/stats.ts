@@ -20,6 +20,7 @@ export function buildStats(input: {
   bestQuizScores: number[];
   activityDates: Date[];
   today: Date;
+  approvedTaskPoints: number;
 }): DashboardStats {
   const perTrack = trackProgress(input.curriculum, input.completedIds);
   const overall = overallProgress(input.curriculum, input.completedIds);
@@ -27,7 +28,7 @@ export function buildStats(input: {
     completedCount: overall.done,
     bestQuizScores: input.bestQuizScores,
     streak: computeStreak(input.activityDates, input.today),
-    points: computePoints(overall.done, input.bestQuizScores),
+    points: computePoints(overall.done, input.bestQuizScores, input.approvedTaskPoints),
     perTrack,
     overall,
     earnedCompetencies: earnedCompetencies(perTrack),

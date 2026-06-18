@@ -1,4 +1,8 @@
-// Puan = tamamlanan ders sayısı × 20 + her quizin en iyi yüzde puanının toplamı.
-export function computePoints(completedCount: number, bestQuizScores: number[]): number {
-  return completedCount * 20 + bestQuizScores.reduce((sum, s) => sum + s, 0);
+// Puan = tamamlanan ders × 20 + quiz en iyi yüzdeleri + onaylı görev puanı.
+export function computePoints(
+  completedCount: number,
+  bestQuizScores: number[],
+  approvedTaskPoints: number = 0,
+): number {
+  return completedCount * 20 + bestQuizScores.reduce((sum, s) => sum + s, 0) + approvedTaskPoints;
 }

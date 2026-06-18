@@ -60,6 +60,7 @@ export async function createTask(fd: FormData): Promise<ActionResult> {
       baslik,
       aciklama: str(fd, "aciklama") || null,
       sira: intOr(fd, "sira", 0),
+      puan: intOr(fd, "puan", 30),
     });
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -75,7 +76,7 @@ export async function updateTask(fd: FormData): Promise<ActionResult> {
     const supabase = await createClient();
     const { error } = await supabase
       .from("practical_tasks")
-      .update({ baslik, aciklama: str(fd, "aciklama") || null, sira: intOr(fd, "sira", 0) })
+      .update({ baslik, aciklama: str(fd, "aciklama") || null, sira: intOr(fd, "sira", 0), puan: intOr(fd, "puan", 30) })
       .eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };

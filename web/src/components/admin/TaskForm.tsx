@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { createTask, updateTask } from "@/app/actions/tasks";
 
-type Task = { id: string; baslik: string; aciklama: string | null; sira: number };
+type Task = { id: string; baslik: string; aciklama: string | null; sira: number; puan: number };
 
 export function TaskForm({
   trackId,
@@ -57,6 +57,15 @@ export function TaskForm({
           name="aciklama"
           defaultValue={editing?.aciklama ?? ""}
           rows={3}
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+        />
+      </label>
+      <label className="block w-32">
+        <span className="mb-1 block text-xs font-semibold text-muted">Puan</span>
+        <input
+          name="puan"
+          type="number"
+          defaultValue={String(editing?.puan ?? 30)}
           className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
         />
       </label>
