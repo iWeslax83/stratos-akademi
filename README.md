@@ -82,6 +82,7 @@ uygulanmalı:
 | 0016 | notifications | notifications tablosu + RLS |
 | 0017 | leaderboard_ranged | zaman aralıklı liderlik RPC (tüm/30g/7g) |
 | 0018 | member_profile | üye profil özeti RPC (toplu, e-postasız) |
+| 0019 | question_explanation | soru açıklaması + questions kolon-bazlı select kısıtı |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen
