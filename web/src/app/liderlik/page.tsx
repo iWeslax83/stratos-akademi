@@ -90,10 +90,13 @@ export default async function LiderlikPage({
               <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
                 {r.gorunenAd.charAt(0)}
               </span>
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">
+              <Link
+                href={`/uye/${r.userId}`}
+                className="flex-1 text-sm font-bold text-navy hover:text-gold dark:text-white"
+              >
                 {r.gorunenAd}
                 {r.userId === user!.id && " (sen)"}
-              </span>
+              </Link>
               <span className="font-display text-sm font-bold text-[#8a6d12] dark:text-[#ffd54a]">
                 {r.puan} puan
               </span>
