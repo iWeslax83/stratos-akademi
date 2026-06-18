@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Chip } from "@/components/ui/Chip";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { MobileMenu } from "./MobileMenu";
 import { createClient } from "@/lib/supabase/server";
 import { unreadCount } from "@/lib/notifications/queries";
 
@@ -51,19 +52,21 @@ export async function Nav({
         )}
       </div>
       <div className="ml-auto flex items-center gap-2.5">
-        {streak != null && <Chip>Seri · {streak} gün</Chip>}
-        {points != null && <Chip gold>{points} puan</Chip>}
-        <Link
-          href="/bildirimler"
-          className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white"
-        >
-          Bildirimler
-          {unread > 0 && (
-            <span className="ml-1 inline-grid h-5 min-w-[20px] place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-navy">
-              {unread}
-            </span>
-          )}
-        </Link>
+        <div className="hidden items-center gap-2.5 sm:flex">
+          {streak != null && <Chip>Seri · {streak} gün</Chip>}
+          {points != null && <Chip gold>{points} puan</Chip>}
+          <Link
+            href="/bildirimler"
+            className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white"
+          >
+            Bildirimler
+            {unread > 0 && (
+              <span className="ml-1 inline-grid h-5 min-w-[20px] place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-navy">
+                {unread}
+              </span>
+            )}
+          </Link>
+        </div>
         <ThemeToggle />
         <Link
           href="/profil"
@@ -72,6 +75,7 @@ export async function Nav({
         >
           {initial}
         </Link>
+        <MobileMenu isAdmin={isAdmin} unread={unread} />
       </div>
     </nav>
   );
