@@ -21,7 +21,9 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
         {row.gorunenAd.charAt(0)}
       </span>
-      <span className="flex-1 text-[13.5px] font-bold text-navy dark:text-white">{row.gorunenAd}</span>
+      <Link href={`/uye/${row.userId}`} className="flex-1 text-[13.5px] font-bold text-navy hover:text-gold dark:text-white">
+        {row.gorunenAd}
+      </Link>
       <span className="font-display text-[13px] font-bold text-[#8a6d12] dark:text-[#ffd54a]">
         {row.puan}
       </span>
