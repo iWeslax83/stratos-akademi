@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { taskReviewMessage } from "@/lib/notifications/message";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -30,6 +31,13 @@ export async function submitTask(
     const metin = (icerik ?? "").trim();
     if (!metin && !dosyaYolu) return { ok: false, error: "Link/metin veya dosya gerekli." };
     const supabase = await createClient();
+    const { data: mevcut } = await supabase
+      .from("task_submissions")
+      .select("dosya_yolu")
+      .eq("user_id", userId)
+      .eq("task_id", taskId)
+      .maybeSingle();
+    const eskiDosya = (mevcut as { dosya_yolu: string | null } | null)?.dosya_yolu ?? null;
     const { error } = await supabase
       .from("task_submissions")
       .upsert(
@@ -46,6 +54,17 @@ export async function submitTask(
         { onConflict: "user_id,task_id" },
       );
     if (error) return { ok: false, error: errMsg(error) };
+
+    // Yeni dosya eskisinin yerini aldıysa eski Storage dosyasını sil (best-effort, service_role).
+    if (eskiDosya && eskiDosya !== dosyaYolu) {
+      try {
+        const svc = createServiceClient();
+        await svc.storage.from("gorev-dosyalari").remove([eskiDosya]);
+      } catch (rmErr) {
+        console.error("eski dosya silme:", rmErr);
+      }
+    }
+
     return { ok: true };
   } catch (e) { console.error("submitTask:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
