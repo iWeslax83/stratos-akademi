@@ -30,6 +30,16 @@ export async function submitQuiz(
 
     const { data: questions } = await svc.from("questions").select("id").eq("quiz_id", quizId);
     const qids = (questions ?? []).map((q: { id: string }) => q.id);
+
+    // Açıklamalar best-effort: aciklama kolonu yoksa (migration öncesi) boş kalır,
+    // puanlamayı (yukarıdaki kritik "id" sorgusu) ETKİLEMEZ.
+    const aciklamaByQuestion: Record<string, string | null> = {};
+    if (qids.length) {
+      const { data: ar } = await svc.from("questions").select("id, aciklama").in("id", qids);
+      for (const q of (ar ?? []) as { id: string; aciklama: string | null }[]) {
+        aciklamaByQuestion[q.id] = q.aciklama;
+      }
+    }
     const { data: opts } = qids.length
       ? await svc.from("question_options").select("id,question_id,dogru").in("question_id", qids)
       : { data: [] };
@@ -58,7 +68,7 @@ export async function submitQuiz(
       return { ok: false, error: "Sonuç kaydedilemedi." };
     }
 
-    return { ok: true, result: { ...result, correctByQuestion } };
+    return { ok: true, result: { ...result, correctByQuestion, aciklamaByQuestion } };
   } catch (e) {
     console.error("submitQuiz beklenmeyen hata:", e);
     return { ok: false, error: "Beklenmeyen bir hata oluştu." };

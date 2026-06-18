@@ -12,4 +12,7 @@ export type AnswerMap = Record<string, string[]>;
 export type ScorableQuestion = { id: string; correctOptionIds: string[] };
 export type QuestionResult = { questionId: string; dogruMu: boolean };
 export type QuizResult = { puan: number; gecti: boolean; perQuestion: QuestionResult[] };
-export type SubmitResult = QuizResult & { correctByQuestion: Record<string, string[]> };
+export type SubmitResult = QuizResult & {
+  correctByQuestion: Record<string, string[]>;
+  aciklamaByQuestion: Record<string, string | null>;
+};

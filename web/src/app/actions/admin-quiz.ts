@@ -78,6 +78,8 @@ export async function updateQuestion(fd: FormData): Promise<ActionResult> {
       .update({ metin, sira: intOr(fd, "sira", 0) })
       .eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
+    // Açıklama best-effort (aciklama kolonu yoksa atlanır; metin kaydı bozulmaz).
+    await supabase.from("questions").update({ aciklama: str(fd, "aciklama") || null }).eq("id", id);
     return { ok: true };
   } catch (e) { console.error("updateQuestion:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }

@@ -10,6 +10,7 @@ type Q = {
   id: string;
   metin: string;
   sira: number;
+  aciklama: string | null;
   options: { id: string; metin: string; dogru: boolean; sira: number }[];
 };
 
@@ -39,21 +40,29 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
 
   return (
     <div className="rounded-core border border-[var(--line)] p-4">
-      <form onSubmit={saveText} className="flex items-center gap-2">
-        <span className="text-xs font-bold text-muted">{index + 1}.</span>
-        <input type="hidden" name="id" value={question.id} />
+      <form onSubmit={saveText} className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-muted">{index + 1}.</span>
+          <input type="hidden" name="id" value={question.id} />
+          <input
+            name="metin"
+            defaultValue={question.metin}
+            placeholder="Soru metni"
+            className="flex-1 rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-gold dark:text-white"
+          />
+          <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+            Kaydet
+          </button>
+          <button type="button" onClick={del} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+            Sil
+          </button>
+        </div>
         <input
-          name="metin"
-          defaultValue={question.metin}
-          placeholder="Soru metni"
-          className="flex-1 rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-gold dark:text-white"
+          name="aciklama"
+          defaultValue={question.aciklama ?? ""}
+          placeholder="Açıklama (cevaptan sonra gösterilir — opsiyonel)"
+          className="w-full rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-xs text-muted outline-none focus:border-gold dark:text-white"
         />
-        <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
-          Kaydet
-        </button>
-        <button type="button" onClick={del} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
-          Sil
-        </button>
       </form>
 
       <div className="mt-3 space-y-2 pl-6">

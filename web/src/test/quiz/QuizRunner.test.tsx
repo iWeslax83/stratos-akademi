@@ -12,6 +12,7 @@ vi.mock("@/app/actions/quiz", () => ({
       gecti: true,
       perQuestion: [{ questionId: "q1", dogruMu: true }],
       correctByQuestion: { q1: ["o1"] },
+      aciklamaByQuestion: { q1: "Doğru cevap A çünkü..." },
     },
   })),
 }));

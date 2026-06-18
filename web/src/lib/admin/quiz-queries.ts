@@ -1,7 +1,13 @@
 import { createServiceClient } from "@/lib/supabase/service";
 
 export type AdminOption = { id: string; metin: string; dogru: boolean; sira: number };
-export type AdminQuestion = { id: string; metin: string; sira: number; options: AdminOption[] };
+export type AdminQuestion = {
+  id: string;
+  metin: string;
+  sira: number;
+  aciklama: string | null;
+  options: AdminOption[];
+};
 export type AdminQuiz = { id: string; baslik: string; gecme_esigi: number; questions: AdminQuestion[] };
 
 // Modülün quiz'ini doğru cevaplar DAHİL (service_role) okur. Quiz yoksa null.
@@ -26,6 +32,15 @@ export async function getQuizForAdmin(moduleId: string): Promise<AdminQuiz | nul
     .order("sira");
   const qids = (questions ?? []).map((q: { id: string }) => q.id);
 
+  // Açıklamalar best-effort (aciklama kolonu yoksa boş; editör yine çalışır).
+  const aciklamaById = new Map<string, string | null>();
+  if (qids.length) {
+    const { data: ar } = await svc.from("questions").select("id, aciklama").in("id", qids);
+    for (const q of (ar ?? []) as { id: string; aciklama: string | null }[]) {
+      aciklamaById.set(q.id, q.aciklama);
+    }
+  }
+
   const { data: opts } = qids.length
     ? await svc
         .from("question_options")
@@ -48,6 +63,7 @@ export async function getQuizForAdmin(moduleId: string): Promise<AdminQuiz | nul
     gecme_esigi: quiz.gecme_esigi,
     questions: (questions ?? []).map((q: { id: string; metin: string; sira: number }) => ({
       ...q,
+      aciklama: aciklamaById.get(q.id) ?? null,
       options: byQuestion.get(q.id) ?? [],
     })),
   };

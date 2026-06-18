@@ -110,6 +110,11 @@ export function QuizRunner({
                 );
               })}
             </div>
+            {result?.aciklamaByQuestion?.[q.id] && (
+              <p className="mt-3 rounded-xl bg-gold-soft p-3 text-sm text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]">
+                {result.aciklamaByQuestion[q.id]}
+              </p>
+            )}
           </div>
         );
       })}
