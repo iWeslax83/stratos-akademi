@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SubmissionForm } from "@/components/tasks/SubmissionForm";
 import { getModuleTasks } from "@/lib/tasks/queries";
+import { signedUrlMap } from "@/lib/tasks/signed";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,10 @@ export default async function UyeGorevlerPage({
   if (!modul) notFound();
 
   const tasks = await getModuleTasks(supabase, moduleId, user?.id ?? null);
+  const dosyaYollari = tasks
+    .map((t) => t.submission?.dosya_yolu)
+    .filter((p): p is string => !!p);
+  const urlMap = await signedUrlMap(dosyaYollari);
   const isAdmin = await isAdminUser(supabase, user?.id);
   const tracksRaw = (modul as unknown as { tracks: { ad: string } | { ad: string }[] | null }).tracks;
   const trackAd = Array.isArray(tracksRaw) ? (tracksRaw[0]?.ad ?? "") : (tracksRaw?.ad ?? "");
@@ -56,7 +61,14 @@ export default async function UyeGorevlerPage({
                   {task.aciklama}
                 </p>
               )}
-              {user && <SubmissionForm taskId={task.id} userId={user.id} submission={submission} />}
+              {user && (
+                <SubmissionForm
+                  taskId={task.id}
+                  userId={user.id}
+                  submission={submission}
+                  dosyaUrl={submission?.dosya_yolu ? (urlMap.get(submission.dosya_yolu) ?? null) : null}
+                />
+              )}
             </Card>
           ))}
         </div>
