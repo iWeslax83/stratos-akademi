@@ -5,7 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { InviteForm } from "@/components/admin/InviteForm";
 import { RoleSelect } from "@/components/admin/RoleSelect";
 import { DeleteButton } from "@/components/admin/DeleteButton";
-import { removeInvite } from "@/app/actions/admin-members";
+import { removeInvite, removeMember } from "@/app/actions/admin-members";
 import { pendingInvites, type AllowlistRow, type MemberRow } from "@/lib/admin/members";
 
 export const dynamic = "force-dynamic";
@@ -57,6 +57,12 @@ export default async function AdminUyelerPage() {
                 {m.id === selfId && <span className="ml-2 text-xs font-bold text-gold">(sen)</span>}
               </span>
               <RoleSelect email={m.email} role={m.role} userId={m.id} selfId={selfId} />
+              {m.id !== selfId && (
+                <DeleteButton
+                  onDelete={removeMember.bind(null, m.id, m.email, selfId)}
+                  uyari={`${m.email} üyesini ve TÜM verilerini (ilerleme, quiz, görev) kalıcı silmek istediğine emin misin?`}
+                />
+              )}
             </div>
           ))
         )}

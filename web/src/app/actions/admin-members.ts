@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { normalizeEmail, isValidEmail, type Role } from "@/lib/admin/members";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -68,4 +69,27 @@ export async function setMemberRole(
     revalidatePath("/admin/uyeler");
     return { ok: true };
   } catch (e) { console.error("setMemberRole:", e); return { ok: false, error: "Beklenmeyen hata." }; }
+}
+
+// Üyeyi tamamen kaldırır: auth.users silinir → FK cascade ile tüm verisi gider; allowlist da silinir.
+// Güvenlik: service_role kullanıldığından çağıranın admin olduğu is_admin() RPC ile (caller bağlamı) doğrulanır.
+export async function removeMember(
+  userId: string,
+  email: string,
+  selfId: string,
+): Promise<ActionResult> {
+  try {
+    if (userId === selfId) return { ok: false, error: "Kendini kaldıramazsın." };
+    const supabase = await createClient();
+    const { data: amAdmin } = await supabase.rpc("is_admin");
+    if (!amAdmin) return { ok: false, error: "Bu işlem için yetkin yok." };
+
+    const svc = createServiceClient();
+    const { error: delErr } = await svc.auth.admin.deleteUser(userId);
+    if (delErr) return { ok: false, error: "Üye silinemedi: " + delErr.message };
+
+    await svc.from("allowlist").delete().eq("email", email);
+    revalidatePath("/admin/uyeler");
+    return { ok: true };
+  } catch (e) { console.error("removeMember:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
