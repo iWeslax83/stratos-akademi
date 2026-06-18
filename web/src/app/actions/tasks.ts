@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { taskReviewMessage } from "@/lib/notifications/message";
 
 export type ActionResult = { ok: boolean; error?: string };
 
@@ -115,6 +116,35 @@ export async function reviewSubmission(
       })
       .eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
+
+    // Bildirim (best-effort; review akışını bozmaz)
+    try {
+      const { data: sub } = await supabase
+        .from("task_submissions")
+        .select("user_id, practical_tasks(baslik, module_id)")
+        .eq("id", id)
+        .single();
+      const ptRaw = (
+        sub as {
+          practical_tasks:
+            | { baslik: string; module_id: string }
+            | { baslik: string; module_id: string }[]
+            | null;
+        } | null
+      )?.practical_tasks;
+      const pt = Array.isArray(ptRaw) ? ptRaw[0] : ptRaw;
+      const uid = (sub as { user_id: string } | null)?.user_id;
+      if (uid && pt) {
+        await supabase.from("notifications").insert({
+          user_id: uid,
+          mesaj: taskReviewMessage(durum, pt.baslik),
+          link: `/mufredat/gorevler/${pt.module_id}`,
+        });
+      }
+    } catch (notifErr) {
+      console.error("review notification:", notifErr);
+    }
+
     return { ok: true };
   } catch (e) { console.error("reviewSubmission:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
