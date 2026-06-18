@@ -81,6 +81,7 @@ uygulanmalı:
 | 0015 | gorev_dosya | gorev-dosyalari bucket + dosya_yolu + storage RLS |
 | 0016 | notifications | notifications tablosu + RLS |
 | 0017 | leaderboard_ranged | zaman aralıklı liderlik RPC (tüm/30g/7g) |
+| 0018 | member_profile | üye profil özeti RPC (toplu, e-postasız) |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen
