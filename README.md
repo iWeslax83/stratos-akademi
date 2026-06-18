@@ -42,7 +42,17 @@ npm run dev   # http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=https://<proje-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key>   # YALNIZ sunucu; asla NEXT_PUBLIC_ değil, asla commit'lenmez
+# E-posta bildirimleri (opsiyonel — yoksa e-posta sessizce atlanır):
+NEXT_PUBLIC_SITE_URL=https://stratosiha.com           # e-posta linkleri için mutlak adres
+RESEND_API_KEY=<resend-key>                           # https://resend.com → API Keys
+MAIL_FROM=Stratos Akademi <bildirim@alanadi.com>      # Resend'de doğrulanmış gönderen
 ```
+
+### E-posta kurulumu (Resend)
+1. [resend.com](https://resend.com)'da hesap aç, bir API key oluştur → `RESEND_API_KEY`.
+2. Bir gönderen domaini doğrula (DNS kayıtları) ve `MAIL_FROM`'u o domaine ayarla.
+3. `NEXT_PUBLIC_SITE_URL`'i prod adresine ayarla (e-posta içindeki "Görevi gör" linki için).
+4. Bu üç değişken yoksa kaptan görev onay/red'inde e-posta gönderilmez; uygulama normal çalışır (yalnız in-app bildirim).
 `.env.local` gitignore'da. Service role anahtarı yalnız server action'larda (quiz puanlama, imzalı URL, üye silme, eski dosya temizliği) kullanılır.
 
 ## Veritabanı (Supabase)

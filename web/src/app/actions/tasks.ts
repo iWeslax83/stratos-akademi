@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { taskReviewMessage } from "@/lib/notifications/message";
+import { taskReviewEmail } from "@/lib/email/templates";
+import { sendEmail } from "@/lib/email/send";
 
 export type ActionResult = { ok: boolean; error?: string };
 
@@ -159,9 +161,26 @@ export async function reviewSubmission(
           mesaj: taskReviewMessage(durum, pt.baslik),
           link: `/mufredat/gorevler/${pt.module_id}`,
         });
+
+        // E-posta (best-effort; RESEND_API_KEY/MAIL_FROM yoksa atlanır)
+        const { data: uyeProfil } = await supabase
+          .from("profiles")
+          .select("email")
+          .eq("id", uid)
+          .single();
+        const email = (uyeProfil as { email: string } | null)?.email;
+        if (email) {
+          const base = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+          const { subject, html } = taskReviewEmail(
+            durum,
+            pt.baslik,
+            `${base}/mufredat/gorevler/${pt.module_id}`,
+          );
+          await sendEmail({ to: email, subject, html });
+        }
       }
     } catch (notifErr) {
-      console.error("review notification:", notifErr);
+      console.error("review notification/email:", notifErr);
     }
 
     return { ok: true };
