@@ -9,7 +9,7 @@ import { deleteTask } from "@/app/actions/tasks";
 
 export const dynamic = "force-dynamic";
 
-type Task = { id: string; baslik: string; aciklama: string | null; sira: number };
+type Task = { id: string; baslik: string; aciklama: string | null; sira: number; puan: number };
 
 export default async function AdminGorevlerPage({
   params,
@@ -37,7 +37,7 @@ export default async function AdminGorevlerPage({
 
   const { data: tasksData } = await supabase
     .from("practical_tasks")
-    .select("id, baslik, aciklama, sira")
+    .select("id, baslik, aciklama, sira, puan")
     .eq("module_id", moduleId)
     .order("sira");
   const list = (tasksData ?? []) as Task[];
@@ -64,7 +64,9 @@ export default async function AdminGorevlerPage({
           list.map((t) => (
             <div key={t.id} className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0">
               <span className="w-7 text-center text-xs font-bold text-muted">{t.sira}</span>
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">{t.baslik}</span>
+              <span className="flex-1 text-sm font-bold text-navy dark:text-white">
+                {t.baslik} <span className="text-xs font-normal text-muted">· {t.puan} puan</span>
+              </span>
               <a
                 href={`/admin/mufredat/${trackId}/${moduleId}/gorevler?edit=${t.id}`}
                 className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white"
