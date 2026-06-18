@@ -65,9 +65,13 @@ export async function Nav({
           )}
         </Link>
         <ThemeToggle />
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-sm font-bold text-white dark:bg-gold dark:text-navy">
+        <Link
+          href="/profil"
+          title="Profil"
+          className="grid h-9 w-9 place-items-center rounded-full bg-navy text-sm font-bold text-white dark:bg-gold dark:text-navy"
+        >
           {initial}
-        </span>
+        </Link>
       </div>
     </nav>
   );
