@@ -1,13 +1,28 @@
+import Link from "next/link";
 import { clsx } from "clsx";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { getLeaderboard } from "@/lib/dashboard/leaderboard";
+import { getLeaderboard, getLeaderboardRanged } from "@/lib/dashboard/leaderboard";
+import { parseAralik, rangeStartISO, aralikLabel, type Aralik } from "@/lib/dashboard/range";
 
 export const dynamic = "force-dynamic";
 
-export default async function LiderlikPage() {
+const SEKMELER: { key: Aralik; label: string }[] = [
+  { key: "tum", label: "Tüm zamanlar" },
+  { key: "ay", label: "Son 30 gün" },
+  { key: "hafta", label: "Son 7 gün" },
+];
+
+export default async function LiderlikPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ aralik?: string }>;
+}) {
+  const { aralik: araStr } = await searchParams;
+  const aralik = parseAralik(araStr);
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,7 +35,10 @@ export default async function LiderlikPage() {
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = profile?.role === "admin";
 
-  const rows = await getLeaderboard(supabase);
+  const rows =
+    aralik === "tum"
+      ? await getLeaderboard(supabase)
+      : await getLeaderboardRanged(supabase, rangeStartISO(aralik, Date.now()));
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
@@ -29,12 +47,29 @@ export default async function LiderlikPage() {
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           Sıralama Tablosu
         </h1>
-        <p className="mt-1.5 text-muted">Ders ve quizlerden topladığın puana göre.</p>
+        <p className="mt-1.5 text-muted">{aralikLabel(aralik)} · ders, quiz ve onaylı görev puanı.</p>
+      </div>
+
+      <div className="mb-4 flex gap-2">
+        {SEKMELER.map((s) => (
+          <Link
+            key={s.key}
+            href={s.key === "tum" ? "/liderlik" : `/liderlik?aralik=${s.key}`}
+            className={clsx(
+              "rounded-full px-3.5 py-1.5 text-[13px] font-semibold",
+              aralik === s.key
+                ? "bg-navy text-white dark:bg-gold dark:text-navy"
+                : "bg-black/5 text-muted hover:text-navy dark:bg-white/10 dark:hover:text-white",
+            )}
+          >
+            {s.label}
+          </Link>
+        ))}
       </div>
 
       <Card className="p-6">
         {rows.length === 0 ? (
-          <p className="text-sm text-muted">Liderlik şu an yüklenemedi.</p>
+          <p className="text-sm text-muted">Bu aralıkta sıralama yok.</p>
         ) : (
           rows.map((r) => (
             <div
