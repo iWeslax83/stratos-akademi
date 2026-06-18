@@ -48,6 +48,9 @@ export async function Nav({
             <Link href="/admin/onaylar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
               Onaylar
             </Link>
+            <Link href="/admin/analitik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+              Analitik
+            </Link>
           </>
         )}
       </div>

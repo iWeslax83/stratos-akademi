@@ -14,6 +14,7 @@ const ADMIN_LINKS = [
   { href: "/admin/mufredat", label: "Yönetim" },
   { href: "/admin/uyeler", label: "Üyeler" },
   { href: "/admin/onaylar", label: "Onaylar" },
+  { href: "/admin/analitik", label: "Analitik" },
 ];
 
 export function MobileMenu({ isAdmin, unread }: { isAdmin: boolean; unread: number }) {
