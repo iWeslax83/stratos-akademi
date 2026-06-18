@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
@@ -30,6 +31,10 @@ export default async function LessonPage({
   const next = findNext(curriculum, lessonId);
   const quiz = found.module.quiz;
   const quizBest = quiz && user ? await getBestScore(supabase, user.id, quiz.id) : null;
+  const { count: gorevSayisi } = await supabase
+    .from("practical_tasks")
+    .select("id", { count: "exact", head: true })
+    .eq("module_id", found.module.id);
   const isAdmin = await isAdminUser(supabase, user?.id);
 
   return (
@@ -57,6 +62,18 @@ export default async function LessonPage({
       )}
 
       {quiz && <ModuleQuizCard quizId={quiz.id} baslik={quiz.baslik} best={quizBest} />}
+
+      {gorevSayisi != null && gorevSayisi > 0 && (
+        <Link
+          href={`/mufredat/gorevler/${found.module.id}`}
+          className="mt-4 flex items-center justify-between rounded-core border border-[var(--line)] bg-[var(--panel)] p-5"
+        >
+          <span className="font-display font-bold text-navy dark:text-white">
+            Pratik Görevler ({gorevSayisi})
+          </span>
+          <span className="text-sm font-semibold text-gold">Görevlere git →</span>
+        </Link>
+      )}
     </AppShell>
   );
 }

@@ -40,6 +40,9 @@ export function Nav({
             <Link href="/admin/uyeler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
               Üyeler
             </Link>
+            <Link href="/admin/onaylar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+              Onaylar
+            </Link>
           </>
         )}
       </div>
