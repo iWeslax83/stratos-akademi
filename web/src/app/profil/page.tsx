@@ -5,6 +5,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
+import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
+import { badgeProgress, nextBadge } from "@/lib/badges/compute";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
@@ -49,6 +51,17 @@ export default async function ProfilPage() {
   const leaderboard = await getLeaderboard(supabase);
   const rank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
 
+  const badgeStats = {
+    lessons: stats.completedCount,
+    tasks: onayliGorev ?? 0,
+    competencies: stats.earnedCompetencies.length,
+    points: stats.points,
+    streak: stats.streak,
+    quizPerfect: stats.bestQuizScores.filter((s) => s >= 100).length,
+  };
+  const badgeItems = badgeProgress(badgeStats, "full");
+  const nextRozet = nextBadge(badgeStats, "full");
+
   return (
     <AppShell initial={initial} isAdmin={isAdmin} streak={stats.streak} points={stats.points}>
       <Eyebrow>Profil</Eyebrow>
@@ -86,6 +99,10 @@ export default async function ProfilPage() {
           earned={stats.earnedCompetencies}
           rank={rank}
         />
+      </Card>
+
+      <Card className="mt-[18px]">
+        <BadgeShelf items={badgeItems} next={nextRozet} />
       </Card>
     </AppShell>
   );
