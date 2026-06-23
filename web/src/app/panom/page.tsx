@@ -13,6 +13,8 @@ import { buildStats } from "@/lib/dashboard/stats";
 import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
+import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
+import { badgeProgress, nextBadge } from "@/lib/badges/compute";
 import { CompetencyToast } from "@/components/dashboard/CompetencyToast";
 import { syncCompetencies } from "@/app/actions/competencies";
 
@@ -45,6 +47,22 @@ export default async function PanomPage() {
   });
 
   const leaderboard = await getLeaderboard(supabase);
+
+  const { count: onayliGorev } = await supabase
+    .from("task_submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user!.id)
+    .eq("durum", "onay");
+  const badgeStats = {
+    lessons: stats.completedCount,
+    tasks: onayliGorev ?? 0,
+    competencies: stats.earnedCompetencies.length,
+    points: stats.points,
+    streak: stats.streak,
+    quizPerfect: stats.bestQuizScores.filter((s) => s >= 100).length,
+  };
+  const badgeItems = badgeProgress(badgeStats, "full");
+  const nextRozet = nextBadge(badgeStats, "full");
 
   const { yeni } = await syncCompetencies(user!.id, stats.earnedCompetencies);
   const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
@@ -102,6 +120,10 @@ export default async function PanomPage() {
 
         <Card outerClassName="lg:col-span-5">
           <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
+        </Card>
+
+        <Card outerClassName="lg:col-span-12">
+          <BadgeShelf items={badgeItems} next={nextRozet} />
         </Card>
       </div>
       <CompetencyToast adlar={yeniAdlar} />
