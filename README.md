@@ -84,6 +84,7 @@ uygulanmalı:
 | 0017 | leaderboard_ranged | zaman aralıklı liderlik RPC (tüm/30g/7g) |
 | 0018 | member_profile | üye profil özeti RPC (toplu, e-postasız) |
 | 0019 | question_explanation | soru açıklaması + questions kolon-bazlı select kısıtı |
+| 0020 | user_badges | kazanılan rozet kalıcılığı (yeni-rozet toast'u; rozetler türetilmiş, tablo yalnız "yeni" tespiti için — yoksa graceful) |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen

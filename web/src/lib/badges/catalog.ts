@@ -53,3 +53,15 @@ export const BADGES: Badge[] = [
   badge("tam-isabet", "Tam İsabet", "Bir quizden tam puan aldın", "💯", "quizPerfect", 1),
   badge("nisanci", "Keskin Nişancı", "Üç quizden tam puan aldın", "🏹", "quizPerfect", 3),
 ];
+
+const BY_ID = new Map(BADGES.map((b) => [b.id, b]));
+
+/** Verilen id'ler için katalog sırasında rozet adları (bilinmeyen id atlanır). */
+export function badgeNames(ids: Iterable<string>): string[] {
+  const want = new Set(ids);
+  return BADGES.filter((b) => want.has(b.id)).map((b) => b.ad);
+}
+
+export function badgeById(id: string): Badge | undefined {
+  return BY_ID.get(id);
+}

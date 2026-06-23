@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { BADGES } from "@/lib/badges/catalog";
+import { BADGES, badgeNames, badgeById } from "@/lib/badges/catalog";
 import { computeBadges, badgeProgress, nextBadge } from "@/lib/badges/compute";
 import type { BadgeStats } from "@/lib/badges/catalog";
 
@@ -36,6 +36,19 @@ describe("BADGES katalog", () => {
     }
     expect(BADGES.filter((b) => b.public)).toHaveLength(10);
     expect(BADGES.filter((b) => !b.public)).toHaveLength(5);
+  });
+});
+
+describe("badgeNames / badgeById", () => {
+  it("id'leri katalog sırasında adlara çevirir, bilinmeyeni atlar", () => {
+    expect(badgeNames(["merakli", "ilk-ders", "yok-boyle"])).toEqual(["İlk Adım", "Meraklı"]);
+  });
+  it("boş girdi → boş", () => {
+    expect(badgeNames([])).toEqual([]);
+  });
+  it("badgeById geçerli/geçersiz", () => {
+    expect(badgeById("seri-7")?.ad).toBe("Alev Aldı");
+    expect(badgeById("yok")).toBeUndefined();
   });
 });
 

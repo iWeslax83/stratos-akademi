@@ -14,7 +14,10 @@ import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
-import { badgeProgress, nextBadge } from "@/lib/badges/compute";
+import { BadgeToast } from "@/components/dashboard/BadgeToast";
+import { badgeProgress, nextBadge, computeBadges } from "@/lib/badges/compute";
+import { badgeNames } from "@/lib/badges/catalog";
+import { syncBadges } from "@/app/actions/badges";
 import { CompetencyToast } from "@/components/dashboard/CompetencyToast";
 import { syncCompetencies } from "@/app/actions/competencies";
 
@@ -63,6 +66,9 @@ export default async function PanomPage() {
   };
   const badgeItems = badgeProgress(badgeStats, "full");
   const nextRozet = nextBadge(badgeStats, "full");
+  const earnedBadgeIds = [...computeBadges(badgeStats)];
+  const { yeni: yeniRozet } = await syncBadges(user!.id, earnedBadgeIds);
+  const yeniRozetAdlar = badgeNames(yeniRozet);
 
   const { yeni } = await syncCompetencies(user!.id, stats.earnedCompetencies);
   const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
@@ -127,6 +133,7 @@ export default async function PanomPage() {
         </Card>
       </div>
       <CompetencyToast adlar={yeniAdlar} />
+      <BadgeToast adlar={yeniRozetAdlar} />
     </AppShell>
   );
 }
