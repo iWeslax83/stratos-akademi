@@ -44,6 +44,8 @@ export default async function AnalitikPage() {
   const esikById = new Map<string, number>();
   for (const q of (quizzes ?? []) as { id: string; gecme_esigi: number }[]) esikById.set(q.id, q.gecme_esigi);
 
+  // dinamik server component; analiz için şu anki zaman kasıtlı (saf-render kuralı geçerli değil)
+  // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const uyeSayisi = leaderboard.length;
 

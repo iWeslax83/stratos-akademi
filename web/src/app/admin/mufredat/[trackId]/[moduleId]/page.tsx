@@ -61,7 +61,7 @@ export default async function AdminLessonsPage({
             href={`/admin/mufredat/${trackId}/${moduleId}/quiz`}
             className="rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
           >
-            Quiz'i düzenle →
+            Quiz&apos;i düzenle →
           </a>
         </div>
       </Card>
