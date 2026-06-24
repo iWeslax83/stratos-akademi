@@ -33,6 +33,7 @@ export function mapPendingRows(
 ): PendingSubmission[] {
   return rows.map((r) => ({
     id: r.id,
+    userId: r.user_id,
     icerik: r.icerik,
     dosya_yolu: r.dosya_yolu,
     created_at: r.created_at,

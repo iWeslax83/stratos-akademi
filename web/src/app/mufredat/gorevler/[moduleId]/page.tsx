@@ -4,7 +4,9 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SubmissionForm } from "@/components/tasks/SubmissionForm";
-import { getModuleTasks } from "@/lib/tasks/queries";
+import { SubmissionThread } from "@/components/tasks/SubmissionThread";
+import { getModuleTasks, getSubmissionThreads } from "@/lib/tasks/queries";
+import type { ThreadItem } from "@/lib/tasks/comment";
 import { signedUrlMap } from "@/lib/tasks/signed";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
@@ -33,6 +35,14 @@ export default async function UyeGorevlerPage({
     .map((t) => t.submission?.dosya_yolu)
     .filter((p): p is string => !!p);
   const urlMap = await signedUrlMap(dosyaYollari);
+  const threads = user
+    ? await getSubmissionThreads(
+        supabase,
+        tasks
+          .filter((t) => t.submission)
+          .map((t) => ({ id: t.submission!.id, ownerId: user.id })),
+      )
+    : new Map<string, ThreadItem[]>();
   const isAdmin = await isAdminUser(supabase, user?.id);
   const tracksRaw = (modul as unknown as { tracks: { ad: string } | { ad: string }[] | null }).tracks;
   const trackAd = Array.isArray(tracksRaw) ? (tracksRaw[0]?.ad ?? "") : (tracksRaw?.ad ?? "");
@@ -67,6 +77,13 @@ export default async function UyeGorevlerPage({
                   userId={user.id}
                   submission={submission}
                   dosyaUrl={submission?.dosya_yolu ? (urlMap.get(submission.dosya_yolu) ?? null) : null}
+                />
+              )}
+              {user && submission && (
+                <SubmissionThread
+                  submissionId={submission.id}
+                  authorId={user.id}
+                  comments={threads.get(submission.id) ?? []}
                 />
               )}
             </Card>

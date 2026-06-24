@@ -3,7 +3,8 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ReviewControls } from "@/components/tasks/ReviewControls";
-import { getPendingSubmissions } from "@/lib/tasks/queries";
+import { SubmissionThread } from "@/components/tasks/SubmissionThread";
+import { getPendingSubmissions, getSubmissionThreads } from "@/lib/tasks/queries";
 import { signedUrlMap } from "@/lib/tasks/signed";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,10 @@ export default async function OnaylarPage() {
   const pending = await getPendingSubmissions(supabase);
   const urlMap = await signedUrlMap(
     pending.map((s) => s.dosya_yolu).filter((p): p is string => !!p),
+  );
+  const threads = await getSubmissionThreads(
+    supabase,
+    pending.map((s) => ({ id: s.id, ownerId: s.userId })),
   );
 
   return (
@@ -65,6 +70,11 @@ export default async function OnaylarPage() {
                 </a>
               )}
               <ReviewControls submissionId={s.id} adminId={user!.id} />
+              <SubmissionThread
+                submissionId={s.id}
+                authorId={user!.id}
+                comments={threads.get(s.id) ?? []}
+              />
             </Card>
           ))}
         </div>

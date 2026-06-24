@@ -3,3 +3,10 @@ export function taskReviewMessage(durum: "onay" | "red", baslik: string): string
     ? `"${baslik}" görevin onaylandı.`
     : `"${baslik}" görevin reddedildi.`;
 }
+
+// Görev gönderimine yeni yorum yazıldığında karşı tarafa giden bildirim.
+export function submissionCommentMessage(baslik: string, fromAdmin: boolean): string {
+  return fromAdmin
+    ? `"${baslik}" görevine kaptan yorum yaptı.`
+    : `"${baslik}" görevine üye yanıt yazdı.`;
+}
