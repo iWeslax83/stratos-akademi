@@ -125,6 +125,14 @@ npx tsc --noEmit   # tip kontrolü
   içermediğinden tek başına `role` kolonunu korumaz; `guard_profile_role` trigger'ı
   `authenticated` rolünün (web üyesi) kendi rolünü değiştirmesini engeller, yalnız
   admin/`service_role`/`postgres` rol değiştirebilir. Yeni şema kurulurken 0021 atlanmamalı.
+- **Bilinen sınırlamalar (tehdit modeli):** İki kalıntı risk *kasıtlı olarak* sunucuda
+  zorlanmıyor çünkü doğrulanamaz/işlevi bozar: (1) `lesson_progress` üyenin kendi
+  ilerlemesini yazmasına izin verir — kararlı bir üye REST'e doğrudan `completed=true`
+  atıp dersi izlemeden tamamlanmış sayabilir (liderlik/puan şişer). Quiz'in aksine
+  "izledim" sunucuda doğrulanamaz (gizli doğru cevap yok), bu yüzden anti-skip yalnız
+  istemci-tarafı/best-effort. (2) `user_competencies` üye kendi satırını ekleyebilir →
+  profilde **kozmetik** sahte yetkinlik rozeti (puan/liderliğe etki etmez; onlar
+  `lesson_progress`+`quiz_attempts`'tan türetilir). Kulüp-içi onur-sistemi bağlamında kabul.
 - **RLS her yerde:** içerik okuması authenticated; yazma `is_admin()` ile admin'e açık.
   Quiz `dogru` kolonu üyeye kapalı (kolon-grant); admin/puanlama service_role ile okur.
   Pratik görev gönderiminde "self-approval" RLS WITH CHECK ile engellenir (üye durumu
