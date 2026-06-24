@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/service";
+import { assembleAdminQuestions } from "./quiz-shape";
 
 export type AdminOption = { id: string; metin: string; dogru: boolean; sira: number };
 export type AdminQuestion = {
@@ -49,22 +50,14 @@ export async function getQuizForAdmin(moduleId: string): Promise<AdminQuiz | nul
         .order("sira")
     : { data: [] };
 
-  const byQuestion = new Map<string, AdminOption[]>();
-  for (const o of (opts ?? []) as (AdminOption & { question_id: string })[]) {
-    const { question_id, ...rest } = o;
-    const arr = byQuestion.get(question_id) ?? [];
-    arr.push(rest);
-    byQuestion.set(question_id, arr);
-  }
-
   return {
     id: quiz.id,
     baslik: quiz.baslik,
     gecme_esigi: quiz.gecme_esigi,
-    questions: (questions ?? []).map((q: { id: string; metin: string; sira: number }) => ({
-      ...q,
-      aciklama: aciklamaById.get(q.id) ?? null,
-      options: byQuestion.get(q.id) ?? [],
-    })),
+    questions: assembleAdminQuestions(
+      (questions ?? []) as { id: string; metin: string; sira: number }[],
+      (opts ?? []) as (AdminOption & { question_id: string })[],
+      aciklamaById,
+    ),
   };
 }
