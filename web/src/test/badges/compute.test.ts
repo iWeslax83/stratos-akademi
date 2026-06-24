@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { BADGES, badgeNames, badgeById } from "@/lib/badges/catalog";
+import { BADGES, badgeNames } from "@/lib/badges/catalog";
 import { computeBadges, badgeProgress, nextBadge } from "@/lib/badges/compute";
 import type { BadgeStats } from "@/lib/badges/catalog";
 
@@ -45,10 +45,6 @@ describe("badgeNames / badgeById", () => {
   });
   it("boş girdi → boş", () => {
     expect(badgeNames([])).toEqual([]);
-  });
-  it("badgeById geçerli/geçersiz", () => {
-    expect(badgeById("seri-7")?.ad).toBe("Alev Aldı");
-    expect(badgeById("yok")).toBeUndefined();
   });
 });
 

@@ -14,12 +14,12 @@ import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
-import { BadgeToast } from "@/components/dashboard/BadgeToast";
+import { Toast } from "@/components/dashboard/Toast";
 import { badgeProgress, nextBadge, computeBadges } from "@/lib/badges/compute";
 import { badgeStatsFromDashboard } from "@/lib/badges/stats";
 import { badgeNames } from "@/lib/badges/catalog";
 import { syncBadges } from "@/app/actions/badges";
-import { CompetencyToast } from "@/components/dashboard/CompetencyToast";
+import { getApprovedTaskCount } from "@/lib/tasks/queries";
 import { syncCompetencies } from "@/app/actions/competencies";
 
 export const dynamic = "force-dynamic";
@@ -31,16 +31,12 @@ export default async function PanomPage() {
   } = await supabase.auth.getUser();
 
   // Bağımsız sorgular eşzamanlı (dashboard gecikmesini azaltır).
-  const [{ data: profile }, curriculum, dash, leaderboard, { count: onayliGorev }] = await Promise.all([
+  const [{ data: profile }, curriculum, dash, leaderboard, onayliGorev] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     getCurriculum(supabase),
     getDashboardData(supabase, user!.id),
     getLeaderboard(supabase),
-    supabase
-      .from("task_submissions")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user!.id)
-      .eq("durum", "onay"),
+    getApprovedTaskCount(supabase, user!.id),
   ]);
   const ad = profile?.ad ?? profile?.email ?? "üye";
   const isAdmin = profile?.role === "admin";
@@ -126,8 +122,8 @@ export default async function PanomPage() {
           <BadgeShelf items={badgeItems} next={nextRozet} />
         </Card>
       </div>
-      <CompetencyToast adlar={yeniAdlar} />
-      <BadgeToast adlar={yeniRozetAdlar} />
+      <Toast baslik="Yeni yetkinlik" adlar={yeniAdlar} />
+      <Toast baslik={yeniRozetAdlar.length > 1 ? "Yeni rozetler" : "Yeni rozet"} adlar={yeniRozetAdlar} />
     </AppShell>
   );
 }
