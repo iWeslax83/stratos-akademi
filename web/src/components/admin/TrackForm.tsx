@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { createTrack, updateTrack } from "@/app/actions/admin-curriculum";
 
@@ -71,9 +72,9 @@ export function TrackForm({ editing }: { editing: Track | null }) {
           {pending ? "Kaydediliyor…" : editing ? "Güncelle" : "Ekle"}
         </Button>
         {editing && (
-          <a href="/admin/mufredat">
+          <Link href="/admin/mufredat">
             <Button variant="ghost" type="button">İptal</Button>
-          </a>
+          </Link>
         )}
       </div>
     </form>
