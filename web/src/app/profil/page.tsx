@@ -10,6 +10,7 @@ import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
 import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
 import { pointsBreakdown } from "@/lib/dashboard/points";
 import { badgeProgress, nextBadge } from "@/lib/badges/compute";
+import { badgeStatsFromDashboard } from "@/lib/badges/stats";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
@@ -50,14 +51,7 @@ export default async function ProfilPage() {
 
   const rank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
 
-  const badgeStats = {
-    lessons: stats.completedCount,
-    tasks: onayliGorev ?? 0,
-    competencies: stats.earnedCompetencies.length,
-    points: stats.points,
-    streak: stats.streak,
-    quizPerfect: stats.bestQuizScores.filter((s) => s >= 100).length,
-  };
+  const badgeStats = badgeStatsFromDashboard(stats, onayliGorev);
   const badgeItems = badgeProgress(badgeStats, "full");
   const nextRozet = nextBadge(badgeStats, "full");
   const puanDagilimi = pointsBreakdown(stats.completedCount, stats.bestQuizScores, approvedTaskPoints);
