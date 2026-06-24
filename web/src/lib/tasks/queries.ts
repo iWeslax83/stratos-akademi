@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { SubmissionStatus } from "./status";
+import { attachSubmissionsToTasks, mapPendingRows, type PendingRow } from "./shape";
 
 export type PracticalTask = { id: string; baslik: string; aciklama: string | null; sira: number; puan: number };
 export type Submission = {
@@ -31,12 +32,7 @@ export async function getModuleTasks(
     .eq("user_id", userId)
     .in("task_id", ids);
 
-  const byTask = new Map<string, Submission>();
-  for (const s of (subs ?? []) as (Submission & { task_id: string })[]) {
-    const { task_id, ...rest } = s;
-    byTask.set(task_id, rest);
-  }
-  return list.map((t) => ({ task: t, submission: byTask.get(t.id) ?? null }));
+  return attachSubmissionsToTasks(list, (subs ?? []) as (Submission & { task_id: string })[]);
 }
 
 export type PendingSubmission = {
@@ -48,18 +44,6 @@ export type PendingSubmission = {
   modulAd: string;
   trackAd: string;
   uyeEmail: string;
-};
-
-type PendingRow = {
-  id: string;
-  icerik: string;
-  created_at: string;
-  user_id: string;
-  dosya_yolu: string | null;
-  practical_tasks: {
-    baslik: string;
-    modules: { ad: string; tracks: { ad: string } | null } | null;
-  } | null;
 };
 
 export async function getPendingSubmissions(supabase: SupabaseClient): Promise<PendingSubmission[]> {
@@ -77,14 +61,5 @@ export async function getPendingSubmissions(supabase: SupabaseClient): Promise<P
     for (const p of (profs ?? []) as { id: string; email: string }[]) emailById.set(p.id, p.email);
   }
 
-  return rows.map((r) => ({
-    id: r.id,
-    icerik: r.icerik,
-    dosya_yolu: r.dosya_yolu,
-    created_at: r.created_at,
-    taskBaslik: r.practical_tasks?.baslik ?? "(görev)",
-    modulAd: r.practical_tasks?.modules?.ad ?? "",
-    trackAd: r.practical_tasks?.modules?.tracks?.ad ?? "",
-    uyeEmail: emailById.get(r.user_id) ?? "(üye)",
-  }));
+  return mapPendingRows(rows, emailById);
 }
