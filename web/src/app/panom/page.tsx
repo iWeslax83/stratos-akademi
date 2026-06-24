@@ -29,17 +29,23 @@ export default async function PanomPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("ad, email, role")
-    .eq("id", user!.id)
-    .single();
+  // Bağımsız sorgular eşzamanlı (dashboard gecikmesini azaltır).
+  const [{ data: profile }, curriculum, dash, leaderboard, { count: onayliGorev }] = await Promise.all([
+    supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
+    getCurriculum(supabase),
+    getDashboardData(supabase, user!.id),
+    getLeaderboard(supabase),
+    supabase
+      .from("task_submissions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user!.id)
+      .eq("durum", "onay"),
+  ]);
   const ad = profile?.ad ?? profile?.email ?? "üye";
   const isAdmin = profile?.role === "admin";
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
 
-  const curriculum = await getCurriculum(supabase);
-  const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = await getDashboardData(supabase, user!.id);
+  const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = dash;
   const stats = buildStats({
     curriculum,
     completedIds,
@@ -49,13 +55,6 @@ export default async function PanomPage() {
     approvedTaskPoints,
   });
 
-  const leaderboard = await getLeaderboard(supabase);
-
-  const { count: onayliGorev } = await supabase
-    .from("task_submissions")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user!.id)
-    .eq("durum", "onay");
   const badgeStats = {
     lessons: stats.completedCount,
     tasks: onayliGorev ?? 0,
@@ -67,10 +66,11 @@ export default async function PanomPage() {
   const badgeItems = badgeProgress(badgeStats, "full");
   const nextRozet = nextBadge(badgeStats, "full");
   const earnedBadgeIds = [...computeBadges(badgeStats)];
-  const { yeni: yeniRozet } = await syncBadges(user!.id, earnedBadgeIds);
+  const [{ yeni: yeniRozet }, { yeni }] = await Promise.all([
+    syncBadges(user!.id, earnedBadgeIds),
+    syncCompetencies(user!.id, stats.earnedCompetencies),
+  ]);
   const yeniRozetAdlar = badgeNames(yeniRozet);
-
-  const { yeni } = await syncCompetencies(user!.id, stats.earnedCompetencies);
   const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
   const trackBySlug = new Map(stats.perTrack.map((t) => [t.slug, t.ad]));
   const yeniAdlar = yeni.map((s) => trackBySlug.get(s) ?? s);
