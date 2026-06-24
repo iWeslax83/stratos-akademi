@@ -40,7 +40,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 ```bash
 cd web
 npm install
-# web/.env.local oluştur (aşağıya bak)
+cp .env.example .env.local   # sonra gerçek değerleri doldur (aşağıya bak)
 npm run dev   # http://localhost:3000
 ```
 
@@ -146,6 +146,10 @@ npx tsc --noEmit   # tip kontrolü
 - **Auth dersleri:** proxy (`src/proxy.ts`) kanonik Supabase `setAll` kalıbı kullanır;
   `getClaims()` bu projede girişi bozar → `getUser()`; server action'larda `getUser()`
   çağrılmaz (refresh-token rotasyon yarışı) — `user_id` parametre + RLS ile doğrulanır.
+- **Prod sertleştirme:** `error.tsx`/`global-error.tsx` hata sınırları (sunucu
+  bileşeni hatasında beyaz ekran yerine kurtarma UI'ı, Next 16 `unstable_retry`);
+  `robots.ts` indekslemeyi kapatır (giriş-gerektiren araç aramada çıkmasın);
+  `.env.example` deploy için gerekli/opsiyonel değişkenleri belgeler.
 - **Tasarım/plan dokümanları:** `docs/superpowers/{specs,plans}/` altında her feature
   için spec + uygulama planı.
 
