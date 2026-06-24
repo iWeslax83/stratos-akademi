@@ -86,6 +86,7 @@ uygulanmalı:
 | 0019 | question_explanation | soru açıklaması + questions kolon-bazlı select kısıtı |
 | 0020 | user_badges | kazanılan rozet kalıcılığı (yeni-rozet toast'u; rozetler türetilmiş, tablo yalnız "yeni" tespiti için — yoksa graceful) |
 | 0021 | guard_profile_role | **GÜVENLİK:** üyenin kendini admin yapmasını engelleyen BEFORE UPDATE trigger (role değişimi yalnız admin/service_role/postgres). **ÖNEMLİ: en kısa sürede uygula.** |
+| 0022 | quiz_attempts_server_only | **GÜVENLİK:** üye doğrudan REST'e `{quiz_id,puan:100}` atıp liderlik puanı şişiremesin diye `quiz_attempts` INSERT'i authenticated'tan alınır; puanlama yalnız service_role. `my_uid()` RPC (getUser'sız doğrulanmış user_id). Kod 0022 öncesi/sonrası uyumlu; **en kısa sürede uygula.** |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen

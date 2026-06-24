@@ -56,16 +56,37 @@ export async function submitQuiz(
     }));
     const result = scoreQuiz(scorable, answers, (quiz as { gecme_esigi: number }).gecme_esigi);
 
-    // user_id'yi göndermiyoruz; DB column default'u auth.uid() ile doldurur (RLS de doğrular).
+    // Attempt kaydı. GÜVENLİ YOL (0022 uygulandıysa): my_uid() RPC ile JWT'den doğrulanmış
+    // user_id alınır ve attempt service_role ile eklenir (üye puanı doğrudan REST'e yazamaz).
+    // GERİ UYUMLU YOL (0022 öncesi: my_uid yok / service insert yetkisi yok): eski davranış —
+    // authenticated client + `default auth.uid()`. Böylece migration uygulanana kadar quiz
+    // gönderimi bozulmaz.
     const supabase = await createClient();
-    const { error: insertError } = await supabase.from("quiz_attempts").insert({
-      quiz_id: quizId,
-      puan: result.puan,
-      gecti: result.gecti,
-    });
-    if (insertError) {
-      console.error("submitQuiz: quiz_attempts insert hatası:", insertError);
-      return { ok: false, error: "Sonuç kaydedilemedi." };
+    let inserted = false;
+    const { data: uid, error: uidErr } = await supabase.rpc("my_uid");
+    if (!uidErr && uid) {
+      const { error: svcInsErr } = await svc.from("quiz_attempts").insert({
+        quiz_id: quizId,
+        user_id: uid,
+        puan: result.puan,
+        gecti: result.gecti,
+      });
+      if (svcInsErr) {
+        console.error("submitQuiz: service_role insert başarısız, fallback:", svcInsErr);
+      } else {
+        inserted = true;
+      }
+    }
+    if (!inserted) {
+      const { error: insertError } = await supabase.from("quiz_attempts").insert({
+        quiz_id: quizId,
+        puan: result.puan,
+        gecti: result.gecti,
+      });
+      if (insertError) {
+        console.error("submitQuiz: quiz_attempts insert hatası:", insertError);
+        return { ok: false, error: "Sonuç kaydedilemedi." };
+      }
     }
 
     return { ok: true, result: { ...result, correctByQuestion, aciklamaByQuestion } };
