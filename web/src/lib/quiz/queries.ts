@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Quiz, QuizOption, QuizQuestion } from "./types";
+import type { Quiz, QuizOption } from "./types";
+import { groupOptionsByQuestion } from "./group";
 
 export async function getQuiz(supabase: SupabaseClient, quizId: string): Promise<Quiz | null> {
   const { data: quiz } = await supabase
@@ -24,19 +25,9 @@ export async function getQuiz(supabase: SupabaseClient, quizId: string): Promise
         .order("sira")
     : { data: [] };
 
-  const byQuestion = new Map<string, QuizOption[]>();
-  for (const row of (options ?? []) as (QuizOption & { question_id: string })[]) {
-    const { question_id, ...opt } = row;
-    const arr = byQuestion.get(question_id) ?? [];
-    arr.push(opt);
-    byQuestion.set(question_id, arr);
-  }
-
-  const builtQuestions: QuizQuestion[] = (questions ?? []).map(
-    (q: { id: string; metin: string; sira: number }) => ({
-      ...q,
-      options: byQuestion.get(q.id) ?? [],
-    }),
+  const builtQuestions = groupOptionsByQuestion(
+    (questions ?? []) as { id: string; metin: string; sira: number }[],
+    (options ?? []) as (QuizOption & { question_id: string })[],
   );
 
   return { ...(quiz as Omit<Quiz, "questions">), questions: builtQuestions };
