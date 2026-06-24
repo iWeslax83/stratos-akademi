@@ -25,4 +25,11 @@ describe("CurriculumTree", () => {
     expect(screen.getByTestId("status-a")).toHaveTextContent("✓");
     expect(screen.getByTestId("status-b")).toHaveTextContent("●");
   });
+
+  it("durumu ekran okuyucuya metinle bildirir", () => {
+    const statuses = computeStatuses(curriculum, new Set(["a"]));
+    render(<CurriculumTree curriculum={curriculum} statuses={statuses} activeLessonId={null} />);
+    expect(screen.getByTestId("status-a")).toHaveTextContent("Tamamlandı");
+    expect(screen.getByTestId("status-b")).toHaveTextContent("Devam ediyor");
+  });
 });

@@ -3,6 +3,11 @@ import { clsx } from "clsx";
 import type { Curriculum, LessonStatus } from "@/lib/curriculum/types";
 
 const ICON: Record<LessonStatus, string> = { done: "✓", current: "●", todo: "○" };
+const STATUS_LABEL: Record<LessonStatus, string> = {
+  done: "Tamamlandı",
+  current: "Devam ediyor",
+  todo: "Yapılacak",
+};
 
 export function CurriculumTree({
   curriculum,
@@ -49,7 +54,8 @@ export function CurriculumTree({
                             status === "current" && "text-gold",
                           )}
                         >
-                          {ICON[status]}
+                          <span aria-hidden="true">{ICON[status]}</span>
+                          <span className="sr-only">{STATUS_LABEL[status]}</span>
                         </span>
                         <span className="truncate">{lesson.baslik}</span>
                       </Link>
