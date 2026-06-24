@@ -6,6 +6,7 @@ import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
+import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
 import { badgeProgress, nextBadge } from "@/lib/badges/compute";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { getDashboardData } from "@/lib/dashboard/queries";
@@ -75,6 +76,9 @@ export default async function ProfilPage() {
             {profile?.email}
             {isAdmin && " · Kaptan"}
           </p>
+          <div className="mt-1.5">
+            <DisplayNameEditor userId={user!.id} current={profile?.ad ?? ""} />
+          </div>
         </div>
       </div>
 
