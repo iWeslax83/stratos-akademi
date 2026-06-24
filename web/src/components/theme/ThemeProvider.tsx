@@ -11,8 +11,11 @@ const KEY = "stratos-theme";
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
+  // Kayıtlı tema yalnız istemcide (localStorage SSR'da yok) okunabildiğinden mount'ta
+  // senkronlanır — bu effect-içi setState kasıtlı ve doğru kalıp.
   useEffect(() => {
     const saved = (localStorage.getItem(KEY) as Theme | null) ?? "light";
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(saved);
     document.documentElement.classList.toggle("dark", saved === "dark");
   }, []);

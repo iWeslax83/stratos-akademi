@@ -33,13 +33,13 @@ export async function getCurriculum(supabase: SupabaseClient): Promise<Curriculu
   const modulesByTrack = new Map<string, Module[]>();
   for (const row of (modules ?? []) as ModuleRow[]) {
     const { track_id, ...rest } = row;
-    const module: Module = {
+    const mod: Module = {
       ...rest,
       quiz: quizByModule.get(rest.id) ?? null,
       lessons: lessonsByModule.get(rest.id) ?? [],
     };
     const arr = modulesByTrack.get(track_id) ?? [];
-    arr.push(module);
+    arr.push(mod);
     modulesByTrack.set(track_id, arr);
   }
 
