@@ -19,18 +19,17 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: viewer } = await supabase
-    .from("profiles")
-    .select("ad, email")
-    .eq("id", user!.id)
-    .single();
+  // Bağımsız sorgular eşzamanlı.
+  const [{ data: viewer }, isAdmin, m, curriculum] = await Promise.all([
+    supabase.from("profiles").select("ad, email").eq("id", user!.id).single(),
+    isAdminUser(supabase, user?.id),
+    getMemberProfile(supabase, id),
+    getCurriculum(supabase),
+  ]);
   const initial = (viewer?.ad ?? viewer?.email ?? "E").charAt(0).toUpperCase();
-  const isAdmin = await isAdminUser(supabase, user?.id);
 
-  const m = await getMemberProfile(supabase, id);
   if (!m) notFound();
 
-  const curriculum = await getCurriculum(supabase);
   const tracks = curriculum.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon }));
 
   // Başka üye: yalnız public rozetler (RPC streak/quiz vermez).
