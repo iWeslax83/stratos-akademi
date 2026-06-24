@@ -27,18 +27,15 @@ export default async function LiderlikPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("ad, email, role")
-    .eq("id", user!.id)
-    .single();
+  // Profil ve sıralama bağımsız → eşzamanlı.
+  const [{ data: profile }, rows] = await Promise.all([
+    supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
+    aralik === "tum"
+      ? getLeaderboard(supabase)
+      : getLeaderboardRanged(supabase, rangeStartISO(aralik, Date.now())),
+  ]);
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = profile?.role === "admin";
-
-  const rows =
-    aralik === "tum"
-      ? await getLeaderboard(supabase)
-      : await getLeaderboardRanged(supabase, rangeStartISO(aralik, Date.now()));
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
