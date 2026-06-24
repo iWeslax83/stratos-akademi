@@ -22,20 +22,23 @@ export default async function ProfilPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("ad, email, role")
-    .eq("id", user!.id)
-    .single();
+  // Bağımsız sorgular eşzamanlı (sayfa gecikmesini azaltır).
+  const [{ data: profile }, curriculum, dash, { count: onayliGorev }, leaderboard] = await Promise.all([
+    supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
+    getCurriculum(supabase),
+    getDashboardData(supabase, user!.id),
+    supabase
+      .from("task_submissions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user!.id)
+      .eq("durum", "onay"),
+    getLeaderboard(supabase),
+  ]);
   const ad = profile?.ad ?? profile?.email ?? "Üye";
   const initial = ad.charAt(0).toUpperCase();
   const isAdmin = profile?.role === "admin";
 
-  const curriculum = await getCurriculum(supabase);
-  const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = await getDashboardData(
-    supabase,
-    user!.id,
-  );
+  const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = dash;
   const stats = buildStats({
     curriculum,
     completedIds,
@@ -45,13 +48,6 @@ export default async function ProfilPage() {
     approvedTaskPoints,
   });
 
-  const { count: onayliGorev } = await supabase
-    .from("task_submissions")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user!.id)
-    .eq("durum", "onay");
-
-  const leaderboard = await getLeaderboard(supabase);
   const rank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
 
   const badgeStats = {
