@@ -16,6 +16,7 @@ import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
 import { BadgeToast } from "@/components/dashboard/BadgeToast";
 import { badgeProgress, nextBadge, computeBadges } from "@/lib/badges/compute";
+import { badgeStatsFromDashboard } from "@/lib/badges/stats";
 import { badgeNames } from "@/lib/badges/catalog";
 import { syncBadges } from "@/app/actions/badges";
 import { CompetencyToast } from "@/components/dashboard/CompetencyToast";
@@ -55,14 +56,7 @@ export default async function PanomPage() {
     approvedTaskPoints,
   });
 
-  const badgeStats = {
-    lessons: stats.completedCount,
-    tasks: onayliGorev ?? 0,
-    competencies: stats.earnedCompetencies.length,
-    points: stats.points,
-    streak: stats.streak,
-    quizPerfect: stats.bestQuizScores.filter((s) => s >= 100).length,
-  };
+  const badgeStats = badgeStatsFromDashboard(stats, onayliGorev);
   const badgeItems = badgeProgress(badgeStats, "full");
   const nextRozet = nextBadge(badgeStats, "full");
   const earnedBadgeIds = [...computeBadges(badgeStats)];
