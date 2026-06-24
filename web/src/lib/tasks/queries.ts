@@ -12,6 +12,16 @@ export type Submission = {
 };
 export type ModuleTask = { task: PracticalTask; submission: Submission | null };
 
+// Üyenin onaylanmış pratik görev sayısı (rozet/profil/dashboard için).
+export async function getApprovedTaskCount(supabase: SupabaseClient, userId: string): Promise<number> {
+  const { count } = await supabase
+    .from("task_submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("durum", "onay");
+  return count ?? 0;
+}
+
 export async function getModuleTasks(
   supabase: SupabaseClient,
   moduleId: string,

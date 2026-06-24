@@ -15,6 +15,7 @@ import { getCurriculum } from "@/lib/curriculum/queries";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
+import { getApprovedTaskCount } from "@/lib/tasks/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -24,15 +25,11 @@ export default async function ProfilPage() {
     data: { user },
   } = await supabase.auth.getUser();
   // Bağımsız sorgular eşzamanlı (sayfa gecikmesini azaltır).
-  const [{ data: profile }, curriculum, dash, { count: onayliGorev }, leaderboard] = await Promise.all([
+  const [{ data: profile }, curriculum, dash, onayliGorev, leaderboard] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     getCurriculum(supabase),
     getDashboardData(supabase, user!.id),
-    supabase
-      .from("task_submissions")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user!.id)
-      .eq("durum", "onay"),
+    getApprovedTaskCount(supabase, user!.id),
     getLeaderboard(supabase),
   ]);
   const ad = profile?.ad ?? profile?.email ?? "Üye";
