@@ -32,7 +32,9 @@ export default async function LiderlikPage({
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     aralik === "tum"
       ? getLeaderboard(supabase)
-      : getLeaderboardRanged(supabase, rangeStartISO(aralik, Date.now())),
+      : // dinamik server component; şu anki zaman kasıtlı (saf-render kuralı burada geçerli değil)
+        // eslint-disable-next-line react-hooks/purity
+        getLeaderboardRanged(supabase, rangeStartISO(aralik, Date.now())),
   ]);
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = profile?.role === "admin";

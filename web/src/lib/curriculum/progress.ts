@@ -40,9 +40,9 @@ export function accumulateWatched(
 export function flatten(curriculum: Curriculum): FlatLesson[] {
   const out: FlatLesson[] = [];
   for (const track of [...curriculum].sort((a, b) => a.sira - b.sira)) {
-    for (const module of [...track.modules].sort((a, b) => a.sira - b.sira)) {
-      for (const lesson of [...module.lessons].sort((a, b) => a.sira - b.sira)) {
-        out.push({ lesson, module, track });
+    for (const mod of [...track.modules].sort((a, b) => a.sira - b.sira)) {
+      for (const lesson of [...mod.lessons].sort((a, b) => a.sira - b.sira)) {
+        out.push({ lesson, module: mod, track });
       }
     }
   }

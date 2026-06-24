@@ -19,13 +19,13 @@ export function filterCurriculum(curriculum: Curriculum, query: string): Curricu
       continue;
     }
     const modules = [];
-    for (const module of track.modules) {
-      if (norm(module.ad).includes(q)) {
-        modules.push(module);
+    for (const mod of track.modules) {
+      if (norm(mod.ad).includes(q)) {
+        modules.push(mod);
         continue;
       }
-      const lessons = module.lessons.filter((l) => norm(l.baslik).includes(q));
-      if (lessons.length > 0) modules.push({ ...module, lessons });
+      const lessons = mod.lessons.filter((l) => norm(l.baslik).includes(q));
+      if (lessons.length > 0) modules.push({ ...mod, lessons });
     }
     if (modules.length > 0) result.push({ ...track, modules });
   }
