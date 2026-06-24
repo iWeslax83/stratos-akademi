@@ -20,7 +20,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat).
 - **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, günlük seri (streak), puan, mini liderlik, dal yetkinlikleri.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
-- **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + rozetler.
+- **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + rozetler. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
 - **Rozetler (achievements):** mevcut verilerden **türetilen** 15 rozet (ders/görev/yetkinlik/puan = herkese açık; seri/quiz = yalnız kendi profili). Migration yok; saf fonksiyon (`lib/badges`). `/profil` (tam + sıradaki ipucu), `/panom` (vitrin), `/uye/[id]` (public alt küme).
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir.
 - **Bildirimler:** görev onay/red → üyeye in-app bildirim; Nav'da okunmamış sayacı.
