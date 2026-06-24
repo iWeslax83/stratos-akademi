@@ -16,7 +16,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 ## Özellikler
 
 - **Giriş:** Google OAuth, e-posta izin listesi (`allowlist`) ile sınırlı; `uye`/`admin` rolleri.
-- **Müfredat:** Dal → Modül → Ders hiyerarşisi; YouTube IFrame ile izleme; anti-skip tamamlama (konum ≥%90 **ve** gerçekten izlenen ≥%20).
+- **Müfredat:** Dal → Modül → Ders hiyerarşisi; YouTube IFrame ile izleme; anti-skip tamamlama (konum ≥%90 **ve** gerçekten izlenen ≥%20). **Arama:** `/mufredat`'ta ders/modül/dal adına göre canlı süzme (Türkçe duyarlı; hiyerarşi korunur).
 - **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat).
 - **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, günlük seri (streak), puan, mini liderlik, dal yetkinlikleri.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).

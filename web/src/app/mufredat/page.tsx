@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { CurriculumTree } from "@/components/curriculum/CurriculumTree";
+import { CurriculumBrowser } from "@/components/curriculum/CurriculumBrowser";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { computeStatuses, overallProgress } from "@/lib/curriculum/progress";
 import { isAdminUser } from "@/lib/auth/is-admin";
@@ -36,7 +36,7 @@ export default async function MufredatPage() {
         {curriculum.length === 0 ? (
           <p className="text-sm text-muted">Henüz içerik eklenmedi.</p>
         ) : (
-          <CurriculumTree curriculum={curriculum} statuses={statuses} activeLessonId={null} />
+          <CurriculumBrowser curriculum={curriculum} statuses={Object.fromEntries(statuses)} />
         )}
       </Card>
     </AppShell>
