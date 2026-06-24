@@ -7,6 +7,8 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
 import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
+import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
+import { pointsBreakdown } from "@/lib/dashboard/points";
 import { badgeProgress, nextBadge } from "@/lib/badges/compute";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { getDashboardData } from "@/lib/dashboard/queries";
@@ -62,6 +64,7 @@ export default async function ProfilPage() {
   };
   const badgeItems = badgeProgress(badgeStats, "full");
   const nextRozet = nextBadge(badgeStats, "full");
+  const puanDagilimi = pointsBreakdown(stats.completedCount, stats.bestQuizScores, approvedTaskPoints);
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin} streak={stats.streak} points={stats.points}>
@@ -103,6 +106,10 @@ export default async function ProfilPage() {
           earned={stats.earnedCompetencies}
           rank={rank}
         />
+      </Card>
+
+      <Card className="mt-[18px]">
+        <PointsBreakdown data={puanDagilimi} />
       </Card>
 
       <Card className="mt-[18px]">
