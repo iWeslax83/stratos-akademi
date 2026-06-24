@@ -85,6 +85,7 @@ uygulanmalı:
 | 0018 | member_profile | üye profil özeti RPC (toplu, e-postasız) |
 | 0019 | question_explanation | soru açıklaması + questions kolon-bazlı select kısıtı |
 | 0020 | user_badges | kazanılan rozet kalıcılığı (yeni-rozet toast'u; rozetler türetilmiş, tablo yalnız "yeni" tespiti için — yoksa graceful) |
+| 0021 | guard_profile_role | **GÜVENLİK:** üyenin kendini admin yapmasını engelleyen BEFORE UPDATE trigger (role değişimi yalnız admin/service_role/postgres). **ÖNEMLİ: en kısa sürede uygula.** |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen
@@ -119,6 +120,10 @@ npx tsc --noEmit   # tip kontrolü
 
 ## Mimari notlar
 
+- **Yetki yükseltme koruması (0021):** `profiles` self-update politikası WITH CHECK
+  içermediğinden tek başına `role` kolonunu korumaz; `guard_profile_role` trigger'ı
+  `authenticated` rolünün (web üyesi) kendi rolünü değiştirmesini engeller, yalnız
+  admin/`service_role`/`postgres` rol değiştirebilir. Yeni şema kurulurken 0021 atlanmamalı.
 - **RLS her yerde:** içerik okuması authenticated; yazma `is_admin()` ile admin'e açık.
   Quiz `dogru` kolonu üyeye kapalı (kolon-grant); admin/puanlama service_role ile okur.
   Pratik görev gönderiminde "self-approval" RLS WITH CHECK ile engellenir (üye durumu
