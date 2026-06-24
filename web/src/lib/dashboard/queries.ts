@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { bestScoresPerQuiz, sumApprovedTaskPoints, type ApprovedTaskRow } from "./aggregate";
 
 // Dashboard için kullanıcıya özel ham veriyi okur:
 // tamamlanan ders id'leri, quiz başına en iyi puan, ve tüm aktivite tarihleri (streak için).
@@ -20,11 +21,7 @@ export async function getDashboardData(
   );
 
   // Quiz başına en iyi puan
-  const best = new Map<string, number>();
-  for (const a of (attempts ?? []) as { quiz_id: string; puan: number }[]) {
-    best.set(a.quiz_id, Math.max(best.get(a.quiz_id) ?? 0, a.puan));
-  }
-  const bestQuizScores = [...best.values()];
+  const bestQuizScores = bestScoresPerQuiz((attempts ?? []) as { quiz_id: string; puan: number }[]);
 
   // Aktivite tarihleri = ders tamamlama + quiz denemeleri
   const activityDates: Date[] = [];
@@ -40,12 +37,7 @@ export async function getDashboardData(
     .select("practical_tasks(puan)")
     .eq("user_id", userId)
     .eq("durum", "onay");
-  type ApprovedRow = { practical_tasks: { puan: number } | { puan: number }[] | null };
-  let approvedTaskPoints = 0;
-  for (const r of (approved ?? []) as unknown as ApprovedRow[]) {
-    const pt = Array.isArray(r.practical_tasks) ? r.practical_tasks[0]?.puan : r.practical_tasks?.puan;
-    approvedTaskPoints += pt ?? 0;
-  }
+  const approvedTaskPoints = sumApprovedTaskPoints((approved ?? []) as unknown as ApprovedTaskRow[]);
 
   return { completedIds, bestQuizScores, activityDates, approvedTaskPoints };
 }
