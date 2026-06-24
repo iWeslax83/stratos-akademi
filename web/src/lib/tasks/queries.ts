@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { SubmissionStatus } from "./status";
 import { attachSubmissionsToTasks, mapPendingRows, type PendingRow } from "./shape";
+import { groupThreads, type CommentRow, type ThreadItem } from "./comment";
 
 export type PracticalTask = { id: string; baslik: string; aciklama: string | null; sira: number; puan: number };
 export type Submission = {
@@ -47,6 +48,7 @@ export async function getModuleTasks(
 
 export type PendingSubmission = {
   id: string;
+  userId: string;
   icerik: string;
   dosya_yolu: string | null;
   created_at: string;
@@ -55,6 +57,33 @@ export type PendingSubmission = {
   trackAd: string;
   uyeEmail: string;
 };
+
+// Verilen gönderimler için yorum dizilerini toplu çeker (üye sayfası + onay kuyruğu).
+// `submissions`: her gönderimin id'si ve sahibi (üye user_id) — sahiplik etiketi için.
+export async function getSubmissionThreads(
+  supabase: SupabaseClient,
+  submissions: { id: string; ownerId: string }[],
+): Promise<Map<string, ThreadItem[]>> {
+  if (submissions.length === 0) return new Map();
+  const ids = submissions.map((s) => s.id);
+  const { data } = await supabase
+    .from("submission_comments")
+    .select("id, submission_id, author_id, mesaj, created_at")
+    .in("submission_id", ids)
+    .order("created_at");
+  const rows = (data ?? []) as CommentRow[];
+
+  const ownerById = new Map(submissions.map((s) => [s.id, s.ownerId]));
+  const authorIds = [...new Set(rows.map((r) => r.author_id))];
+  const nameById = new Map<string, string>();
+  if (authorIds.length > 0) {
+    const { data: profs } = await supabase.from("profiles").select("id, ad").in("id", authorIds);
+    for (const p of (profs ?? []) as { id: string; ad: string | null }[]) {
+      if (p.ad) nameById.set(p.id, p.ad);
+    }
+  }
+  return groupThreads(rows, ownerById, nameById);
+}
 
 export async function getPendingSubmissions(supabase: SupabaseClient): Promise<PendingSubmission[]> {
   const { data } = await supabase

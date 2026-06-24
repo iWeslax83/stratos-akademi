@@ -2,9 +2,10 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { taskReviewMessage } from "@/lib/notifications/message";
+import { taskReviewMessage, submissionCommentMessage } from "@/lib/notifications/message";
 import { taskReviewEmail } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email/send";
+import { cleanComment, commentNotifyTarget } from "@/lib/tasks/comment";
 
 export type ActionResult = { ok: boolean; error?: string };
 
@@ -185,4 +186,65 @@ export async function reviewSubmission(
 
     return { ok: true };
   } catch (e) { console.error("reviewSubmission:", e); return { ok: false, error: "Beklenmeyen hata." }; }
+}
+
+// ---- GÖNDERİM YORUMU (kaptan ↔ üye thread) ----
+export async function addSubmissionComment(
+  submissionId: string,
+  mesaj: string,
+  authorId: string,
+): Promise<ActionResult> {
+  try {
+    const metin = cleanComment(mesaj);
+    if (!metin) return { ok: false, error: "Boş yorum gönderilemez." };
+    const supabase = await createClient();
+
+    // RLS ekleme iznini doğrular (kendi gönderimi ya da admin).
+    const { error } = await supabase
+      .from("submission_comments")
+      .insert({ submission_id: submissionId, author_id: authorId, mesaj: metin });
+    if (error) return { ok: false, error: errMsg(error) };
+
+    // Karşı tarafa bildirim (best-effort; thread'i bozmaz).
+    try {
+      const { data: amAdmin } = await supabase.rpc("is_admin");
+      const { data: sub } = await supabase
+        .from("task_submissions")
+        .select("user_id, reviewed_by, practical_tasks(baslik, module_id)")
+        .eq("id", submissionId)
+        .single();
+      const s = sub as {
+        user_id: string;
+        reviewed_by: string | null;
+        practical_tasks:
+          | { baslik: string; module_id: string }
+          | { baslik: string; module_id: string }[]
+          | null;
+      } | null;
+      const ptRaw = s?.practical_tasks;
+      const pt = Array.isArray(ptRaw) ? ptRaw[0] : ptRaw;
+      if (s && pt) {
+        const fromAdmin = amAdmin === true;
+        const target = commentNotifyTarget({
+          authorId,
+          authorIsAdmin: fromAdmin,
+          submissionOwnerId: s.user_id,
+          reviewedBy: s.reviewed_by,
+        });
+        if (target) {
+          // Hedef üye ise kendi görev sayfasına, kaptan ise onay kuyruğuna yönlendir.
+          const link = target === s.user_id ? `/mufredat/gorevler/${pt.module_id}` : "/admin/onaylar";
+          await supabase.from("notifications").insert({
+            user_id: target,
+            mesaj: submissionCommentMessage(pt.baslik, fromAdmin),
+            link,
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error("comment notification:", notifErr);
+    }
+
+    return { ok: true };
+  } catch (e) { console.error("addSubmissionComment:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
