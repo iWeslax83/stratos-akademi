@@ -23,7 +23,14 @@ import { getApprovedTaskCount } from "@/lib/tasks/queries";
 import { syncCompetencies } from "@/app/actions/competencies";
 import { getAnnouncements } from "@/lib/announcements/queries";
 import { announcementExcerpt } from "@/lib/announcements/format";
+import { getUpcomingEvents } from "@/lib/events/queries";
 import Link from "next/link";
+
+function etkinlikTarih(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleString("tr-TR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+}
 
 export const dynamic = "force-dynamic";
 
@@ -34,13 +41,14 @@ export default async function PanomPage() {
   } = await supabase.auth.getUser();
 
   // Bağımsız sorgular eşzamanlı (dashboard gecikmesini azaltır).
-  const [{ data: profile }, curriculum, dash, leaderboard, onayliGorev, duyurular] = await Promise.all([
+  const [{ data: profile }, curriculum, dash, leaderboard, onayliGorev, duyurular, etkinlikler] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     getCurriculum(supabase),
     getDashboardData(supabase, user!.id),
     getLeaderboard(supabase),
     getApprovedTaskCount(supabase, user!.id),
     getAnnouncements(supabase, 3),
+    getUpcomingEvents(supabase, 3),
   ]);
   const ad = profile?.ad ?? profile?.email ?? "üye";
   const isAdmin = profile?.role === "admin";
@@ -104,6 +112,26 @@ export default async function PanomPage() {
                     <span className="text-sm font-semibold text-navy dark:text-white">{d.baslik}</span>
                     <span className="ml-2 text-sm text-muted">{announcementExcerpt(d.icerik, 90)}</span>
                   </Link>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
+        {etkinlikler.length > 0 && (
+          <Card outerClassName="lg:col-span-12" className="p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold text-navy dark:text-white">Yaklaşan etkinlikler</h2>
+              <Link href="/etkinlikler" className="text-xs font-semibold text-gold hover:opacity-80">
+                Tümü →
+              </Link>
+            </div>
+            <ul className="space-y-2">
+              {etkinlikler.map((e) => (
+                <li key={e.id} className="flex items-baseline gap-3 border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
+                  <span className="shrink-0 text-xs font-bold text-gold">{etkinlikTarih(e.baslangic)}</span>
+                  <span className="text-sm font-semibold text-navy dark:text-white">{e.baslik}</span>
+                  {e.yer && <span className="text-xs text-muted">· {e.yer}</span>}
                 </li>
               ))}
             </ul>
