@@ -2,26 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { MEMBER_LINKS, ADMIN_LINKS } from "@/lib/nav/links";
 
-const LINKS = [
-  { href: "/mufredat", label: "Müfredat" },
-  { href: "/panom", label: "Panom" },
-  { href: "/liderlik", label: "Liderlik" },
-  { href: "/duyurular", label: "Duyurular" },
-  { href: "/etkinlikler", label: "Etkinlikler" },
-  { href: "/kaynaklar", label: "Kaynaklar" },
-  { href: "/profil", label: "Profil" },
-];
-
-const ADMIN_LINKS = [
-  { href: "/admin/mufredat", label: "Yönetim" },
-  { href: "/admin/uyeler", label: "Üyeler" },
-  { href: "/admin/onaylar", label: "Onaylar" },
-  { href: "/admin/duyurular", label: "Duyurular" },
-  { href: "/admin/etkinlikler", label: "Etkinlikler" },
-  { href: "/admin/kaynaklar", label: "Kaynaklar" },
-  { href: "/admin/analitik", label: "Analitik" },
-];
+const LINKS = [...MEMBER_LINKS, { href: "/profil", label: "Profil" }];
 
 export function MobileMenu({ isAdmin, unread }: { isAdmin: boolean; unread: number }) {
   const [open, setOpen] = useState(false);
