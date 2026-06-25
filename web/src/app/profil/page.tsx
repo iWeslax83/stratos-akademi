@@ -16,6 +16,8 @@ import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { getApprovedTaskCount } from "@/lib/tasks/queries";
+import { earnedCertificates } from "@/lib/certificate/eligibility";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +54,10 @@ export default async function ProfilPage() {
   const badgeItems = badgeProgress(badgeStats, "full");
   const nextRozet = nextBadge(badgeStats, "full");
   const puanDagilimi = pointsBreakdown(stats.completedCount, stats.bestQuizScores, approvedTaskPoints);
+  const sertifikalar = earnedCertificates(
+    stats.perTrack.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon })),
+    stats.earnedCompetencies,
+  );
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin} streak={stats.streak} points={stats.points}>
@@ -94,6 +100,24 @@ export default async function ProfilPage() {
           rank={rank}
         />
       </Card>
+
+      {sertifikalar.length > 0 && (
+        <Card className="mt-[18px] p-6">
+          <h2 className="mb-1 font-display text-lg font-bold text-navy dark:text-white">Sertifikalar</h2>
+          <p className="mb-3 text-sm text-muted">Tamamladığın dallar için katılım belgesi.</p>
+          <div className="flex flex-wrap gap-2">
+            {sertifikalar.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/sertifika/${s.slug}`}
+                className="inline-flex items-center gap-2 rounded-full border border-gold px-4 py-2 text-sm font-semibold text-navy hover:bg-gold-soft dark:text-white dark:hover:bg-gold-dark"
+              >
+                <span>{s.ikon}</span> {s.ad} belgesi →
+              </Link>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <Card className="mt-[18px]">
         <PointsBreakdown data={puanDagilimi} />

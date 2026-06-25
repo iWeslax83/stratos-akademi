@@ -30,6 +30,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
 - **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + rozetler. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
 - **Rozetler (achievements):** mevcut verilerden **türetilen** 15 rozet (ders/görev/yetkinlik/puan = herkese açık; seri/quiz = yalnız kendi profili). Migration yok; saf fonksiyon (`lib/badges`). `/profil` (tam + sıradaki ipucu), `/panom` (vitrin), `/uye/[id]` (public alt küme).
+- **Sertifika:** üye bir dalı tamamlayınca yazdırılabilir/PDF katılım belgesi (`/sertifika/[slug]`). **Migration yok** — tamamlama verisinden türetilir, uygunluk sunucuda doğrulanır. `/profil`'de hak edilen belgelere link.
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir. **Yorum dizisi:** her gönderimde kaptan ↔ üye karşılıklı konuşma (revize iste → üye düzeltir); yeni yoruma in-app bildirim. (`0023`)
 - **Duyurular (`/duyurular`):** kaptanlar üyelere toplu duyuru yapar (toplantı, deadline, yeni içerik); panomda son 3 kartı + yeni duyuruda tüm üyelere in-app bildirim. (`0024`)
 - **Bildirimler:** görev onay/red + yeni yorum + yeni duyuru → üyeye in-app bildirim; Nav'da okunmamış sayacı.
