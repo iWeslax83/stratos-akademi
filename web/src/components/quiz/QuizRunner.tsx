@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/Button";
 import { submitQuiz } from "@/app/actions/quiz";
+import { shuffleQuiz } from "@/lib/quiz/shuffle";
 import type { Quiz, SubmitResult } from "@/lib/quiz/types";
+
+function newSeed(): number {
+  return Math.floor(Math.random() * 2147483647);
+}
 
 export function QuizRunner({
   quiz,
@@ -18,6 +23,9 @@ export function QuizRunner({
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  // Soru/şık sırasını her denemede karıştır (cevap paylaşımını zorlaştırır; puanlama ID bazlı, etkilenmez).
+  const [seed, setSeed] = useState(newSeed);
+  const shown = useMemo(() => shuffleQuiz(quiz, seed), [quiz, seed]);
 
   function toggle(qid: string, oid: string) {
     setSelected((prev) => {
@@ -43,6 +51,7 @@ export function QuizRunner({
     setResult(null);
     setError(null);
     setSelected({});
+    setSeed(newSeed()); // yeni denemede sırayı yeniden karıştır
   }
 
   const resByQuestion = new Map((result?.perQuestion ?? []).map((r) => [r.questionId, r]));
@@ -75,7 +84,7 @@ export function QuizRunner({
         </div>
       )}
 
-      {quiz.questions.map((q, i) => {
+      {shown.questions.map((q, i) => {
         const r = resByQuestion.get(q.id);
         const correctIds = result?.correctByQuestion[q.id] ?? [];
         return (

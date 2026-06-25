@@ -25,7 +25,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 
 - **Giriş:** Google OAuth, e-posta izin listesi (`allowlist`) ile sınırlı; `uye`/`admin` rolleri.
 - **Müfredat:** Dal → Modül → Ders hiyerarşisi; YouTube IFrame ile izleme; anti-skip tamamlama (konum ≥%90 **ve** gerçekten izlenen ≥%20). **Arama:** `/mufredat`'ta ders/modül/dal adına göre canlı süzme (Türkçe duyarlı; hiyerarşi korunur).
-- **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat).
+- **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat). Her denemede **soru ve şık sırası karıştırılır** (cevap paylaşımını zorlaştırır; puanlama ID bazlı olduğundan etkilenmez). Migration yok; saf `lib/quiz/shuffle`.
 - **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, günlük seri (streak), puan, mini liderlik, dal yetkinlikleri.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
 - **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + rozetler. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
