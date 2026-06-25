@@ -6,7 +6,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { flatten } from "@/lib/curriculum/progress";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
-import { quizStat, gunOnce, sonAktivite } from "@/lib/admin/analytics";
+import { quizStat, gunOnce, sonAktivite, riskliUyeler, trackCompletionPct } from "@/lib/admin/analytics";
 
 export const dynamic = "force-dynamic";
 
@@ -30,12 +30,13 @@ export default async function AnalitikPage() {
   const leaderboard = await getLeaderboard(supabase);
 
   const svc = createServiceClient();
-  const [{ data: progress }, { data: attempts }, { data: subs }, { data: quizzes }] =
+  const [{ data: progress }, { data: attempts }, { data: subs }, { data: quizzes }, { count: bekleyenOnay }] =
     await Promise.all([
       svc.from("lesson_progress").select("user_id, lesson_id, completed_at").eq("completed", true),
       svc.from("quiz_attempts").select("user_id, quiz_id, puan, created_at"),
       svc.from("task_submissions").select("user_id, created_at"),
       svc.from("quizzes").select("id, gecme_esigi"),
+      svc.from("task_submissions").select("id", { count: "exact", head: true }).eq("durum", "beklemede"),
     ]);
 
   const prog = (progress ?? []) as ProgressRow[];
@@ -110,6 +111,36 @@ export default async function AnalitikPage() {
     })
     .sort((a, b) => a.ortBest - b.ortBest);
 
+  // KPI'lar
+  const toplamTamamlanan = prog.length;
+  const totalLessons = flatten(curriculum).length;
+  const ortTamamlama = trackCompletionPct(totalLessons, uyeSayisi, toplamTamamlanan);
+
+  // Pasif üyeler (14+ gün ya da hiç aktivite)
+  const pasifler = riskliUyeler(uyeler, 14);
+
+  // Dal bazlı tamamlama
+  const dalTamamlama = curriculum
+    .map((t) => {
+      const dersler = t.modules.flatMap((m) => m.lessons);
+      const done = dersler.reduce((sum, l) => sum + (tamamByLesson.get(l.id)?.size ?? 0), 0);
+      return {
+        ad: t.ad,
+        ikon: t.ikon,
+        lessonCount: dersler.length,
+        pct: trackCompletionPct(dersler.length, uyeSayisi, done),
+      };
+    })
+    .filter((d) => d.lessonCount > 0);
+
+  const kpis = [
+    { label: "Üye", value: String(uyeSayisi) },
+    { label: "Aktif (7g)", value: String(aktifSayisi) },
+    { label: "Bekleyen onay", value: String(bekleyenOnay ?? 0) },
+    { label: "Tamamlanan ders", value: String(toplamTamamlanan) },
+    { label: "Ort. tamamlama", value: `%${ortTamamlama}` },
+  ];
+
   return (
     <AppShell initial={initial} isAdmin>
       <Eyebrow>Yönetim · Analitik</Eyebrow>
@@ -117,6 +148,57 @@ export default async function AnalitikPage() {
       <p className="mt-1.5 text-muted">
         {uyeSayisi} üye · {aktifSayisi} aktif (son 7 gün)
       </p>
+
+      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
+        {kpis.map((k) => (
+          <Card key={k.label} className="p-4 text-center">
+            <div className="font-display text-2xl font-extrabold text-navy dark:text-white">{k.value}</div>
+            <div className="mt-0.5 text-xs font-semibold text-muted">{k.label}</div>
+          </Card>
+        ))}
+      </div>
+
+      {pasifler.length > 0 && (
+        <Card className="mt-5 border-gold p-6">
+          <h2 className="mb-1 font-display text-lg font-bold text-navy dark:text-white">
+            Pasif üyeler ({pasifler.length})
+          </h2>
+          <p className="mb-3 text-sm text-muted">14+ gündür pasif ya da hiç aktivitesi olmayanlar — bir dürtme iyi gelebilir.</p>
+          <div className="flex flex-wrap gap-2">
+            {pasifler.map((u, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1.5 rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
+              >
+                {u.ad} · {u.gun === null ? "hiç" : `${u.gun} gün`}
+              </span>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      <Card className="mt-5 p-6">
+        <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">Dal bazlı tamamlama</h2>
+        {dalTamamlama.length === 0 ? (
+          <p className="text-sm text-muted">Dal yok.</p>
+        ) : (
+          <div className="space-y-3">
+            {dalTamamlama.map((d, i) => (
+              <div key={i}>
+                <div className="mb-1 flex items-center justify-between text-sm">
+                  <span className="font-semibold text-navy dark:text-white">
+                    {d.ikon} {d.ad}
+                  </span>
+                  <span className="text-xs font-bold text-muted">%{d.pct} · {d.lessonCount} ders</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
+                  <div className="h-full rounded-full bg-gold" style={{ width: `${d.pct}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
 
       <Card className="mt-5 p-6">
         <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">Üye katılımı</h2>
