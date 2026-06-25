@@ -35,6 +35,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Duyurular (`/duyurular`):** kaptanlar üyelere toplu duyuru yapar (toplantı, deadline, yeni içerik); panomda son 3 kartı + yeni duyuruda tüm üyelere in-app bildirim. (`0024`)
 - **Bildirimler:** görev onay/red + yeni yorum + yeni duyuru → üyeye in-app bildirim; Nav'da okunmamış sayacı.
 - **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/silme), görev tanımı CRUD, onay kuyruğu, duyuru CRUD.
+- **Analitik (`/admin/analitik`):** KPI şeridi (üye/aktif/bekleyen onay/tamamlanan ders/ort. tamamlama), **pasif üyeler** (14+ gün — kimi dürtmeli), dal bazlı tamamlama %, üye katılımı, en az tamamlanan dersler, quiz performansı. Migration yok; saf `lib/admin/analytics`.
 
 **Puan formülü:** `tamamlanan ders × 20 + Σ(quiz en iyi %) + Σ(onaylı görev puanı)`.
 **Streak:** ders/quiz aktivitesi olan peş peşe günler (Türkiye saati, 1 gün tolerans).

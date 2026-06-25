@@ -41,3 +41,19 @@ export function sonAktivite(dates: (string | null)[]): string | null {
   }
   return enIso;
 }
+
+// Riskli (pasif) üyeler: hiç aktivitesi olmayan (gun null) ya da eşik günden uzun süredir pasif.
+export function riskliUyeler<T extends { gun: number | null }>(uyeler: T[], esikGun: number): T[] {
+  return uyeler.filter((u) => u.gun === null || u.gun > esikGun);
+}
+
+// Dal/genel tamamlama yüzdesi: tamamlanan ders örnekleri / (ders sayısı × üye sayısı).
+export function trackCompletionPct(
+  lessonCount: number,
+  memberCount: number,
+  completedInstances: number,
+): number {
+  const payda = lessonCount * memberCount;
+  if (payda <= 0) return 0;
+  return Math.round((completedInstances / payda) * 100);
+}

@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { bestPerUser, quizStat, gunOnce, sonAktivite } from "@/lib/admin/analytics";
+import {
+  bestPerUser,
+  quizStat,
+  gunOnce,
+  sonAktivite,
+  riskliUyeler,
+  trackCompletionPct,
+} from "@/lib/admin/analytics";
 
 describe("bestPerUser", () => {
   it("kullanıcı başına en yüksek puan", () => {
@@ -51,5 +58,37 @@ describe("sonAktivite", () => {
   });
   it("hepsi null → null", () => {
     expect(sonAktivite([null, null])).toBeNull();
+  });
+});
+
+describe("riskliUyeler", () => {
+  const uyeler = [
+    { ad: "Aktif", gun: 2 },
+    { ad: "Sınırda", gun: 14 },
+    { ad: "Pasif", gun: 20 },
+    { ad: "Hiç", gun: null },
+  ];
+  it("eşikten uzun pasif + hiç aktif olmayanı seçer; eşik dahil değil", () => {
+    const r = riskliUyeler(uyeler, 14).map((u) => u.ad);
+    expect(r).toEqual(["Pasif", "Hiç"]);
+  });
+  it("kimse riskli değilse boş", () => {
+    expect(riskliUyeler([{ gun: 1 }, { gun: 0 }], 14)).toEqual([]);
+  });
+});
+
+describe("trackCompletionPct", () => {
+  it("tamamlanan / (ders × üye)", () => {
+    expect(trackCompletionPct(10, 4, 20)).toBe(50); // 20/40
+  });
+  it("tam tamamlama → 100", () => {
+    expect(trackCompletionPct(5, 3, 15)).toBe(100);
+  });
+  it("yuvarlar", () => {
+    expect(trackCompletionPct(3, 1, 1)).toBe(33); // 1/3
+  });
+  it("ders ya da üye yoksa 0 (sıfıra bölme yok)", () => {
+    expect(trackCompletionPct(0, 5, 0)).toBe(0);
+    expect(trackCompletionPct(5, 0, 0)).toBe(0);
   });
 });
