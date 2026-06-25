@@ -7,11 +7,11 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 
 > **ÖNEMLİ — bekleyen migration'lar (Supabase SQL editöründe sırayla uygula):**
 > `0020_user_badges`, `0021_guard_profile_role`, `0022_quiz_attempts_server_only`,
-> `0023_submission_comments`.
+> `0023_submission_comments`, `0024_announcements`.
 > **0021 ve 0022 GÜVENLİK düzeltmesidir** (sırasıyla: üyenin kendini admin yapması;
-> üyenin quiz puanını şişirmesi) — en kısa sürede uygula. `0023` görev yorum dizisi
-> özelliğini açar. Uygulanana kadar uygulama çalışır ama ilgili koruma/özellik devrede
-> olmaz. Ayrıntı: aşağıdaki migration tablosu.
+> üyenin quiz puanını şişirmesi) — en kısa sürede uygula. `0023` görev yorum dizisini,
+> `0024` duyurular özelliğini açar. Uygulanana kadar uygulama çalışır ama ilgili
+> koruma/özellik devrede olmaz. Ayrıntı: aşağıdaki migration tablosu.
 
 ## Teknoloji
 
@@ -31,8 +31,9 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + rozetler. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
 - **Rozetler (achievements):** mevcut verilerden **türetilen** 15 rozet (ders/görev/yetkinlik/puan = herkese açık; seri/quiz = yalnız kendi profili). Migration yok; saf fonksiyon (`lib/badges`). `/profil` (tam + sıradaki ipucu), `/panom` (vitrin), `/uye/[id]` (public alt küme).
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir. **Yorum dizisi:** her gönderimde kaptan ↔ üye karşılıklı konuşma (revize iste → üye düzeltir); yeni yoruma in-app bildirim. (`0023`)
-- **Bildirimler:** görev onay/red → üyeye in-app bildirim; Nav'da okunmamış sayacı.
-- **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/silme), görev tanımı CRUD, onay kuyruğu.
+- **Duyurular (`/duyurular`):** kaptanlar üyelere toplu duyuru yapar (toplantı, deadline, yeni içerik); panomda son 3 kartı + yeni duyuruda tüm üyelere in-app bildirim. (`0024`)
+- **Bildirimler:** görev onay/red + yeni yorum + yeni duyuru → üyeye in-app bildirim; Nav'da okunmamış sayacı.
+- **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/silme), görev tanımı CRUD, onay kuyruğu, duyuru CRUD.
 
 **Puan formülü:** `tamamlanan ders × 20 + Σ(quiz en iyi %) + Σ(onaylı görev puanı)`.
 **Streak:** ders/quiz aktivitesi olan peş peşe günler (Türkiye saati, 1 gün tolerans).
@@ -96,6 +97,7 @@ uygulanmalı:
 | 0021 | guard_profile_role | **GÜVENLİK:** üyenin kendini admin yapmasını engelleyen BEFORE UPDATE trigger (role değişimi yalnız admin/service_role/postgres). **ÖNEMLİ: en kısa sürede uygula.** |
 | 0022 | quiz_attempts_server_only | **GÜVENLİK:** üye doğrudan REST'e `{quiz_id,puan:100}` atıp liderlik puanı şişiremesin diye `quiz_attempts` INSERT'i authenticated'tan alınır; puanlama yalnız service_role. `my_uid()` RPC (getUser'sız doğrulanmış user_id). Kod 0022 öncesi/sonrası uyumlu; **en kısa sürede uygula.** |
 | 0023 | submission_comments | görev gönderimi yorum dizisi (kaptan ↔ üye); değiştirilemez yorumlar + RLS (kendi gönderimi ya da admin). Uygulanana kadar thread boş görünür, yorum gönderimi hata verir (graceful). |
+| 0024 | announcements | duyurular; okuma herkese, yazma admin (`is_admin()`); `author_id default auth.uid()`. Uygulanana kadar duyuru listesi boş, oluşturma hata verir (graceful). |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen

@@ -10,3 +10,8 @@ export function submissionCommentMessage(baslik: string, fromAdmin: boolean): st
     ? `"${baslik}" görevine kaptan yorum yaptı.`
     : `"${baslik}" görevine üye yanıt yazdı.`;
 }
+
+// Yeni duyuru yayınlandığında tüm üyelere giden bildirim.
+export function announcementNotifyMessage(baslik: string): string {
+  return `Yeni duyuru: "${baslik}"`;
+}

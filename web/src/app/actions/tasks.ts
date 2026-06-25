@@ -234,7 +234,10 @@ export async function addSubmissionComment(
         if (target) {
           // Hedef üye ise kendi görev sayfasına, kaptan ise onay kuyruğuna yönlendir.
           const link = target === s.user_id ? `/mufredat/gorevler/${pt.module_id}` : "/admin/onaylar";
-          await supabase.from("notifications").insert({
+          // notifications INSERT politikası is_admin() ister; üye→kaptan bildirimi için
+          // service_role ile ekle (üye yazarken authenticated client RLS'e takılırdı).
+          const svc = createServiceClient();
+          await svc.from("notifications").insert({
             user_id: target,
             mesaj: submissionCommentMessage(pt.baslik, fromAdmin),
             link,
