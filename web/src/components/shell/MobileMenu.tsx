@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/panom", label: "Panom" },
   { href: "/liderlik", label: "Liderlik" },
   { href: "/duyurular", label: "Duyurular" },
+  { href: "/etkinlikler", label: "Etkinlikler" },
   { href: "/profil", label: "Profil" },
 ];
 
@@ -16,6 +17,7 @@ const ADMIN_LINKS = [
   { href: "/admin/uyeler", label: "Üyeler" },
   { href: "/admin/onaylar", label: "Onaylar" },
   { href: "/admin/duyurular", label: "Duyurular" },
+  { href: "/admin/etkinlikler", label: "Etkinlikler" },
   { href: "/admin/analitik", label: "Analitik" },
 ];
 

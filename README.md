@@ -7,7 +7,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 
 > **ÖNEMLİ — bekleyen migration'lar (Supabase SQL editöründe sırayla uygula):**
 > `0020_user_badges`, `0021_guard_profile_role`, `0022_quiz_attempts_server_only`,
-> `0023_submission_comments`, `0024_announcements`.
+> `0023_submission_comments`, `0024_announcements`, `0025_events`.
 > **0021 ve 0022 GÜVENLİK düzeltmesidir** (sırasıyla: üyenin kendini admin yapması;
 > üyenin quiz puanını şişirmesi) — en kısa sürede uygula. `0023` görev yorum dizisini,
 > `0024` duyurular özelliğini açar. Uygulanana kadar uygulama çalışır ama ilgili
@@ -33,6 +33,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Sertifika:** üye bir dalı tamamlayınca yazdırılabilir/PDF katılım belgesi (`/sertifika/[slug]`). **Migration yok** — tamamlama verisinden türetilir, uygunluk sunucuda doğrulanır. `/profil`'de hak edilen belgelere link.
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir. **Yorum dizisi:** her gönderimde kaptan ↔ üye karşılıklı konuşma (revize iste → üye düzeltir); yeni yoruma in-app bildirim. (`0023`)
 - **Duyurular (`/duyurular`):** kaptanlar üyelere toplu duyuru yapar (toplantı, deadline, yeni içerik); panomda son 3 kartı + yeni duyuruda tüm üyelere in-app bildirim. (`0024`)
+- **Etkinlikler / takvim (`/etkinlikler`):** toplantı/atölye/deadline; tarih-saat + yer; yaklaşan/geçmiş ayrımı; panomda yaklaşan 3 + yeni etkinlikte tüm üyelere bildirim. Admin CRUD. (`0025`)
 - **Bildirimler:** görev onay/red + yeni yorum + yeni duyuru → üyeye in-app bildirim; Nav'da okunmamış sayacı.
 - **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/silme), görev tanımı CRUD, onay kuyruğu, duyuru CRUD.
 - **Analitik (`/admin/analitik`):** KPI şeridi (üye/aktif/bekleyen onay/tamamlanan ders/ort. tamamlama), **pasif üyeler** (14+ gün — kimi dürtmeli), dal bazlı tamamlama %, üye katılımı, en az tamamlanan dersler, quiz performansı. Migration yok; saf `lib/admin/analytics`.
@@ -100,6 +101,7 @@ uygulanmalı:
 | 0022 | quiz_attempts_server_only | **GÜVENLİK:** üye doğrudan REST'e `{quiz_id,puan:100}` atıp liderlik puanı şişiremesin diye `quiz_attempts` INSERT'i authenticated'tan alınır; puanlama yalnız service_role. `my_uid()` RPC (getUser'sız doğrulanmış user_id). Kod 0022 öncesi/sonrası uyumlu; **en kısa sürede uygula.** |
 | 0023 | submission_comments | görev gönderimi yorum dizisi (kaptan ↔ üye); değiştirilemez yorumlar + RLS (kendi gönderimi ya da admin). Uygulanana kadar thread boş görünür, yorum gönderimi hata verir (graceful). |
 | 0024 | announcements | duyurular; okuma herkese, yazma admin (`is_admin()`); `author_id default auth.uid()`. Uygulanana kadar duyuru listesi boş, oluşturma hata verir (graceful). |
+| 0025 | events | etkinlikler/takvim (baslangic, yer); okuma herkese, yazma admin; `author_id default auth.uid()`. Uygulanana kadar liste boş, oluşturma hata verir (graceful). |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen

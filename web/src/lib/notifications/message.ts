@@ -15,3 +15,8 @@ export function submissionCommentMessage(baslik: string, fromAdmin: boolean): st
 export function announcementNotifyMessage(baslik: string): string {
   return `Yeni duyuru: "${baslik}"`;
 }
+
+// Yeni etkinlik eklendiğinde tüm üyelere giden bildirim.
+export function eventNotifyMessage(baslik: string): string {
+  return `Yeni etkinlik: "${baslik}"`;
+}
