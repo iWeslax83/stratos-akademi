@@ -43,6 +43,9 @@ export async function Nav({
         <Link href="/etkinlikler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
           Etkinlikler
         </Link>
+        <Link href="/kaynaklar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
+          Kaynaklar
+        </Link>
         {isAdmin && (
           <>
             <Link href="/admin/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
@@ -59,6 +62,9 @@ export async function Nav({
             </Link>
             <Link href="/admin/etkinlikler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
               Etkinlikler
+            </Link>
+            <Link href="/admin/kaynaklar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+              Kaynaklar
             </Link>
             <Link href="/admin/analitik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
               Analitik
