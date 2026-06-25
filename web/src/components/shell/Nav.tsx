@@ -2,8 +2,10 @@ import Link from "next/link";
 import { Chip } from "@/components/ui/Chip";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { MobileMenu } from "./MobileMenu";
+import { AdminMenu } from "./AdminMenu";
 import { createClient } from "@/lib/supabase/server";
 import { unreadCount } from "@/lib/notifications/queries";
+import { MEMBER_LINKS } from "@/lib/nav/links";
 
 export async function Nav({
   initial = "E",
@@ -28,49 +30,16 @@ export async function Nav({
         <span className="text-sm font-semibold text-muted">akademi</span>
       </Link>
       <div className="ml-2 hidden items-center gap-1 sm:flex">
-        <Link href="/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
-          Müfredat
-        </Link>
-        <Link href="/panom" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
-          Panom
-        </Link>
-        <Link href="/liderlik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
-          Liderlik
-        </Link>
-        <Link href="/duyurular" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
-          Duyurular
-        </Link>
-        <Link href="/etkinlikler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
-          Etkinlikler
-        </Link>
-        <Link href="/kaynaklar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
-          Kaynaklar
-        </Link>
-        {isAdmin && (
-          <>
-            <Link href="/admin/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Yönetim
-            </Link>
-            <Link href="/admin/uyeler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Üyeler
-            </Link>
-            <Link href="/admin/onaylar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Onaylar
-            </Link>
-            <Link href="/admin/duyurular" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Duyurular
-            </Link>
-            <Link href="/admin/etkinlikler" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Etkinlikler
-            </Link>
-            <Link href="/admin/kaynaklar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Kaynaklar
-            </Link>
-            <Link href="/admin/analitik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
-              Analitik
-            </Link>
-          </>
-        )}
+        {MEMBER_LINKS.map((l) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white"
+          >
+            {l.label}
+          </Link>
+        ))}
+        {isAdmin && <AdminMenu />}
       </div>
       <div className="ml-auto flex items-center gap-2.5">
         <div className="hidden items-center gap-2.5 sm:flex">
