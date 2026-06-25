@@ -21,6 +21,9 @@ import { badgeNames } from "@/lib/badges/catalog";
 import { syncBadges } from "@/app/actions/badges";
 import { getApprovedTaskCount } from "@/lib/tasks/queries";
 import { syncCompetencies } from "@/app/actions/competencies";
+import { getAnnouncements } from "@/lib/announcements/queries";
+import { announcementExcerpt } from "@/lib/announcements/format";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -31,12 +34,13 @@ export default async function PanomPage() {
   } = await supabase.auth.getUser();
 
   // Bağımsız sorgular eşzamanlı (dashboard gecikmesini azaltır).
-  const [{ data: profile }, curriculum, dash, leaderboard, onayliGorev] = await Promise.all([
+  const [{ data: profile }, curriculum, dash, leaderboard, onayliGorev, duyurular] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     getCurriculum(supabase),
     getDashboardData(supabase, user!.id),
     getLeaderboard(supabase),
     getApprovedTaskCount(supabase, user!.id),
+    getAnnouncements(supabase, 3),
   ]);
   const ad = profile?.ad ?? profile?.email ?? "üye";
   const isAdmin = profile?.role === "admin";
@@ -85,6 +89,27 @@ export default async function PanomPage() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-12">
+        {duyurular.length > 0 && (
+          <Card outerClassName="lg:col-span-12" className="p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold text-navy dark:text-white">Duyurular</h2>
+              <Link href="/duyurular" className="text-xs font-semibold text-gold hover:opacity-80">
+                Tümü →
+              </Link>
+            </div>
+            <ul className="space-y-2">
+              {duyurular.map((d) => (
+                <li key={d.id} className="border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
+                  <Link href="/duyurular" className="block">
+                    <span className="text-sm font-semibold text-navy dark:text-white">{d.baslik}</span>
+                    <span className="ml-2 text-sm text-muted">{announcementExcerpt(d.icerik, 90)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
         <Card outerClassName="h-full lg:col-span-7" className="h-full">
           <ResumeCard
             resume={resume}

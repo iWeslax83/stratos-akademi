@@ -37,6 +37,9 @@ export async function Nav({
         <Link href="/liderlik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
           Liderlik
         </Link>
+        <Link href="/duyurular" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white">
+          Duyurular
+        </Link>
         {isAdmin && (
           <>
             <Link href="/admin/mufredat" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
@@ -47,6 +50,9 @@ export async function Nav({
             </Link>
             <Link href="/admin/onaylar" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
               Onaylar
+            </Link>
+            <Link href="/admin/duyurular" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
+              Duyurular
             </Link>
             <Link href="/admin/analitik" className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80">
               Analitik
