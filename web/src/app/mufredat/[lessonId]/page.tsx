@@ -5,8 +5,10 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { LessonSection } from "@/components/curriculum/LessonSection";
 import { ModuleQuizCard } from "@/components/curriculum/ModuleQuizCard";
+import { LessonQa } from "@/components/lessons/LessonQa";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { getBestScore } from "@/lib/quiz/queries";
+import { getLessonThread } from "@/lib/lessons/queries";
 import { flatten, findNext } from "@/lib/curriculum/progress";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
@@ -36,6 +38,7 @@ export default async function LessonPage({
     .select("id", { count: "exact", head: true })
     .eq("module_id", found.module.id);
   const isAdmin = await isAdminUser(supabase, user?.id);
+  const qaThread = await getLessonThread(supabase, lessonId);
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
@@ -73,6 +76,10 @@ export default async function LessonPage({
           </span>
           <span className="text-sm font-semibold text-gold">Görevlere git →</span>
         </Link>
+      )}
+
+      {user && (
+        <LessonQa lessonId={found.lesson.id} viewerId={user.id} viewerIsAdmin={isAdmin} items={qaThread} />
       )}
     </AppShell>
   );
