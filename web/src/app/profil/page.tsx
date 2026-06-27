@@ -6,6 +6,7 @@ import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
+import { ActivityCalendar } from "@/components/dashboard/ActivityCalendar";
 import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
 import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
 import { pointsBreakdown } from "@/lib/dashboard/points";
@@ -92,6 +93,10 @@ export default async function ProfilPage() {
           <StatCard value={onayliGorev ?? 0} label="Onaylı görev" />
         </Card>
       </div>
+
+      <Card className="mt-[18px]">
+        <ActivityCalendar activityDates={activityDates} today={new Date()} />
+      </Card>
 
       <Card className="mt-[18px]">
         <CompetencyShelf
