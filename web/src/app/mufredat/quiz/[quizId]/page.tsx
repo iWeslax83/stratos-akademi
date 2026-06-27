@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { QuizRunner } from "@/components/quiz/QuizRunner";
-import { getQuiz, getBestScore } from "@/lib/quiz/queries";
+import { AttemptHistory } from "@/components/quiz/AttemptHistory";
+import { getQuiz, getBestScore, getAttemptHistory } from "@/lib/quiz/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
   if (!quiz) notFound();
 
   const best = user ? await getBestScore(supabase, user.id, quizId) : null;
+  const attempts = user ? await getAttemptHistory(supabase, user.id, quizId) : [];
   const isAdmin = await isAdminUser(supabase, user?.id);
 
   return (
@@ -30,6 +32,7 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
         </h1>
       </div>
       <QuizRunner quiz={quiz} best={best} />
+      <AttemptHistory attempts={attempts} />
     </AppShell>
   );
 }
