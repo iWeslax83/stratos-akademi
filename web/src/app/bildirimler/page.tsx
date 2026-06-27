@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MarkReadButton } from "@/components/notifications/MarkReadButton";
+import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { getNotifications } from "@/lib/notifications/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
@@ -39,27 +39,9 @@ export default async function BildirimlerPage() {
         {list.length === 0 ? (
           <p className="text-sm text-muted">Bildirimin yok.</p>
         ) : (
-          list.map((n) => {
-            const inner = (
-              <div
-                className={`flex items-start gap-3 border-b border-[var(--line)] py-3 last:border-b-0 ${
-                  !n.okundu ? "font-semibold" : ""
-                }`}
-              >
-                {!n.okundu && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold" />}
-                <span className={`flex-1 text-sm ${n.okundu ? "text-muted" : "text-navy dark:text-white"}`}>
-                  {n.mesaj}
-                </span>
-              </div>
-            );
-            return n.link ? (
-              <Link key={n.id} href={n.link} className="block">
-                {inner}
-              </Link>
-            ) : (
-              <div key={n.id}>{inner}</div>
-            );
-          })
+          list.map((n) => (
+            <NotificationItem key={n.id} id={n.id} mesaj={n.mesaj} link={n.link} okundu={n.okundu} />
+          ))
         )}
       </Card>
     </AppShell>
