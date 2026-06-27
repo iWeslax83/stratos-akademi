@@ -15,6 +15,8 @@ import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
 import { Toast } from "@/components/dashboard/Toast";
+import { OnboardingCard } from "@/components/dashboard/OnboardingCard";
+import { isNewMember, welcomeHeading } from "@/lib/dashboard/onboarding";
 import { badgeProgress, nextBadge, computeBadges } from "@/lib/badges/compute";
 import { badgeStatsFromDashboard } from "@/lib/badges/stats";
 import { badgeNames } from "@/lib/badges/catalog";
@@ -83,16 +85,23 @@ export default async function PanomPage() {
   const modProg = resume ? moduleProgress(resume.module, completedIds) : null;
   const kalanDk = modProg ? Math.ceil(modProg.kalanSure_sn / 60) : 0;
   const allDone = curriculum.length > 0 && resume === null;
+  const isNew = isNewMember({
+    completed: completedIds.size,
+    activity: activityDates.length,
+    approvedTasks: onayliGorev ?? 0,
+  });
 
   return (
     <AppShell initial={initial} streak={stats.streak} points={stats.points} isAdmin={isAdmin}>
       <div className="mb-5">
         <Eyebrow>Panom</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
-          Tekrar hoş geldin, {ad}
+          {welcomeHeading(ad, isNew)}
         </h1>
         <p className="mt-1.5 text-muted">
-          Toplam ilerleme: {stats.overall.done}/{stats.overall.total} ders · %{stats.overall.pct}
+          {isNew
+            ? "İlk dersinle başla; ilerlemen, rozetlerin ve sıralaman burada görünecek."
+            : `Toplam ilerleme: ${stats.overall.done}/${stats.overall.total} ders · %${stats.overall.pct}`}
         </p>
       </div>
 
@@ -138,42 +147,53 @@ export default async function PanomPage() {
           </Card>
         )}
 
-        <Card outerClassName="h-full lg:col-span-7" className="h-full">
-          <ResumeCard
-            resume={resume}
-            modulePct={modProg?.pct ?? 0}
-            kalanDk={kalanDk}
-            allDone={allDone}
-          />
-        </Card>
-
-        <div className="grid grid-cols-2 gap-[18px] lg:col-span-5">
-          <Card outerClassName="h-full" className="h-full">
-            <StatRing pct={stats.overall.pct} label="Toplam ilerleme" />
-          </Card>
-          <Card outerClassName="h-full" className="h-full">
-            <StatCard value={stats.streak} label="Günlük seri (gün)" />
-          </Card>
-          <Card outerClassName="col-span-2">
-            <CompetencyShelf
-              tracks={stats.perTrack.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon }))}
-              earned={stats.earnedCompetencies}
-              rank={myRank}
+        {isNew ? (
+          <Card outerClassName="lg:col-span-12">
+            <OnboardingCard
+              firstLessonId={resume?.lesson.id ?? null}
+              firstLessonTitle={resume?.lesson.baslik ?? null}
             />
           </Card>
-        </div>
+        ) : (
+          <>
+            <Card outerClassName="h-full lg:col-span-7" className="h-full">
+              <ResumeCard
+                resume={resume}
+                modulePct={modProg?.pct ?? 0}
+                kalanDk={kalanDk}
+                allDone={allDone}
+              />
+            </Card>
 
-        <Card outerClassName="lg:col-span-7">
-          <TrackList tracks={stats.perTrack} />
-        </Card>
+            <div className="grid grid-cols-2 gap-[18px] lg:col-span-5">
+              <Card outerClassName="h-full" className="h-full">
+                <StatRing pct={stats.overall.pct} label="Toplam ilerleme" />
+              </Card>
+              <Card outerClassName="h-full" className="h-full">
+                <StatCard value={stats.streak} label="Günlük seri (gün)" />
+              </Card>
+              <Card outerClassName="col-span-2">
+                <CompetencyShelf
+                  tracks={stats.perTrack.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon }))}
+                  earned={stats.earnedCompetencies}
+                  rank={myRank}
+                />
+              </Card>
+            </div>
 
-        <Card outerClassName="lg:col-span-5">
-          <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
-        </Card>
+            <Card outerClassName="lg:col-span-7">
+              <TrackList tracks={stats.perTrack} />
+            </Card>
 
-        <Card outerClassName="lg:col-span-12">
-          <BadgeShelf items={badgeItems} next={nextRozet} />
-        </Card>
+            <Card outerClassName="lg:col-span-5">
+              <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
+            </Card>
+
+            <Card outerClassName="lg:col-span-12">
+              <BadgeShelf items={badgeItems} next={nextRozet} />
+            </Card>
+          </>
+        )}
       </div>
       <Toast baslik="Yeni yetkinlik" adlar={yeniAdlar} />
       <Toast baslik={yeniRozetAdlar.length > 1 ? "Yeni rozetler" : "Yeni rozet"} adlar={yeniRozetAdlar} />
