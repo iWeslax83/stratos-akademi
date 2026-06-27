@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Quiz, QuizOption } from "./types";
 import { groupOptionsByQuestion } from "./group";
+import type { AttemptRow } from "./history";
 
 export async function getQuiz(supabase: SupabaseClient, quizId: string): Promise<Quiz | null> {
   const { data: quiz } = await supabase
@@ -47,4 +48,19 @@ export async function getBestScore(
     .limit(1)
     .maybeSingle();
   return (data as { puan: number; gecti: boolean } | null) ?? null;
+}
+
+// Üyenin bu quizdeki tüm denemeleri (en yeniden eskiye). RLS: yalnız kendi satırları.
+export async function getAttemptHistory(
+  supabase: SupabaseClient,
+  userId: string,
+  quizId: string,
+): Promise<AttemptRow[]> {
+  const { data } = await supabase
+    .from("quiz_attempts")
+    .select("puan,gecti,created_at")
+    .eq("user_id", userId)
+    .eq("quiz_id", quizId)
+    .order("created_at", { ascending: false });
+  return (data as AttemptRow[] | null) ?? [];
 }

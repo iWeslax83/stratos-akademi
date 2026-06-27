@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/Button";
@@ -26,6 +27,7 @@ export function QuizRunner({
   // Soru/şık sırasını her denemede karıştır (cevap paylaşımını zorlaştırır; puanlama ID bazlı, etkilenmez).
   const [seed, setSeed] = useState(newSeed);
   const shown = useMemo(() => shuffleQuiz(quiz, seed), [quiz, seed]);
+  const router = useRouter();
 
   function toggle(qid: string, oid: string) {
     setSelected((prev) => {
@@ -42,8 +44,10 @@ export function QuizRunner({
     setError(null);
     startTransition(async () => {
       const res = await submitQuiz(quiz.id, answers);
-      if (res.ok && res.result) setResult(res.result);
-      else setError(res.error ?? "Quiz gönderilemedi, tekrar dene.");
+      if (res.ok && res.result) {
+        setResult(res.result);
+        router.refresh(); // deneme geçmişi + en iyi puanı (server) tazele
+      } else setError(res.error ?? "Quiz gönderilemedi, tekrar dene.");
     });
   }
 

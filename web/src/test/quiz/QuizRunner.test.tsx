@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { QuizRunner } from "@/components/quiz/QuizRunner";
 import type { Quiz } from "@/lib/quiz/types";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }),
+}));
+
 vi.mock("@/app/actions/quiz", () => ({
   submitQuiz: vi.fn(async () => ({
     ok: true,
