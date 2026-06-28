@@ -75,7 +75,7 @@ function Stat({
         {hint && (
           <span
             className={
-              hintUp ? "text-xs font-semibold text-gold" : "text-xs font-semibold text-red-600"
+              hintUp ? "text-xs font-semibold text-gold-ink dark:text-gold" : "text-xs font-semibold text-red-600"
             }
           >
             {hint}

@@ -26,7 +26,7 @@ export async function Nav({
         href="/panom"
         className="flex items-center gap-2 font-display text-base font-extrabold text-navy dark:text-white"
       >
-        <span className="text-gold">◆</span> STRATOS
+        <span className="text-gold-ink dark:text-gold">◆</span> STRATOS
         <span className="text-sm font-semibold text-muted">akademi</span>
       </Link>
       <div className="ml-2 hidden items-center gap-1 sm:flex">

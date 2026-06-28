@@ -21,7 +21,7 @@ export function DisplayNameEditor({ userId, current }: { userId: string; current
           setError(null);
           setEditing(true);
         }}
-        className="text-xs font-semibold text-gold hover:underline"
+        className="text-xs font-semibold text-gold-ink dark:text-gold hover:underline"
       >
         Adı düzenle
       </button>

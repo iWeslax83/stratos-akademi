@@ -17,7 +17,7 @@ export function StatCard({
       <div
         className={clsx(
           "font-display text-3xl font-extrabold leading-none",
-          gold ? "text-gold" : "text-navy dark:text-white",
+          gold ? "text-gold-ink dark:text-gold" : "text-navy dark:text-white",
         )}
       >
         {value}

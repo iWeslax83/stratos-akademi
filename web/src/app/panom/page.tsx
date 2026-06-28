@@ -110,7 +110,7 @@ export default async function PanomPage() {
           <Card outerClassName="lg:col-span-12" className="p-6">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-lg font-bold text-navy dark:text-white">Duyurular</h2>
-              <Link href="/duyurular" className="text-xs font-semibold text-gold hover:opacity-80">
+              <Link href="/duyurular" className="text-xs font-semibold text-gold-ink dark:text-gold hover:opacity-80">
                 Tümü →
               </Link>
             </div>
@@ -131,14 +131,14 @@ export default async function PanomPage() {
           <Card outerClassName="lg:col-span-12" className="p-6">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-lg font-bold text-navy dark:text-white">Yaklaşan etkinlikler</h2>
-              <Link href="/etkinlikler" className="text-xs font-semibold text-gold hover:opacity-80">
+              <Link href="/etkinlikler" className="text-xs font-semibold text-gold-ink dark:text-gold hover:opacity-80">
                 Tümü →
               </Link>
             </div>
             <ul className="space-y-2">
               {etkinlikler.map((e) => (
                 <li key={e.id} className="flex items-baseline gap-3 border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
-                  <span className="shrink-0 text-xs font-bold text-gold">{etkinlikTarih(e.baslangic)}</span>
+                  <span className="shrink-0 text-xs font-bold text-gold-ink dark:text-gold">{etkinlikTarih(e.baslangic)}</span>
                   <span className="text-sm font-semibold text-navy dark:text-white">{e.baslik}</span>
                   {e.yer && <span className="text-xs text-muted">· {e.yer}</span>}
                 </li>

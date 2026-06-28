@@ -96,7 +96,7 @@ export function EventItem({
       <div className="flex items-start gap-3">
         <div className={gecmis ? "flex-1 opacity-60" : "flex-1"}>
           <div className="font-display font-bold text-navy dark:text-white">{baslik}</div>
-          <div className="text-xs font-semibold text-gold">
+          <div className="text-xs font-semibold text-gold-ink dark:text-gold">
             {formatDateTime(baslangic)}
             {yer && <span className="text-muted"> · {yer}</span>}
           </div>

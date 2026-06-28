@@ -74,7 +74,7 @@ export default async function LessonPage({
           <span className="font-display font-bold text-navy dark:text-white">
             Pratik Görevler ({gorevSayisi})
           </span>
-          <span className="text-sm font-semibold text-gold">Görevlere git →</span>
+          <span className="text-sm font-semibold text-gold-ink dark:text-gold">Görevlere git →</span>
         </Link>
       )}
 
