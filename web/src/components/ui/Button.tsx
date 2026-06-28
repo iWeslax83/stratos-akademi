@@ -7,11 +7,11 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({ children, variant = "primary", icon, className, ...rest }: Props) {
   const base =
-    "inline-flex items-center gap-2.5 font-display font-semibold text-sm rounded-full transition-transform duration-300 active:scale-[0.98] cursor-pointer";
+    "inline-flex items-center gap-2.5 font-display font-semibold text-sm rounded-full transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer";
   const pad = icon ? "pl-5 pr-3 py-3" : "px-5 py-3";
   const variants = {
-    primary: "bg-navy text-white",
-    gold: "bg-gold text-navy",
+    primary: "bg-navy text-white shadow-soft hover:shadow-soft-hover",
+    gold: "bg-gold text-navy shadow-soft hover:shadow-soft-hover",
     ghost: "bg-black/[0.06] text-navy dark:bg-white/10 dark:text-white",
   } as const;
 
