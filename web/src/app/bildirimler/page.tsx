@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MarkReadButton } from "@/components/notifications/MarkReadButton";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
+import { Reveal } from "@/components/ui/Reveal";
 import { getNotifications } from "@/lib/notifications/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
@@ -27,13 +28,13 @@ export default async function BildirimlerPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <div className="mb-5 flex items-end justify-between gap-3">
+      <Reveal as="div" className="mb-5 flex items-end justify-between gap-3">
         <div>
           <Eyebrow>Bildirimler</Eyebrow>
           <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Bildirimler</h1>
         </div>
         {unread > 0 && <MarkReadButton />}
-      </div>
+      </Reveal>
 
       <Card className="p-6">
         {list.length === 0 ? (

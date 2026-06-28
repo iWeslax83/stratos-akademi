@@ -3,6 +3,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CurriculumBrowser } from "@/components/curriculum/CurriculumBrowser";
+import { Reveal } from "@/components/ui/Reveal";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { computeStatuses, overallProgress } from "@/lib/curriculum/progress";
 import { isAdminUser } from "@/lib/auth/is-admin";
@@ -23,7 +24,7 @@ export default async function MufredatPage() {
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
-      <div className="mb-4">
+      <Reveal as="div" className="mb-4">
         <Eyebrow>Müfredat</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           Öğrenme yolun
@@ -31,14 +32,16 @@ export default async function MufredatPage() {
         <p className="mt-1.5 text-muted">
           {progress.done}/{progress.total} ders tamamlandı · %{progress.pct}
         </p>
-      </div>
-      <Card className="p-5">
-        {curriculum.length === 0 ? (
-          <p className="text-sm text-muted">Henüz içerik eklenmedi.</p>
-        ) : (
-          <CurriculumBrowser curriculum={curriculum} statuses={Object.fromEntries(statuses)} />
-        )}
-      </Card>
+      </Reveal>
+      <Reveal as="div" delay={80}>
+        <Card className="p-5">
+          {curriculum.length === 0 ? (
+            <p className="text-sm text-muted">Henüz içerik eklenmedi.</p>
+          ) : (
+            <CurriculumBrowser curriculum={curriculum} statuses={Object.fromEntries(statuses)} />
+          )}
+        </Card>
+      </Reveal>
     </AppShell>
   );
 }
