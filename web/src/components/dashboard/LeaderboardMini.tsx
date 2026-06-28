@@ -24,7 +24,7 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <Link href={`/uye/${row.userId}`} className="flex-1 text-[13.5px] font-bold text-navy hover:text-gold dark:text-white">
         {row.gorunenAd}
       </Link>
-      <span className="font-display text-[13px] font-bold text-[#8a6d12] dark:text-[#ffd54a]">
+      <span className="font-display text-[13px] font-bold text-[#6f560a] dark:text-[#ffd54a]">
         {row.puan}
       </span>
     </div>

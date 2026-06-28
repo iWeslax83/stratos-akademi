@@ -42,7 +42,7 @@ export function AttemptHistory({ attempts }: { attempts: AttemptRow[] }) {
               <span
                 className={
                   a.gecti
-                    ? "rounded-full bg-gold-soft px-2 py-0.5 text-[11px] font-bold text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
+                    ? "rounded-full bg-gold-soft px-2 py-0.5 text-[11px] font-bold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
                     : "rounded-full bg-black/[0.06] px-2 py-0.5 text-[11px] font-bold text-[#46526b] dark:bg-white/[0.08] dark:text-[#9fb0c9]"
                 }
               >

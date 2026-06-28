@@ -168,7 +168,7 @@ export default async function AnalitikPage() {
             {pasifler.map((u, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
               >
                 {u.ad} · {u.gun === null ? "hiç" : `${u.gun} gün`}
               </span>

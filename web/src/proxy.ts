@@ -46,5 +46,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp)$).*)"],
+  // Genel/statik dosyalar proxy dışı: oturum çerezi olmayan istemciler (tarayıcı manifest
+  // isteği, PWA service worker, arama motoru robotu) /login'e yönlendirilmemeli.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|robots.txt|.*\\.(?:svg|png|jpg|jpeg|webp|ico)$).*)",
+  ],
 };

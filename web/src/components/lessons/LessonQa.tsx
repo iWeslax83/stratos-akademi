@@ -65,7 +65,7 @@ export function LessonQa({
               <div className="mb-0.5 flex items-center gap-2 text-xs">
                 <span className="font-semibold">{c.authorAd}</span>
                 {c.authorIsAdmin && (
-                  <span className="rounded-full bg-gold-soft px-2 py-0.5 text-[10px] font-bold text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]">
+                  <span className="rounded-full bg-gold-soft px-2 py-0.5 text-[10px] font-bold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]">
                     Kaptan
                   </span>
                 )}
