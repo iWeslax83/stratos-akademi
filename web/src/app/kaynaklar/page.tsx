@@ -23,7 +23,7 @@ export default async function KaynaklarPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Reveal as="div">
+      <Reveal>
         <Eyebrow>Kaynaklar</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Kaynak kütüphanesi</h1>
         <p className="mt-1.5 text-muted">Datasheet, CAD, BOM, repo ve faydalı bağlantılar.</p>

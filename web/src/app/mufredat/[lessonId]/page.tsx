@@ -43,7 +43,7 @@ export default async function LessonPage({
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
-      <Reveal as="div" className="mb-4">
+      <Reveal className="mb-4">
         <Eyebrow>
           {found.track.ad} · {found.module.ad}
         </Eyebrow>

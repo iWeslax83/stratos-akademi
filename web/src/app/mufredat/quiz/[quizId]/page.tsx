@@ -26,7 +26,7 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
-      <Reveal as="div" className="mb-5">
+      <Reveal className="mb-5">
         <Eyebrow>Modül Quizi</Eyebrow>
         <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
           {quiz.baslik}

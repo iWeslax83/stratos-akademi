@@ -57,7 +57,7 @@ export default async function ProfilPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin} streak={stats.streak} points={stats.points}>
-      <Reveal as="div">
+      <Reveal>
         <Eyebrow>Profil</Eyebrow>
         <div className="mb-6 mt-3 flex items-center gap-4">
           <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white shadow-soft dark:bg-gold dark:text-navy">
@@ -76,7 +76,7 @@ export default async function ProfilPage() {
         </div>
       </Reveal>
 
-      <Reveal as="div" delay={80} className="grid grid-cols-2 gap-[18px] sm:grid-cols-4">
+      <Reveal delay={80} className="grid grid-cols-2 gap-[18px] sm:grid-cols-4">
         <Card>
           <StatRing pct={stats.overall.pct} label="İlerleme" />
         </Card>
