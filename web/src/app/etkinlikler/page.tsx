@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/ui/Reveal";
 import { getEvents } from "@/lib/events/queries";
 import { partitionEvents, type EventLite } from "@/lib/events/format";
 import { isAdminUser } from "@/lib/auth/is-admin";
@@ -52,8 +53,10 @@ export default async function EtkinliklerPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Eyebrow>Etkinlikler</Eyebrow>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Etkinlikler</h1>
+      <Reveal as="div">
+        <Eyebrow>Etkinlikler</Eyebrow>
+        <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Etkinlikler</h1>
+      </Reveal>
 
       {upcoming.length === 0 && past.length === 0 ? (
         <Card className="mt-5 p-6">

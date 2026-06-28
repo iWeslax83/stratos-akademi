@@ -6,6 +6,7 @@ import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { ActivityCalendar } from "@/components/dashboard/ActivityCalendar";
+import { Reveal } from "@/components/ui/Reveal";
 import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
 import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
 import { pointsBreakdown } from "@/lib/dashboard/points";
@@ -56,37 +57,39 @@ export default async function ProfilPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin} streak={stats.streak} points={stats.points}>
-      <Eyebrow>Profil</Eyebrow>
-      <div className="mb-6 mt-3 flex items-center gap-4">
-        <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white dark:bg-gold dark:text-navy">
-          {initial}
-        </span>
-        <div>
-          <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{ad}</h1>
-          <p className="text-sm text-muted">
-            {profile?.email}
-            {isAdmin && " · Kaptan"}
-          </p>
-          <div className="mt-1.5">
-            <DisplayNameEditor userId={user!.id} current={profile?.ad ?? ""} />
+      <Reveal as="div">
+        <Eyebrow>Profil</Eyebrow>
+        <div className="mb-6 mt-3 flex items-center gap-4">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white shadow-soft dark:bg-gold dark:text-navy">
+            {initial}
+          </span>
+          <div>
+            <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{ad}</h1>
+            <p className="text-sm text-muted">
+              {profile?.email}
+              {isAdmin && " · Kaptan"}
+            </p>
+            <div className="mt-1.5">
+              <DisplayNameEditor userId={user!.id} current={profile?.ad ?? ""} />
+            </div>
           </div>
         </div>
-      </div>
+      </Reveal>
 
-      <div className="grid grid-cols-2 gap-[18px] sm:grid-cols-4">
+      <Reveal as="div" delay={80} className="grid grid-cols-2 gap-[18px] sm:grid-cols-4">
         <Card>
           <StatRing pct={stats.overall.pct} label="İlerleme" />
         </Card>
         <Card>
-          <StatCard value={stats.points} label="Puan" gold />
+          <StatCard countTo={stats.points} label="Puan" gold />
         </Card>
         <Card>
-          <StatCard value={stats.streak} label="Günlük seri" />
+          <StatCard countTo={stats.streak} label="Günlük seri" />
         </Card>
         <Card>
-          <StatCard value={onayliGorev ?? 0} label="Onaylı görev" />
+          <StatCard countTo={onayliGorev ?? 0} label="Onaylı görev" />
         </Card>
-      </div>
+      </Reveal>
 
       <Card className="mt-[18px]">
         <ActivityCalendar activityDates={activityDates} today={new Date()} />

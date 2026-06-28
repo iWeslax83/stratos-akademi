@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/ui/Reveal";
 import { getLeaderboard, getLeaderboardRanged } from "@/lib/dashboard/leaderboard";
 import { parseAralik, rangeStartISO, aralikLabel, type Aralik } from "@/lib/dashboard/range";
 
@@ -41,13 +42,13 @@ export default async function LiderlikPage({
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <div className="mb-5">
+      <Reveal as="div" className="mb-5">
         <Eyebrow>Liderlik</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           Sıralama Tablosu
         </h1>
         <p className="mt-1.5 text-muted">{aralikLabel(aralik)} · ders, quiz ve onaylı görev puanı.</p>
-      </div>
+      </Reveal>
 
       <div className="mb-4 flex gap-2">
         {SEKMELER.map((s) => (
@@ -66,6 +67,7 @@ export default async function LiderlikPage({
         ))}
       </div>
 
+      <Reveal as="div" delay={80}>
       <Card className="p-6">
         {rows.length === 0 ? (
           <p className="text-sm text-muted">Bu aralıkta sıralama yok.</p>
@@ -103,6 +105,7 @@ export default async function LiderlikPage({
           ))
         )}
       </Card>
+      </Reveal>
     </AppShell>
   );
 }

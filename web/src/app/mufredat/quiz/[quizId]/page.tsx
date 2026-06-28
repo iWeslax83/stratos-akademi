@@ -4,6 +4,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { QuizRunner } from "@/components/quiz/QuizRunner";
 import { AttemptHistory } from "@/components/quiz/AttemptHistory";
+import { Reveal } from "@/components/ui/Reveal";
 import { getQuiz, getBestScore, getAttemptHistory } from "@/lib/quiz/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
@@ -25,12 +26,12 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
-      <div className="mb-5">
+      <Reveal as="div" className="mb-5">
         <Eyebrow>Modül Quizi</Eyebrow>
         <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
           {quiz.baslik}
         </h1>
-      </div>
+      </Reveal>
       <QuizRunner quiz={quiz} best={best} />
       <AttemptHistory attempts={attempts} />
     </AppShell>
