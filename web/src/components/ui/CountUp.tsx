@@ -3,24 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { countValue } from "@/lib/ui/countup";
 
+const DURATION_MS = 900;
+
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-// Sayıyı 0'dan value'ya yumuşakça sayar (ilk görünürlükte). prefix/suffix ör. "%", " puan".
-export function CountUp({
-  value,
-  duration = 900,
-  prefix = "",
-  suffix = "",
-  className,
-}: {
-  value: number;
-  duration?: number;
-  prefix?: string;
-  suffix?: string;
-  className?: string;
-}) {
+// Sayıyı 0'dan value'ya yumuşakça sayar (ilk görünürlükte). prefix ör. "%".
+export function CountUp({ value, prefix = "" }: { value: number; prefix?: string }) {
   const [shown, setShown] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
 
@@ -38,7 +28,7 @@ export function CountUp({
 
     const step = (ts: number) => {
       if (!start) start = ts;
-      const p = (ts - start) / duration;
+      const p = (ts - start) / DURATION_MS;
       setShown(countValue(value, p));
       if (p < 1) raf = requestAnimationFrame(step);
     };
@@ -60,13 +50,12 @@ export function CountUp({
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [value, duration]);
+  }, [value]);
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref}>
       {prefix}
       {shown}
-      {suffix}
     </span>
   );
 }

@@ -42,7 +42,7 @@ export default async function LiderlikPage({
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Reveal as="div" className="mb-5">
+      <Reveal className="mb-5">
         <Eyebrow>Liderlik</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           Sıralama Tablosu
@@ -67,7 +67,7 @@ export default async function LiderlikPage({
         ))}
       </div>
 
-      <Reveal as="div" delay={80}>
+      <Reveal delay={80}>
       <Card className="p-6">
         {rows.length === 0 ? (
           <p className="text-sm text-muted">Bu aralıkta sıralama yok.</p>

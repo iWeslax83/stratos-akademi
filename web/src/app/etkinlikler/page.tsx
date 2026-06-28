@@ -53,7 +53,7 @@ export default async function EtkinliklerPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Reveal as="div">
+      <Reveal>
         <Eyebrow>Etkinlikler</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Etkinlikler</h1>
       </Reveal>

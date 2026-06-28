@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ElementType } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 
 // İçeriği görünür olunca yumuşakça fade-up ile getirir (IntersectionObserver).
@@ -9,23 +9,16 @@ export function Reveal({
   children,
   className,
   delay = 0,
-  as = "div",
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number; // ms — sıralı (stagger) giriş için
-  as?: "div" | "section" | "li";
 }) {
-  const Tag = as as ElementType;
-  const elRef = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  const setRef = useCallback((node: HTMLElement | null) => {
-    elRef.current = node;
-  }, []);
-
   useEffect(() => {
-    const el = elRef.current;
+    const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
       (entries) => {
@@ -43,12 +36,12 @@ export function Reveal({
   }, []);
 
   return (
-    <Tag
-      ref={setRef}
+    <div
+      ref={ref}
       className={clsx("reveal", visible && "is-visible", className)}
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
     >
       {children}
-    </Tag>
+    </div>
   );
 }

@@ -28,7 +28,7 @@ export default async function BildirimlerPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Reveal as="div" className="mb-5 flex items-end justify-between gap-3">
+      <Reveal className="mb-5 flex items-end justify-between gap-3">
         <div>
           <Eyebrow>Bildirimler</Eyebrow>
           <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Bildirimler</h1>

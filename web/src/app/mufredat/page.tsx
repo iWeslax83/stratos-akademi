@@ -24,7 +24,7 @@ export default async function MufredatPage() {
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
-      <Reveal as="div" className="mb-4">
+      <Reveal className="mb-4">
         <Eyebrow>Müfredat</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           Öğrenme yolun
@@ -33,7 +33,7 @@ export default async function MufredatPage() {
           {progress.done}/{progress.total} ders tamamlandı · %{progress.pct}
         </p>
       </Reveal>
-      <Reveal as="div" delay={80}>
+      <Reveal delay={80}>
         <Card className="p-5">
           {curriculum.length === 0 ? (
             <p className="text-sm text-muted">Henüz içerik eklenmedi.</p>
