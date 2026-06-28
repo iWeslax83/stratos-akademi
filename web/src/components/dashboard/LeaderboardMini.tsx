@@ -13,7 +13,7 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <span
         className={clsx(
           "w-6 text-center font-display text-sm font-extrabold",
-          row.sira <= 3 ? "text-gold" : "text-muted",
+          row.sira <= 3 ? "text-gold-ink dark:text-gold" : "text-muted",
         )}
       >
         {row.sira}
@@ -21,7 +21,7 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
         {row.gorunenAd.charAt(0)}
       </span>
-      <Link href={`/uye/${row.userId}`} className="flex-1 text-[13.5px] font-bold text-navy hover:text-gold dark:text-white">
+      <Link href={`/uye/${row.userId}`} className="flex-1 text-[13.5px] font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white">
         {row.gorunenAd}
       </Link>
       <span className="font-display text-[13px] font-bold text-[#6f560a] dark:text-[#ffd54a]">

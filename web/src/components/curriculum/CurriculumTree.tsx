@@ -22,7 +22,7 @@ export function CurriculumTree({
     <nav className="space-y-5">
       {curriculum.map((track) => (
         <div key={track.id}>
-          <div className="mb-2 flex items-center gap-2 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
+          <div className="mb-2 flex items-center gap-2 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-gold-ink dark:text-gold">
             <span>{track.ikon}</span>
             <span>{track.ad}</span>
           </div>
@@ -51,7 +51,7 @@ export function CurriculumTree({
                           className={clsx(
                             "grid h-4 w-4 flex-none place-items-center text-[10px]",
                             status === "done" && "text-green-600",
-                            status === "current" && "text-gold",
+                            status === "current" && "text-gold-ink dark:text-gold",
                           )}
                         >
                           <span aria-hidden="true">{ICON[status]}</span>

@@ -82,7 +82,7 @@ export function SubmissionForm({
           href={dosyaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mb-2 inline-block text-sm font-semibold text-gold underline"
+          className="mb-2 inline-block text-sm font-semibold text-gold-ink dark:text-gold underline"
         >
           Yüklenen dosya →
         </a>

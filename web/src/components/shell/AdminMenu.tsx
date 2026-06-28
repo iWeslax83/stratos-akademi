@@ -14,7 +14,7 @@ export function AdminMenu() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold hover:opacity-80"
+        className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-gold-ink dark:text-gold hover:opacity-80"
       >
         Yönetim <span className="text-[10px]">▾</span>
       </button>
@@ -33,7 +33,7 @@ export function AdminMenu() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="block rounded-lg px-3 py-2 text-sm font-semibold text-gold hover:bg-black/5 dark:hover:bg-white/10"
+                className="block rounded-lg px-3 py-2 text-sm font-semibold text-gold-ink dark:text-gold hover:bg-black/5 dark:hover:bg-white/10"
               >
                 {l.label}
               </Link>

@@ -81,7 +81,7 @@ export default async function LiderlikPage({
               <span
                 className={clsx(
                   "w-7 text-center font-display text-sm font-extrabold",
-                  r.sira <= 3 ? "text-gold" : "text-muted",
+                  r.sira <= 3 ? "text-gold-ink dark:text-gold" : "text-muted",
                 )}
               >
                 {r.sira}
@@ -91,7 +91,7 @@ export default async function LiderlikPage({
               </span>
               <Link
                 href={`/uye/${r.userId}`}
-                className="flex-1 text-sm font-bold text-navy hover:text-gold dark:text-white"
+                className="flex-1 text-sm font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white"
               >
                 {r.gorunenAd}
                 {r.userId === user!.id && " (sen)"}

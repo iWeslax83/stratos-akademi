@@ -60,7 +60,7 @@ export function MobileMenu({ isAdmin, unread }: { isAdmin: boolean; unread: numb
                     key={l.href}
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm font-semibold text-gold hover:bg-black/5 dark:hover:bg-white/10"
+                    className="block rounded-lg px-3 py-2 text-sm font-semibold text-gold-ink dark:text-gold hover:bg-black/5 dark:hover:bg-white/10"
                   >
                     {l.label}
                   </Link>

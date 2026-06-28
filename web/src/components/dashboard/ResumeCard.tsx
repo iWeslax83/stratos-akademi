@@ -39,7 +39,7 @@ export function ResumeCard({
         </span>
       </div>
       <div className="px-6 pb-6 pt-4">
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
+        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gold-ink dark:text-gold">
           {resume.track.ad} · {resume.module.ad}
         </span>
         <h3 className="mb-3 mt-1 font-display text-xl font-bold text-navy dark:text-white">

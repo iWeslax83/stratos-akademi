@@ -59,7 +59,7 @@ export function NotificationItem({
       <span className={`flex-1 text-sm ${okundu ? "text-muted" : "text-navy dark:text-white"}`}>
         {mesaj}
       </span>
-      {link && <span className="shrink-0 text-xs font-semibold text-gold">→</span>}
+      {link && <span className="shrink-0 text-xs font-semibold text-gold-ink dark:text-gold">→</span>}
     </div>
   );
 }

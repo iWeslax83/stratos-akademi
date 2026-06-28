@@ -65,7 +65,7 @@ export default async function UyeGorevlerPage({
           {tasks.map(({ task, submission }) => (
             <Card key={task.id} className="p-5">
               <h3 className="font-display text-lg font-bold text-navy dark:text-white">{task.baslik}</h3>
-              <div className="mt-1 text-xs font-semibold text-gold">{task.puan} puan</div>
+              <div className="mt-1 text-xs font-semibold text-gold-ink dark:text-gold">{task.puan} puan</div>
               {task.aciklama && (
                 <p className="mt-1 whitespace-pre-line text-sm text-[#46526b] dark:text-[#9fb0c9]">
                   {task.aciklama}
