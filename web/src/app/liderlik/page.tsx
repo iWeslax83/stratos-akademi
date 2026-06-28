@@ -96,7 +96,7 @@ export default async function LiderlikPage({
                 {r.gorunenAd}
                 {r.userId === user!.id && " (sen)"}
               </Link>
-              <span className="font-display text-sm font-bold text-[#8a6d12] dark:text-[#ffd54a]">
+              <span className="font-display text-sm font-bold text-[#6f560a] dark:text-[#ffd54a]">
                 {r.puan} puan
               </span>
             </div>

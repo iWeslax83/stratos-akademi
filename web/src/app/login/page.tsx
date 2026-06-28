@@ -15,7 +15,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-6">
+    <main className="mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-6">
       <Card className="w-full p-8 text-center">
         <Eyebrow>Stratos Akademi</Eyebrow>
         <h1 className="mt-4 font-display text-2xl font-bold text-navy dark:text-white">
@@ -30,6 +30,6 @@ export default function LoginPage() {
           </Button>
         </div>
       </Card>
-    </div>
+    </main>
   );
 }

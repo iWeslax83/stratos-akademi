@@ -40,7 +40,7 @@ export function CurriculumTree({
                         className={clsx(
                           "flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-semibold",
                           active
-                            ? "bg-gold-soft text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
+                            ? "bg-gold-soft text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
                             : status === "done"
                               ? "text-navy dark:text-white"
                               : "text-muted hover:bg-black/5 dark:hover:bg-white/5",

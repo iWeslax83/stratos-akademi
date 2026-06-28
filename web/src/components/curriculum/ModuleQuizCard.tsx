@@ -14,7 +14,7 @@ export function ModuleQuizCard({
     <Card className="mt-6 p-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#8a6d12] dark:text-[#ffd54a]">
+          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#6f560a] dark:text-[#ffd54a]">
             📝 Modül Quizi
           </span>
           <h3 className="mt-1 font-display text-lg font-bold text-navy dark:text-white">{baslik}</h3>

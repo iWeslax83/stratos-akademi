@@ -6,7 +6,7 @@ export function Chip({ children, gold = false }: { children: React.ReactNode; go
       className={clsx(
         "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold",
         gold
-          ? "bg-gold-soft text-[#8a6d12] dark:bg-gold-dark dark:text-[#ffd54a]"
+          ? "bg-gold-soft text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
           : "bg-black/5 text-navy dark:bg-white/[0.06] dark:text-[#dbe4f3]",
       )}
     >
