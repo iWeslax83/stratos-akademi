@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-// Sağ-alt geçici bildirim (yeni yetkinlik / yeni rozet için ortak).
+// Sağ-alt geçici bildirim (yeni yetkinlik için).
 export function Toast({ baslik, adlar }: { baslik: string; adlar: string[] }) {
   const [show, setShow] = useState(adlar.length > 0);
   useEffect(() => {

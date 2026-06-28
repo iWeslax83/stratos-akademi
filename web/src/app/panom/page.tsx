@@ -13,15 +13,10 @@ import { buildStats } from "@/lib/dashboard/stats";
 import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
-import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
 import { Toast } from "@/components/dashboard/Toast";
 import { Reveal } from "@/components/ui/Reveal";
 import { OnboardingCard } from "@/components/dashboard/OnboardingCard";
 import { isNewMember, welcomeHeading } from "@/lib/dashboard/onboarding";
-import { badgeProgress, nextBadge, computeBadges } from "@/lib/badges/compute";
-import { badgeStatsFromDashboard } from "@/lib/badges/stats";
-import { badgeNames } from "@/lib/badges/catalog";
-import { syncBadges } from "@/app/actions/badges";
 import { getApprovedTaskCount } from "@/lib/tasks/queries";
 import { syncCompetencies } from "@/app/actions/competencies";
 import { getAnnouncements } from "@/lib/announcements/queries";
@@ -67,15 +62,7 @@ export default async function PanomPage() {
     approvedTaskPoints,
   });
 
-  const badgeStats = badgeStatsFromDashboard(stats, onayliGorev);
-  const badgeItems = badgeProgress(badgeStats, "full");
-  const nextRozet = nextBadge(badgeStats, "full");
-  const earnedBadgeIds = [...computeBadges(badgeStats)];
-  const [{ yeni: yeniRozet }, { yeni }] = await Promise.all([
-    syncBadges(user!.id, earnedBadgeIds),
-    syncCompetencies(user!.id, stats.earnedCompetencies),
-  ]);
-  const yeniRozetAdlar = badgeNames(yeniRozet);
+  const { yeni } = await syncCompetencies(user!.id, stats.earnedCompetencies);
   const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
   const trackBySlug = new Map(stats.perTrack.map((t) => [t.slug, t.ad]));
   const yeniAdlar = yeni.map((s) => trackBySlug.get(s) ?? s);
@@ -101,7 +88,7 @@ export default async function PanomPage() {
         </h1>
         <p className="mt-1.5 text-muted">
           {isNew
-            ? "İlk dersinle başla; ilerlemen, rozetlerin ve sıralaman burada görünecek."
+            ? "İlk dersinle başla; ilerlemen ve sıralaman burada görünecek."
             : `Toplam ilerleme: ${stats.overall.done}/${stats.overall.total} ders · %${stats.overall.pct}`}
         </p>
       </Reveal>
@@ -189,15 +176,10 @@ export default async function PanomPage() {
             <Card outerClassName="lg:col-span-5">
               <LeaderboardMini rows={leaderboard} meUserId={user!.id} />
             </Card>
-
-            <Card outerClassName="lg:col-span-12">
-              <BadgeShelf items={badgeItems} next={nextRozet} />
-            </Card>
           </>
         )}
       </Reveal>
       <Toast baslik="Yeni yetkinlik" adlar={yeniAdlar} />
-      <Toast baslik={yeniRozetAdlar.length > 1 ? "Yeni rozetler" : "Yeni rozet"} adlar={yeniRozetAdlar} />
     </AppShell>
   );
 }

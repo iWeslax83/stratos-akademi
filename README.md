@@ -29,8 +29,7 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 - **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat). Her denemede **soru ve şık sırası karıştırılır** (cevap paylaşımını zorlaştırır; puanlama ID bazlı olduğundan etkilenmez). Migration yok; saf `lib/quiz/shuffle`.
 - **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, günlük seri (streak), puan, mini liderlik, dal yetkinlikleri.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
-- **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + rozetler. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
-- **Rozetler (achievements):** mevcut verilerden **türetilen** 15 rozet (ders/görev/yetkinlik/puan = herkese açık; seri/quiz = yalnız kendi profili). Migration yok; saf fonksiyon (`lib/badges`). `/profil` (tam + sıradaki ipucu), `/panom` (vitrin), `/uye/[id]` (public alt küme).
+- **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + aktivite takvimi. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
 - **Sertifika:** üye bir dalı tamamlayınca yazdırılabilir/PDF katılım belgesi (`/sertifika/[slug]`). **Migration yok** — tamamlama verisinden türetilir, uygunluk sunucuda doğrulanır. `/profil`'de hak edilen belgelere link.
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir. **Yorum dizisi:** her gönderimde kaptan ↔ üye karşılıklı konuşma (revize iste → üye düzeltir); yeni yoruma in-app bildirim. (`0023`)
 - **Duyurular (`/duyurular`):** kaptanlar üyelere toplu duyuru yapar (toplantı, deadline, yeni içerik); panomda son 3 kartı + yeni duyuruda tüm üyelere in-app bildirim. (`0024`)
@@ -99,7 +98,7 @@ uygulanmalı:
 | 0017 | leaderboard_ranged | zaman aralıklı liderlik RPC (tüm/30g/7g) |
 | 0018 | member_profile | üye profil özeti RPC (toplu, e-postasız) |
 | 0019 | question_explanation | soru açıklaması + questions kolon-bazlı select kısıtı |
-| 0020 | user_badges | kazanılan rozet kalıcılığı (yeni-rozet toast'u; rozetler türetilmiş, tablo yalnız "yeni" tespiti için — yoksa graceful) |
+| 0020 | user_badges | ~~kazanılan rozet kalıcılığı~~ — **rozet sistemi kaldırıldı**, tablo `0028` ile düşürülür |
 | 0021 | guard_profile_role | **GÜVENLİK:** üyenin kendini admin yapmasını engelleyen BEFORE UPDATE trigger (role değişimi yalnız admin/service_role/postgres). **ÖNEMLİ: en kısa sürede uygula.** |
 | 0022 | quiz_attempts_server_only | **GÜVENLİK:** üye doğrudan REST'e `{quiz_id,puan:100}` atıp liderlik puanı şişiremesin diye `quiz_attempts` INSERT'i authenticated'tan alınır; puanlama yalnız service_role. `my_uid()` RPC (getUser'sız doğrulanmış user_id). Kod 0022 öncesi/sonrası uyumlu; **en kısa sürede uygula.** |
 | 0023 | submission_comments | görev gönderimi yorum dizisi (kaptan ↔ üye); değiştirilemez yorumlar + RLS (kendi gönderimi ya da admin). Uygulanana kadar thread boş görünür, yorum gönderimi hata verir (graceful). |
@@ -107,6 +106,7 @@ uygulanmalı:
 | 0025 | events | etkinlikler/takvim (baslangic, yer); okuma herkese, yazma admin; `author_id default auth.uid()`. Uygulanana kadar liste boş, oluşturma hata verir (graceful). |
 | 0026 | resources | kaynak kütüphanesi (link tabanlı: baslik, url, kategori); okuma herkese, yazma admin; `author_id default auth.uid()`. Storage gerekmez. Uygulanana kadar liste boş, ekleme hata verir (graceful). |
 | 0027 | lesson_questions | ders altı soru-cevap; okuma herkese, ekleme kendi adına (her üye), silme yazan/admin; immutable. Uygulanana kadar thread boş, gönderim hata verir (graceful). |
+| 0028 | drop_user_badges | rozet sistemi kaldırıldı → `user_badges` tablosunu düşürür (uygulanmazsa tablo zararsız boş durur). |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen

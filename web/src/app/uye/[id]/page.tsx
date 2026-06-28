@@ -5,8 +5,6 @@ import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
-import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
-import { badgeProgress } from "@/lib/badges/compute";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { getMemberProfile } from "@/lib/dashboard/member";
 import { isAdminUser } from "@/lib/auth/is-admin";
@@ -31,19 +29,6 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
   if (!m) notFound();
 
   const tracks = curriculum.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon }));
-
-  // Başka üye: yalnız public rozetler (RPC streak/quiz vermez).
-  const badgeItems = badgeProgress(
-    {
-      lessons: m.tamamlananDers,
-      tasks: m.onayliGorev,
-      competencies: m.yetkinlikler.length,
-      points: m.puan,
-      streak: 0,
-      quizPerfect: 0,
-    },
-    "public",
-  );
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
@@ -72,10 +57,6 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
 
       <Card className="mt-[18px]">
         <CompetencyShelf tracks={tracks} earned={m.yetkinlikler} rank={null} />
-      </Card>
-
-      <Card className="mt-[18px]">
-        <BadgeShelf items={badgeItems} />
       </Card>
     </AppShell>
   );
