@@ -5,13 +5,10 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
-import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
 import { ActivityCalendar } from "@/components/dashboard/ActivityCalendar";
 import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
 import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
 import { pointsBreakdown } from "@/lib/dashboard/points";
-import { badgeProgress, nextBadge } from "@/lib/badges/compute";
-import { badgeStatsFromDashboard } from "@/lib/badges/stats";
 import { getCurriculum } from "@/lib/curriculum/queries";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
@@ -51,9 +48,6 @@ export default async function ProfilPage() {
 
   const rank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
 
-  const badgeStats = badgeStatsFromDashboard(stats, onayliGorev);
-  const badgeItems = badgeProgress(badgeStats, "full");
-  const nextRozet = nextBadge(badgeStats, "full");
   const puanDagilimi = pointsBreakdown(stats.completedCount, stats.bestQuizScores, approvedTaskPoints);
   const sertifikalar = earnedCertificates(
     stats.perTrack.map((t) => ({ slug: t.slug, ad: t.ad, ikon: t.ikon })),
@@ -126,10 +120,6 @@ export default async function ProfilPage() {
 
       <Card className="mt-[18px]">
         <PointsBreakdown data={puanDagilimi} />
-      </Card>
-
-      <Card className="mt-[18px]">
-        <BadgeShelf items={badgeItems} next={nextRozet} />
       </Card>
     </AppShell>
   );
