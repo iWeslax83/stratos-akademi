@@ -15,6 +15,7 @@ import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { BadgeShelf } from "@/components/dashboard/BadgeShelf";
 import { Toast } from "@/components/dashboard/Toast";
+import { Reveal } from "@/components/ui/Reveal";
 import { OnboardingCard } from "@/components/dashboard/OnboardingCard";
 import { isNewMember, welcomeHeading } from "@/lib/dashboard/onboarding";
 import { badgeProgress, nextBadge, computeBadges } from "@/lib/badges/compute";
@@ -93,7 +94,7 @@ export default async function PanomPage() {
 
   return (
     <AppShell initial={initial} streak={stats.streak} points={stats.points} isAdmin={isAdmin}>
-      <div className="mb-5">
+      <Reveal as="div" className="mb-5">
         <Eyebrow>Panom</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           {welcomeHeading(ad, isNew)}
@@ -103,11 +104,11 @@ export default async function PanomPage() {
             ? "İlk dersinle başla; ilerlemen, rozetlerin ve sıralaman burada görünecek."
             : `Toplam ilerleme: ${stats.overall.done}/${stats.overall.total} ders · %${stats.overall.pct}`}
         </p>
-      </div>
+      </Reveal>
 
-      <div className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-12">
+      <Reveal as="div" delay={80} className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-12">
         {duyurular.length > 0 && (
-          <Card outerClassName="lg:col-span-12" className="p-6">
+          <Card interactive outerClassName="lg:col-span-12" className="p-6">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-lg font-bold text-navy dark:text-white">Duyurular</h2>
               <Link href="/duyurular" className="text-xs font-semibold text-gold-ink dark:text-gold hover:opacity-80">
@@ -128,7 +129,7 @@ export default async function PanomPage() {
         )}
 
         {etkinlikler.length > 0 && (
-          <Card outerClassName="lg:col-span-12" className="p-6">
+          <Card interactive outerClassName="lg:col-span-12" className="p-6">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-lg font-bold text-navy dark:text-white">Yaklaşan etkinlikler</h2>
               <Link href="/etkinlikler" className="text-xs font-semibold text-gold-ink dark:text-gold hover:opacity-80">
@@ -156,7 +157,7 @@ export default async function PanomPage() {
           </Card>
         ) : (
           <>
-            <Card outerClassName="h-full lg:col-span-7" className="h-full">
+            <Card interactive outerClassName="h-full lg:col-span-7" className="h-full">
               <ResumeCard
                 resume={resume}
                 modulePct={modProg?.pct ?? 0}
@@ -170,7 +171,7 @@ export default async function PanomPage() {
                 <StatRing pct={stats.overall.pct} label="Toplam ilerleme" />
               </Card>
               <Card outerClassName="h-full" className="h-full">
-                <StatCard value={stats.streak} label="Günlük seri (gün)" />
+                <StatCard countTo={stats.streak} label="Günlük seri (gün)" />
               </Card>
               <Card outerClassName="col-span-2">
                 <CompetencyShelf
@@ -194,7 +195,7 @@ export default async function PanomPage() {
             </Card>
           </>
         )}
-      </div>
+      </Reveal>
       <Toast baslik="Yeni yetkinlik" adlar={yeniAdlar} />
       <Toast baslik={yeniRozetAdlar.length > 1 ? "Yeni rozetler" : "Yeni rozet"} adlar={yeniRozetAdlar} />
     </AppShell>

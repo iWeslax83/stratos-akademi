@@ -1,13 +1,17 @@
 import { clsx } from "clsx";
+import { CountUp } from "@/components/ui/CountUp";
 
 export function StatCard({
   icon,
   value,
+  countTo,
   label,
   gold = false,
 }: {
   icon?: React.ReactNode;
-  value: React.ReactNode;
+  value?: React.ReactNode;
+  // Verilirse sayı 0'dan bu değere animasyonla sayar (value yerine).
+  countTo?: number;
   label: string;
   gold?: boolean;
 }) {
@@ -20,7 +24,7 @@ export function StatCard({
           gold ? "text-gold-ink dark:text-gold" : "text-navy dark:text-white",
         )}
       >
-        {value}
+        {countTo != null ? <CountUp value={countTo} /> : value}
       </div>
       <div className="mt-2 text-xs font-semibold text-muted">{label}</div>
     </div>
