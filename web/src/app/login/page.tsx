@@ -16,7 +16,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="bg-dotgrid mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-6">
+    <main className="bg-dotgrid mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-4 sm:px-6">
       <Reveal className="w-full">
         <Card className="w-full p-8 text-center">
           <div className="mb-5 flex justify-center">

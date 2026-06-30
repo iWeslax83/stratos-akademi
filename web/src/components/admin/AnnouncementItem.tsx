@@ -81,8 +81,8 @@ export function AnnouncementItem({
   return (
     <div className="border-b border-[var(--line)] py-4 last:border-b-0">
       <div className="flex items-start gap-3">
-        <div className="flex-1">
-          <div className="font-display font-bold text-navy dark:text-white">{baslik}</div>
+        <div className="min-w-0 flex-1">
+          <div className="break-words font-display font-bold text-navy dark:text-white">{baslik}</div>
           <div className="text-xs text-muted">{formatDate(createdAt)}</div>
           <p className="mt-1 whitespace-pre-line text-sm text-[#46526b] dark:text-[#9fb0c9]">{icerik}</p>
         </div>

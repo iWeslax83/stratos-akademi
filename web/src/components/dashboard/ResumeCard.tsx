@@ -48,11 +48,11 @@ export function ResumeCard({
         <div className="mb-2.5 h-2 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
           <div className="h-full rounded-full bg-gold" style={{ width: `${modulePct}%` }} />
         </div>
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[13px] font-semibold text-muted">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className="min-w-0 text-[13px] font-semibold text-muted">
             Modül %{modulePct} tamamlandı{kalanDk > 0 ? ` · ~${kalanDk} dk kaldı` : ""}
           </span>
-          <Link href={`/mufredat/${resume.lesson.id}`}>
+          <Link href={`/mufredat/${resume.lesson.id}`} className="shrink-0">
             <Button variant="primary" icon="→">
               Devam et
             </Button>

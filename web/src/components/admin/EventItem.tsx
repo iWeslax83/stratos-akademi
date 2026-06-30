@@ -94,8 +94,8 @@ export function EventItem({
   return (
     <div className="border-b border-[var(--line)] py-4 last:border-b-0">
       <div className="flex items-start gap-3">
-        <div className={gecmis ? "flex-1 opacity-60" : "flex-1"}>
-          <div className="font-display font-bold text-navy dark:text-white">{baslik}</div>
+        <div className={gecmis ? "min-w-0 flex-1 opacity-60" : "min-w-0 flex-1"}>
+          <div className="break-words font-display font-bold text-navy dark:text-white">{baslik}</div>
           <div className="text-xs font-semibold text-gold-ink dark:text-gold">
             {formatDateTime(baslangic)}
             {yer && <span className="text-muted"> · {yer}</span>}

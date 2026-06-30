@@ -51,7 +51,7 @@ export function OptionRow({
         name="metin"
         defaultValue={option.metin}
         placeholder="Şık metni"
-        className="flex-1 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-navy outline-none focus:border-gold dark:text-white"
+        className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-navy outline-none focus:border-gold dark:text-white"
       />
       <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
         Kaydet

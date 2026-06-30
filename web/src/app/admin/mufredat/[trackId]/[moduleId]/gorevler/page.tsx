@@ -62,9 +62,9 @@ export default async function AdminGorevlerPage({
           <p className="text-sm text-muted">Henüz görev yok.</p>
         ) : (
           list.map((t) => (
-            <div key={t.id} className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0">
+            <div key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
               <span className="w-7 text-center text-xs font-bold text-muted">{t.sira}</span>
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">
+              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
                 {t.baslik} <span className="text-xs font-normal text-muted">· {t.puan} puan</span>
               </span>
               <a

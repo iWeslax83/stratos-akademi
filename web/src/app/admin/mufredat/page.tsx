@@ -45,11 +45,11 @@ export default async function AdminTracksPage({
           list.map((t) => (
             <div
               key={t.id}
-              className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0"
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0"
             >
               <span className="w-7 text-center text-xs font-bold text-muted">{t.sira}</span>
               <span className="text-lg">{t.ikon ?? "•"}</span>
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">
+              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
                 {t.ad} <span className="text-xs font-normal text-muted">/{t.slug}</span>
               </span>
               <Link href={`/admin/mufredat/${t.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">

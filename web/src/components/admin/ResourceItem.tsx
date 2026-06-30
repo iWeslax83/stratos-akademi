@@ -78,7 +78,7 @@ export function ResourceItem({
     <div className="border-b border-[var(--line)] py-3 last:border-b-0">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <a href={url} target="_blank" rel="noopener noreferrer" className="font-semibold text-navy underline decoration-gold underline-offset-2 hover:text-gold-ink dark:hover:text-gold dark:text-white">
+          <a href={url} target="_blank" rel="noopener noreferrer" className="break-words font-semibold text-navy underline decoration-gold underline-offset-2 hover:text-gold-ink dark:hover:text-gold dark:text-white">
             {baslik}
           </a>
           {aciklama && <p className="mt-0.5 text-sm text-muted">{aciklama}</p>}

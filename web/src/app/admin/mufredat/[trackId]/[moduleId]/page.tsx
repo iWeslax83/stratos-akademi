@@ -85,10 +85,10 @@ export default async function AdminLessonsPage({
           list.map((l) => (
             <div
               key={l.id}
-              className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0"
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0"
             >
               <span className="w-7 text-center text-xs font-bold text-muted">{l.sira}</span>
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">
+              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
                 {l.baslik}{" "}
                 <span className="text-xs font-normal text-muted">({l.youtube_video_id})</span>
               </span>
