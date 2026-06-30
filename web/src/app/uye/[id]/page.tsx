@@ -43,7 +43,7 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-[18px]">
+      <div className="grid grid-cols-3 gap-2 sm:gap-[18px]">
         <Card>
           <StatCard value={m.puan} label="Puan" gold />
         </Card>
