@@ -42,7 +42,7 @@ export default async function SertifikaPage({ params }: { params: Promise<{ slug
   if (!dal) notFound();
 
   return (
-    <div className="mx-auto max-w-[860px] px-6 py-10">
+    <div className="mx-auto max-w-[860px] px-4 py-10 sm:px-6">
       <div className="mb-5 flex items-center justify-between print:hidden">
         <Link href="/profil" className="text-sm font-semibold text-muted hover:text-navy dark:hover:text-white">
           ← Profil
@@ -50,7 +50,7 @@ export default async function SertifikaPage({ params }: { params: Promise<{ slug
         <PrintButton />
       </div>
 
-      <div className="rounded-bezel border-2 border-gold bg-white p-10 text-center text-navy shadow-[0_20px_50px_-24px_rgba(16,28,55,0.4)] sm:p-16">
+      <div className="rounded-bezel border-2 border-gold bg-white p-6 text-center text-navy shadow-[0_20px_50px_-24px_rgba(16,28,55,0.4)] sm:p-16">
         <div className="font-display text-sm font-bold uppercase tracking-[0.3em] text-gold-ink">
           Stratos Akademi
         </div>

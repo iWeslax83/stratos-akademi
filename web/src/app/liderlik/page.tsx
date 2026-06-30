@@ -93,12 +93,12 @@ export default async function LiderlikPage({
               </span>
               <Link
                 href={`/uye/${r.userId}`}
-                className="flex-1 text-sm font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white"
+                className="min-w-0 flex-1 truncate text-sm font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white"
               >
                 {r.gorunenAd}
                 {r.userId === user!.id && " (sen)"}
               </Link>
-              <span className="font-display text-sm font-bold text-[#6f560a] dark:text-[#ffd54a]">
+              <span className="shrink-0 font-display text-sm font-bold text-[#6f560a] dark:text-[#ffd54a]">
                 {r.puan} puan
               </span>
             </div>

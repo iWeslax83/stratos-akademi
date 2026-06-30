@@ -21,10 +21,10 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
         {row.gorunenAd.charAt(0)}
       </span>
-      <Link href={`/uye/${row.userId}`} className="flex-1 text-[13.5px] font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white">
+      <Link href={`/uye/${row.userId}`} className="min-w-0 flex-1 truncate text-[13.5px] font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white">
         {row.gorunenAd}
       </Link>
-      <span className="font-display text-[13px] font-bold text-[#6f560a] dark:text-[#ffd54a]">
+      <span className="shrink-0 font-display text-[13px] font-bold text-[#6f560a] dark:text-[#ffd54a]">
         {row.puan}
       </span>
     </div>

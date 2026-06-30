@@ -57,10 +57,10 @@ export default async function AdminModulesPage({
           list.map((m) => (
             <div
               key={m.id}
-              className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0"
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0"
             >
               <span className="w-7 text-center text-xs font-bold text-muted">{m.sira}</span>
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">{m.ad}</span>
+              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">{m.ad}</span>
               <Link href={`/admin/mufredat/${trackId}/${m.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
                 Dersler →
               </Link>

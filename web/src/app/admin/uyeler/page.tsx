@@ -50,8 +50,8 @@ export default async function AdminUyelerPage() {
           <p className="text-sm text-muted">Henüz üye yok.</p>
         ) : (
           members.map((m) => (
-            <div key={m.id} className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0">
-              <span className="flex-1 text-sm font-semibold text-navy dark:text-white">
+            <div key={m.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
+              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-navy dark:text-white">
                 {m.ad ?? m.email}{" "}
                 <span className="text-xs font-normal text-muted">{m.email}</span>
                 {m.id === selfId && <span className="ml-2 text-xs font-bold text-gold-ink dark:text-gold">(sen)</span>}
@@ -76,8 +76,8 @@ export default async function AdminUyelerPage() {
           <p className="text-sm text-muted">Bekleyen davet yok.</p>
         ) : (
           pending.map((a) => (
-            <div key={a.email} className="flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0">
-              <span className="flex-1 text-sm font-semibold text-navy dark:text-white">{a.email}</span>
+            <div key={a.email} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
+              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-navy dark:text-white">{a.email}</span>
               <RoleSelect email={a.email} role={a.role} userId={null} selfId={selfId} />
               <DeleteButton
                 onDelete={removeInvite.bind(null, a.email)}
