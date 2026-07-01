@@ -15,6 +15,7 @@ export const ADMIN_LINKS: NavLink[] = [
   { href: "/admin/mufredat", label: "Müfredat" },
   { href: "/admin/uyeler", label: "Üyeler" },
   { href: "/admin/onaylar", label: "Onaylar" },
+  { href: "/admin/oneriler", label: "Öneriler" },
   { href: "/admin/duyurular", label: "Duyurular" },
   { href: "/admin/etkinlikler", label: "Etkinlikler" },
   { href: "/admin/kaynaklar", label: "Kaynaklar" },
