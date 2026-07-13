@@ -9,6 +9,7 @@ export const MEMBER_LINKS: NavLink[] = [
   { href: "/duyurular", label: "Duyurular" },
   { href: "/etkinlikler", label: "Etkinlikler" },
   { href: "/kaynaklar", label: "Kaynaklar" },
+  { href: "/ara", label: "Ara" },
 ];
 
 export const ADMIN_LINKS: NavLink[] = [
