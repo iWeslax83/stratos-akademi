@@ -48,3 +48,69 @@ describe("geminiClassify", () => {
     expect(r).toBeNull();
   });
 });
+
+describe("model zinciri", () => {
+  const v: VideoDetail = {
+    youtube_video_id: "x", baslik: "b", aciklama: "a", kanal: "k",
+    sure_sn: 600, izlenme: 20000, yayin_tarihi: "2024-01-01T00:00:00Z",
+    embeddable: true, blockedInTR: false, isLiveRemnant: false,
+  };
+  const modules: ModuleRow[] = [{ id: "m1", track_id: "t1", ad: "Temel" }];
+  const iyiYanit = {
+    ok: true,
+    json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify({ uygun: true, module_id: "m1", skor: 70, gerekce: "ok" }) }] } }] }),
+  } as Response;
+  const olu = (status: number) => ({ ok: false, status, json: async () => ({ error: { message: "yok" } }) } as Response);
+
+  it("404 alınca zincirdeki sonraki modele düşer", async () => {
+    // Asıl arıza buydu: sabit model 404 dönüyordu ve tüm sınıflandırmalar null oluyordu.
+    const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(olu(404))
+      .mockResolvedValueOnce(iyiYanit);
+    const r = await geminiClassify(v, modules, {
+      apiKey: "K", models: ["olu-model", "calisan-model"],
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
+    expect(r?.uygun).toBe(true);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(String(fetchImpl.mock.calls[1][0])).toContain("calisan-model");
+  });
+
+  it("kota (429) da modeli ölü sayar", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(olu(429)).mockResolvedValueOnce(iyiYanit);
+    const r = await geminiClassify(v, modules, {
+      apiKey: "K", models: ["kotasi-dolu", "calisan-model"],
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
+    expect(r?.uygun).toBe(true);
+  });
+
+  it("ölü model bir sonraki videoda tekrar denenmez", async () => {
+    const oluModeller = new Set<string>();
+    const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(olu(404))   // 1. video: ilk model ölür
+      .mockResolvedValueOnce(iyiYanit)   // 1. video: ikinci model çalışır
+      .mockResolvedValueOnce(iyiYanit);  // 2. video: doğrudan ikinci modele gider
+    const deps = {
+      apiKey: "K", models: ["olu-model", "calisan-model"], oluModeller,
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    };
+    await geminiClassify(v, modules, deps);
+    await geminiClassify(v, modules, deps);
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
+    expect(String(fetchImpl.mock.calls[2][0])).toContain("calisan-model");
+  });
+
+  it("tüm modeller ölüyse null döner ve hata raporlar", async () => {
+    const hatalar: string[] = [];
+    const fetchImpl = vi.fn().mockResolvedValue(olu(404));
+    const r = await geminiClassify(v, modules, {
+      apiKey: "K", models: ["a", "b"],
+      onError: (m) => hatalar.push(m),
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
+    expect(r).toBeNull();
+    expect(hatalar).toHaveLength(2);
+    expect(hatalar[0]).toContain("HTTP 404");
+  });
+});

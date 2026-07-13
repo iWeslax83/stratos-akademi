@@ -1,8 +1,19 @@
 import type { VideoDetail, ModuleRow, Classification } from "@/lib/videos/types";
 import { hataOzeti } from "@/lib/videos/google-error";
 
-const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
+// Model adları eskiyor: sabit kodlanan gemini-2.5-flash-lite bir gün 404 "no longer available
+// to new users" dönmeye başladı ve TÜM sınıflandırmalar sessizce null oldu → hiç öneri çıkmadı.
+// Bu yüzden: env ile override edilebilen, 404/429'da bir sonrakine düşen bir model zinciri.
+export const MODEL_ZINCIRI = ["gemini-flash-lite-latest", "gemini-flash-latest"];
+
+function modelUrl(model: string): string {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
+
+// Bu HTTP kodlarında model kullanılamaz sayılır ve zincirdeki bir sonrakine geçilir.
+function modelOlu(status: number): boolean {
+  return status === 404 || status === 429 || status === 403;
+}
 
 export function parseClassification(raw: string, validModuleIds: Set<string>): Classification | null {
   const cleaned = (raw ?? "").replace(/```json\s*|\s*```/g, "").trim();
@@ -40,36 +51,56 @@ function buildPrompt(v: VideoDetail, modules: ModuleRow[]): string {
   ].join("\n");
 }
 
+export type ClassifyDeps = {
+  apiKey: string;
+  models?: string[];
+  fetchImpl?: typeof fetch;
+  onError?: (m: string) => void;
+  // Ölü model zincir boyunca hatırlanır: her video için baştan denenmez.
+  oluModeller?: Set<string>;
+};
+
 export async function geminiClassify(
   v: VideoDetail,
   modules: ModuleRow[],
-  deps: { apiKey: string; fetchImpl?: typeof fetch; onError?: (m: string) => void },
+  deps: ClassifyDeps,
 ): Promise<Classification | null> {
   const f = deps.fetchImpl ?? fetch;
-  try {
-    const res = await f(`${GEMINI_URL}?key=${deps.apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: buildPrompt(v, modules) }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0 },
-      }),
-    });
-    if (!res.ok) {
-      console.error("geminiClassify HTTP", res.status);
-      deps.onError?.(`Gemini HTTP ${res.status}: ${await hataOzeti(res)}`);
+  const olu = deps.oluModeller ?? new Set<string>();
+  const zincir = (deps.models ?? MODEL_ZINCIRI).filter((m) => !olu.has(m));
+  if (zincir.length === 0) return null; // tüm modeller ölü; hata zaten raporlandı
+
+  for (const model of zincir) {
+    try {
+      const res = await f(`${modelUrl(model)}?key=${deps.apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: buildPrompt(v, modules) }] }],
+          generationConfig: { responseMimeType: "application/json", temperature: 0 },
+        }),
+      });
+      if (!res.ok) {
+        console.error("geminiClassify HTTP", res.status, model);
+        deps.onError?.(`Gemini (${model}) HTTP ${res.status}: ${await hataOzeti(res)}`);
+        if (modelOlu(res.status)) {
+          olu.add(model); // sıradaki modele düş
+          continue;
+        }
+        return null;
+      }
+      const data = (await res.json()) as {
+        candidates?: { content?: { parts?: { text?: string }[] } }[];
+      };
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+      const c = parseClassification(text, new Set(modules.map((m) => m.id)));
+      if (!c) deps.onError?.(`Gemini (${model}) yanıtı ayrıştırılamadı: ${text.slice(0, 120)}`);
+      return c;
+    } catch (e) {
+      console.error("geminiClassify:", e);
+      deps.onError?.(`Gemini (${model}) ağ hatası: ${String(e)}`);
       return null;
     }
-    const data = (await res.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
-    };
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    const c = parseClassification(text, new Set(modules.map((m) => m.id)));
-    if (!c) deps.onError?.(`Gemini yanıtı ayrıştırılamadı: ${text.slice(0, 120)}`);
-    return c;
-  } catch (e) {
-    console.error("geminiClassify:", e);
-    deps.onError?.(`Gemini ağ hatası: ${String(e)}`);
-    return null;
   }
+  return null;
 }

@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ScanPorts, PendingRow, TrackRow, ModuleRow, ScanSummary, Esikler } from "@/lib/videos/types";
 import { searchVideoIds, fetchVideoDetails } from "@/lib/videos/youtube-api";
-import { geminiClassify } from "@/lib/videos/classify";
+import { geminiClassify, MODEL_ZINCIRI } from "@/lib/videos/classify";
 import { computePrune, type RejectedRow } from "@/lib/videos/prune";
 
 export const VARSAYILAN_ESIKLER: Esikler = {
@@ -42,6 +42,7 @@ export function createProductionPorts(
   const onError = (m: string) => {
     if (hatalar.length < 20 && !hatalar.includes(m)) hatalar.push(m);
   };
+  const oluModeller = new Set<string>();
 
   return {
     now,
@@ -70,7 +71,13 @@ export function createProductionPorts(
 
     searchVideoIds: (q) => searchVideoIds(q, { apiKey: deps.youtubeKey, publishedAfter, onError }),
     fetchVideoDetails: (ids) => fetchVideoDetails(ids, { apiKey: deps.youtubeKey, onError }),
-    classify: (v, modules) => geminiClassify(v, modules, { apiKey: deps.geminiKey, onError }),
+    classify: (v, modules) =>
+      geminiClassify(v, modules, {
+        apiKey: deps.geminiKey,
+        models: process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL, ...MODEL_ZINCIRI] : undefined,
+        oluModeller, // koşu boyunca paylaşılır: ölü model her video için yeniden denenmez
+        onError,
+      }),
 
     async insertPending(rows: PendingRow[]) {
       // youtube_video_id unique → çakışanları yok say.
