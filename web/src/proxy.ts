@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PUBLIC_PATHS = ["/login", "/auth", "/offline"];
+// /api/cron: oturum çerezi yoktur (GitHub Actions çağırır) ve kendi Bearer CRON_SECRET
+// doğrulamasını yapar. Buraya alınmazsa proxy onu /login'e yönlendirir ve cron hiç koşmaz.
+const PUBLIC_PATHS = ["/login", "/auth", "/offline", "/api/cron"];
+
+export function isPublicPath(path: string): boolean {
+  return PUBLIC_PATHS.some((p) => path === p || path.startsWith(p + "/"));
+}
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -34,9 +40,8 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isPublic = PUBLIC_PATHS.some((p) => path.startsWith(p));
 
-  if (!user && !isPublic) {
+  if (!user && !isPublicPath(path)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

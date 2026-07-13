@@ -34,3 +34,6 @@ Thumbs.db
 /WEIGHT_LIST.md
 /software/
 /Atölyenin fotoğrafları/
+
+web/test-results/
+web/playwright-report/
