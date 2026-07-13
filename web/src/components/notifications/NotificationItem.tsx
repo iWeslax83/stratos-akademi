@@ -11,11 +11,14 @@ export function NotificationItem({
   mesaj,
   link,
   okundu,
+  onDone,
 }: {
   id: string;
   mesaj: string;
   link: string | null;
   okundu: boolean;
+  // Panel içinde kullanılırken: tıklama işlendikten sonra paneli kapatmak için.
+  onDone?: () => void;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -24,12 +27,14 @@ export function NotificationItem({
     const plan = resolveClick(okundu, link);
     if (!plan.mark) {
       if (plan.navigateTo) router.push(plan.navigateTo);
+      onDone?.();
       return;
     }
     start(async () => {
       await markRead(id);
       if (plan.navigateTo) router.push(plan.navigateTo);
       else if (plan.refresh) router.refresh();
+      onDone?.();
     });
   }
 
@@ -51,7 +56,7 @@ export function NotificationItem({
           : undefined
       }
       aria-disabled={pending}
-      className={`flex items-start gap-3 border-b border-[var(--line)] py-3 last:border-b-0 ${
+      className={`flex min-h-[44px] items-start gap-3 border-b border-[var(--line)] py-3 last:border-b-0 ${
         tiklanabilir ? "cursor-pointer" : ""
       } ${!okundu ? "font-semibold" : ""} ${pending ? "opacity-60" : ""}`}
     >

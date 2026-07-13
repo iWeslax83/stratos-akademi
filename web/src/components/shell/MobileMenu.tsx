@@ -6,7 +6,7 @@ import { MEMBER_LINKS, ADMIN_LINKS } from "@/lib/nav/links";
 
 const LINKS = [...MEMBER_LINKS, { href: "/profil", label: "Profil" }];
 
-export function MobileMenu({ isAdmin, unread }: { isAdmin: boolean; unread: number }) {
+export function MobileMenu({ isAdmin }: { isAdmin: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,18 +40,6 @@ export function MobileMenu({ isAdmin, unread }: { isAdmin: boolean; unread: numb
                 {l.label}
               </Link>
             ))}
-            <Link
-              href="/bildirimler"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-navy hover:bg-black/5 dark:text-white dark:hover:bg-white/10"
-            >
-              Bildirimler
-              {unread > 0 && (
-                <span className="ml-2 inline-grid h-5 min-w-[20px] place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-navy">
-                  {unread}
-                </span>
-              )}
-            </Link>
             {isAdmin && (
               <>
                 <div className="my-1 border-t border-[var(--line)]" />

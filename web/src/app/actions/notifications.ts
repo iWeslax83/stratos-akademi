@@ -2,6 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getNotifications, type Notification } from "@/lib/notifications/queries";
+
+// Bildirim paneli için: en yeni 20 bildirim. Panel her açılışta çağırır.
+export async function listNotifications(): Promise<Notification[]> {
+  const supabase = await createClient();
+  const list = await getNotifications(supabase);
+  return list.slice(0, 20);
+}
 
 export async function markRead(id: string): Promise<{ ok: boolean }> {
   try {

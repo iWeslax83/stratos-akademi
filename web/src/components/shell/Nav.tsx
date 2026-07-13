@@ -3,6 +3,7 @@ import { Chip } from "@/components/ui/Chip";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { MobileMenu } from "./MobileMenu";
 import { AdminMenu } from "./AdminMenu";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { createClient } from "@/lib/supabase/server";
 import { unreadCount } from "@/lib/notifications/queries";
 import { MEMBER_LINKS } from "@/lib/nav/links";
@@ -45,18 +46,8 @@ export async function Nav({
         <div className="hidden items-center gap-2.5 sm:flex">
           {streak != null && <Chip>Seri · {streak} gün</Chip>}
           {points != null && <Chip gold>{points} puan</Chip>}
-          <Link
-            href="/bildirimler"
-            className="rounded-full px-3 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white"
-          >
-            Bildirimler
-            {unread > 0 && (
-              <span className="ml-1 inline-grid h-5 min-w-[20px] place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-navy">
-                {unread}
-              </span>
-            )}
-          </Link>
         </div>
+        <NotificationBell unread={unread} />
         <ThemeToggle />
         <Link
           href="/profil"
@@ -65,7 +56,7 @@ export async function Nav({
         >
           {initial}
         </Link>
-        <MobileMenu isAdmin={isAdmin} unread={unread} />
+        <MobileMenu isAdmin={isAdmin} />
       </div>
     </nav>
   );
