@@ -3,16 +3,10 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { getCurriculum } from "@/lib/curriculum/queries";
-import { flatten } from "@/lib/curriculum/progress";
-import { getLeaderboard } from "@/lib/dashboard/leaderboard";
-import { quizStat, gunOnce, sonAktivite, riskliUyeler, trackCompletionPct } from "@/lib/admin/analytics";
+import { analitikVerisi } from "@/lib/admin/rapor";
+import { RaporIndir } from "@/components/admin/RaporIndir";
 
 export const dynamic = "force-dynamic";
-
-type ProgressRow = { user_id: string; lesson_id: string; completed_at: string | null };
-type AttemptRow = { user_id: string; quiz_id: string; puan: number; created_at: string };
-type SubRow = { user_id: string; created_at: string };
 
 export default async function AnalitikPage() {
   const supabase = await createClient();
@@ -26,112 +20,14 @@ export default async function AnalitikPage() {
     .single();
   const initial = (viewer?.ad ?? viewer?.email ?? "E").charAt(0).toUpperCase();
 
-  const curriculum = await getCurriculum(supabase);
-  const leaderboard = await getLeaderboard(supabase);
-
-  const svc = createServiceClient();
-  const [{ data: progress }, { data: attempts }, { data: subs }, { data: quizzes }, { count: bekleyenOnay }] =
-    await Promise.all([
-      svc.from("lesson_progress").select("user_id, lesson_id, completed_at").eq("completed", true),
-      svc.from("quiz_attempts").select("user_id, quiz_id, puan, created_at"),
-      svc.from("task_submissions").select("user_id, created_at"),
-      svc.from("quizzes").select("id, gecme_esigi"),
-      svc.from("task_submissions").select("id", { count: "exact", head: true }).eq("durum", "beklemede"),
-    ]);
-
-  const prog = (progress ?? []) as ProgressRow[];
-  const att = (attempts ?? []) as AttemptRow[];
-  const sub = (subs ?? []) as SubRow[];
-  const esikById = new Map<string, number>();
-  for (const q of (quizzes ?? []) as { id: string; gecme_esigi: number }[]) esikById.set(q.id, q.gecme_esigi);
-
   // dinamik server component; analiz için şu anki zaman kasıtlı (saf-render kuralı geçerli değil)
   // eslint-disable-next-line react-hooks/purity
-  const now = Date.now();
-  const uyeSayisi = leaderboard.length;
-
-  // 1) Üye katılımı: tamamlanan ders + son aktivite
-  const dersByUser = new Map<string, number>();
-  const tarihByUser = new Map<string, (string | null)[]>();
-  const push = (uid: string, d: string | null) => {
-    const arr = tarihByUser.get(uid) ?? [];
-    arr.push(d);
-    tarihByUser.set(uid, arr);
-  };
-  for (const p of prog) {
-    dersByUser.set(p.user_id, (dersByUser.get(p.user_id) ?? 0) + 1);
-    push(p.user_id, p.completed_at);
-  }
-  for (const a of att) push(a.user_id, a.created_at);
-  for (const s of sub) push(s.user_id, s.created_at);
-
-  const uyeler = leaderboard
-    .map((r) => {
-      const son = sonAktivite(tarihByUser.get(r.userId) ?? []);
-      const gun = gunOnce(son, now);
-      return {
-        ad: r.gorunenAd,
-        puan: r.puan,
-        ders: dersByUser.get(r.userId) ?? 0,
-        gun,
-        aktif: gun !== null && gun <= 7,
-      };
-    })
-    .sort((a, b) => (a.gun ?? 9999) - (b.gun ?? 9999));
-  const aktifSayisi = uyeler.filter((u) => u.aktif).length;
-
-  // 2) En az tamamlanan dersler
-  const tamamByLesson = new Map<string, Set<string>>();
-  for (const p of prog) {
-    const set = tamamByLesson.get(p.lesson_id) ?? new Set<string>();
-    set.add(p.user_id);
-    tamamByLesson.set(p.lesson_id, set);
-  }
-  const dersler = flatten(curriculum)
-    .map((f) => ({
-      baslik: f.lesson.baslik,
-      yer: `${f.track.ad} · ${f.module.ad}`,
-      tamam: tamamByLesson.get(f.lesson.id)?.size ?? 0,
-    }))
-    .sort((a, b) => a.tamam - b.tamam)
-    .slice(0, 10);
-
-  // 3) Quiz performansı (zorlanılan üstte)
-  const attByQuiz = new Map<string, AttemptRow[]>();
-  for (const a of att) {
-    const arr = attByQuiz.get(a.quiz_id) ?? [];
-    arr.push(a);
-    attByQuiz.set(a.quiz_id, arr);
-  }
-  const quizler = curriculum
-    .flatMap((t) => t.modules.filter((m) => m.quiz).map((m) => ({ quiz: m.quiz!, yer: `${t.ad} · ${m.ad}` })))
-    .map(({ quiz, yer }) => {
-      const st = quizStat(attByQuiz.get(quiz.id) ?? [], esikById.get(quiz.id) ?? 70);
-      return { baslik: quiz.baslik, yer, ...st };
-    })
-    .sort((a, b) => a.ortBest - b.ortBest);
-
-  // KPI'lar
-  const toplamTamamlanan = prog.length;
-  const totalLessons = flatten(curriculum).length;
-  const ortTamamlama = trackCompletionPct(totalLessons, uyeSayisi, toplamTamamlanan);
-
-  // Pasif üyeler (14+ gün ya da hiç aktivite)
-  const pasifler = riskliUyeler(uyeler, 14);
-
-  // Dal bazlı tamamlama
-  const dalTamamlama = curriculum
-    .map((t) => {
-      const dersler = t.modules.flatMap((m) => m.lessons);
-      const done = dersler.reduce((sum, l) => sum + (tamamByLesson.get(l.id)?.size ?? 0), 0);
-      return {
-        ad: t.ad,
-        ikon: t.ikon,
-        lessonCount: dersler.length,
-        pct: trackCompletionPct(dersler.length, uyeSayisi, done),
-      };
-    })
-    .filter((d) => d.lessonCount > 0);
+  const veri = await analitikVerisi(supabase, createServiceClient(), Date.now());
+  const {
+    uyeSayisi, aktifSayisi, bekleyenOnay, toplamTamamlanan, ortTamamlama,
+    uyeler, pasifler, quizler, dalTamamlama,
+  } = veri;
+  const dersler = veri.dersler.slice(0, 10); // ekranda yalnız en az tamamlanan 10 ders; CSV'de hepsi var
 
   const kpis = [
     { label: "Üye", value: String(uyeSayisi) },
@@ -148,6 +44,9 @@ export default async function AnalitikPage() {
       <p className="mt-1.5 text-muted">
         {uyeSayisi} üye · {aktifSayisi} aktif (son 7 gün)
       </p>
+      <div className="mt-4">
+        <RaporIndir />
+      </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
         {kpis.map((k) => (

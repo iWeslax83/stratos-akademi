@@ -25,3 +25,10 @@ test("cron uç noktası Bearer olmadan 401 döner", async ({ request }) => {
   const res = await request.post("/api/cron/video-tara");
   expect(res.status()).toBe(401);
 });
+
+test("CSV raporu oturumsuz indirilemez", async ({ page }) => {
+  // Rapor herkesin ilerlemesini içerir: oturumsuz istek girişe atılmalı, CSV dönmemeli.
+  const res = await page.goto("/api/admin/rapor?tip=uyeler");
+  expect(res?.headers()["content-type"]).not.toContain("text/csv");
+  await expect(page).toHaveURL(/\/login/);
+});
