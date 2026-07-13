@@ -48,6 +48,10 @@ export function createProductionPorts(
     now,
     maxCandidates: 20,
     esikler,
+    kalite: {
+      minSkor: Number(process.env.VIDEO_MIN_SKOR) || 70,
+      modulBasinaMax: Number(process.env.VIDEO_MODUL_BASINA_MAX) || 3,
+    },
     getErrors: () => hatalar,
 
     async getCurriculum() {
@@ -56,6 +60,18 @@ export function createProductionPorts(
       if (tErr) onError(`tracks okunamadı: ${tErr.message}`);
       if (mErr) onError(`modules okunamadı: ${mErr.message}`);
       return { tracks: (tracks ?? []) as TrackRow[], modules: (modules ?? []) as ModuleRow[] };
+    },
+
+    async getPendingCountsByModule() {
+      const { data } = await db
+        .from("video_suggestions")
+        .select("onerilen_module_id")
+        .eq("durum", "pending");
+      const out: Record<string, number> = {};
+      for (const r of (data ?? []) as { onerilen_module_id: string | null }[]) {
+        if (r.onerilen_module_id) out[r.onerilen_module_id] = (out[r.onerilen_module_id] ?? 0) + 1;
+      }
+      return out;
     },
 
     async getExistingIds() {

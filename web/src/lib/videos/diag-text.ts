@@ -20,6 +20,18 @@ export function elemeMetni(eleme: ScanDiag["eleme"]): string {
   return parts.join(", ");
 }
 
+// Kalite kapısının elediklerini yazar; hiçbiri elenmediyse boş döner.
+export function kaliteMetni(d: ScanDiag): string {
+  const k = d.kalite_eleme;
+  if (!k) return "";
+  const parts = [
+    k.dusuk_skor > 0 && `${k.dusuk_skor} düşük skor`,
+    k.modul_dolu > 0 && `${k.modul_dolu} modül dolu`,
+    k.ayni_kanal > 0 && `${k.ayni_kanal} aynı kanal`,
+  ].filter(Boolean);
+  return parts.length ? `kalite kapısı: ${parts.join(", ")}` : "";
+}
+
 // Taramanın hunisini tek satırda anlatır — "öneri neden gelmedi" sorusunun cevabı.
 export function huniMetni(d: ScanDiag): string {
   const elenen = Object.values(d.eleme).reduce((a, b) => a + b, 0);
@@ -30,7 +42,8 @@ export function huniMetni(d: ScanDiag): string {
     `${elenen} elendi${el ? ` (${el})` : ""}`,
     `${d.siniflandirilan} sınıflandırıldı`,
     `${d.gemini_uygun} uygun · ${d.gemini_uygunsuz} uygunsuz · ${d.gemini_hata} hata`,
-  ].join(" · ");
+    kaliteMetni(d),
+  ].filter(Boolean).join(" · ");
 }
 
 // Öneri çıkmadıysa en olası tek sebebi söyler. Tahmin değil: huniye bakar.
@@ -45,5 +58,7 @@ export function neOldu(d: ScanDiag): string | null {
   }
   if (d.gemini_uygun === 0 && d.gemini_hata > 0) return "Gemini sınıflandırması hata verdi.";
   if (d.gemini_uygun === 0) return "Gemini hiçbir videoyu modüllere uygun bulmadı.";
+  const k = kaliteMetni(d);
+  if (k) return `Uygun adaylar bulundu ama kalite kapısı eledi (${k.replace("kalite kapısı: ", "")}).`;
   return null;
 }

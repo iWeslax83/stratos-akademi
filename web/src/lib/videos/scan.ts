@@ -1,6 +1,7 @@
 import type { ScanPorts, ScanSummary, PendingRow, ScanDiag } from "@/lib/videos/types";
 import { buildQueries } from "@/lib/videos/queries";
 import { filtreleVeSay, bosEleme } from "@/lib/videos/filter";
+import { kaliteKapisi } from "@/lib/videos/kalite";
 
 const VARSAYILAN_ESIKLER = { minViews: 10000, minDurationSn: 180, maxAgeYears: 4 };
 
@@ -8,7 +9,9 @@ function bosDiag(): ScanDiag {
   return {
     modul_sayisi: 0, sorgu_sayisi: 0, arama_sonucu: 0, tekil_id: 0, detay_cekilen: 0,
     eleme: bosEleme(), filtreden_gecen: 0, siniflandirilan: 0,
-    gemini_uygun: 0, gemini_uygunsuz: 0, gemini_hata: 0, hatalar: [],
+    gemini_uygun: 0, gemini_uygunsuz: 0, gemini_hata: 0,
+    kalite_eleme: { dusuk_skor: 0, modul_dolu: 0, ayni_kanal: 0 },
+    hatalar: [],
   };
 }
 
@@ -76,14 +79,25 @@ export async function runVideoScan(ports: ScanPorts): Promise<ScanSummary> {
     });
   }
 
-  if (rows.length > 0) await ports.insertPending(rows);
+  // Kalite kapısı: düşük güvenli, tek modüle yığılan ve tek kanaldan tekrar eden adaylar
+  // kuyruğa girmesin. Kapatmak için ports.kalite = null.
+  let yazilacak = rows;
+  if (ports.kalite !== null) {
+    const kalite = ports.kalite ?? { minSkor: 70, modulBasinaMax: 3 };
+    const mevcut = ports.getPendingCountsByModule ? await ports.getPendingCountsByModule() : {};
+    const { gecen, elenen } = kaliteKapisi(rows, { ...kalite, mevcutModulSayilari: mevcut });
+    diag.kalite_eleme = elenen;
+    yazilacak = gecen;
+  }
+
+  if (yazilacak.length > 0) await ports.insertPending(yazilacak);
   const budanan = await ports.prune();
-  if (rows.length > 0) await ports.notifyAdmins(rows.length);
+  if (yazilacak.length > 0) await ports.notifyAdmins(yazilacak.length);
 
   return bitir({
     taranan: details.length,
     aday: filtered.length,
-    eklenen: rows.length,
+    eklenen: yazilacak.length,
     budanan,
     diag,
   });

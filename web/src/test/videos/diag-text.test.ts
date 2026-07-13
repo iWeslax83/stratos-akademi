@@ -7,7 +7,8 @@ function diag(over: Partial<ScanDiag> = {}): ScanDiag {
   return {
     modul_sayisi: 3, sorgu_sayisi: 3, arama_sonucu: 30, tekil_id: 25, detay_cekilen: 25,
     eleme: bosEleme(), filtreden_gecen: 5, siniflandirilan: 5,
-    gemini_uygun: 2, gemini_uygunsuz: 3, gemini_hata: 0, hatalar: [],
+    gemini_uygun: 2, gemini_uygunsuz: 3, gemini_hata: 0,
+    kalite_eleme: { dusuk_skor: 0, modul_dolu: 0, ayni_kanal: 0 }, hatalar: [],
     ...over,
   };
 }

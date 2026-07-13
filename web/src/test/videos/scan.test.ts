@@ -4,7 +4,7 @@ import type { ScanPorts, VideoDetail, PendingRow, ScanSummary } from "@/lib/vide
 
 function vd(id: string): VideoDetail {
   return {
-    youtube_video_id: id, baslik: "Drone dersi", aciklama: "Türkçe anlatım", kanal: "K",
+    youtube_video_id: id, baslik: "Drone dersi", aciklama: "Türkçe anlatım", kanal: "Kanal-" + id,
     sure_sn: 600, izlenme: 50000, yayin_tarihi: "2024-01-01T00:00:00Z",
     embeddable: true, blockedInTR: false, isLiveRemnant: false,
   };
@@ -120,11 +120,40 @@ describe("runVideoScan", () => {
     expect(summary).toMatchObject({ eklenen: 0, budanan: 3 });
   });
 
+  it("kalite kapısı düşük skorluyu eler ve huniye yazar", async () => {
+    const insertPending = vi.fn(async (_rows: PendingRow[]) => {});
+    const summary = await runVideoScan(ports({
+      insertPending,
+      kalite: { minSkor: 70, modulBasinaMax: 3 },
+      classify: async (v) => ({
+        uygun: true, module_id: "m1",
+        skor: v.youtube_video_id === "aaa" ? 90 : 40, // bbb eşiğin altında
+        gerekce: "",
+      }),
+    }));
+    expect(insertPending.mock.calls[0][0]).toHaveLength(1);
+    expect(summary.diag.kalite_eleme.dusuk_skor).toBe(1);
+    expect(summary.eklenen).toBe(1);
+  });
+
+  it("modülde zaten bekleyen öneri varsa sınırı ona göre uygular", async () => {
+    const insertPending = vi.fn(async (_rows: PendingRow[]) => {});
+    const summary = await runVideoScan(ports({
+      insertPending,
+      kalite: { minSkor: 70, modulBasinaMax: 2 },
+      getPendingCountsByModule: async () => ({ m1: 2 }), // m1 kuyruğu zaten dolu
+    }));
+    expect(insertPending).not.toHaveBeenCalled();
+    expect(summary.diag.kalite_eleme.modul_dolu).toBe(2);
+    expect(summary.eklenen).toBe(0);
+  });
+
   it("aday sayısını maxCandidates ile sınırlar", async () => {
     const many = Array.from({ length: 40 }, (_, k) => "v" + k);
     const insertPending = vi.fn(async (_rows: PendingRow[]) => {});
     await runVideoScan(ports({
       maxCandidates: 5,
+      kalite: null, // kalite kapısı kapalı: burada yalnız maxCandidates kesimi test ediliyor
       searchVideoIds: async () => many,
       fetchVideoDetails: async () => many.map(vd),
       insertPending,

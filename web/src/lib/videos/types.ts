@@ -69,6 +69,8 @@ export type ScanDiag = {
   gemini_uygun: number;
   gemini_uygunsuz: number;
   gemini_hata: number;
+  // Gemini uygun buldu ama kalite kapısı eledi (düşük skor / modül dolu / aynı kanal).
+  kalite_eleme: { dusuk_skor: number; modul_dolu: number; ayni_kanal: number };
   hatalar: string[]; // YouTube/Gemini HTTP + ağ hataları (kota vb.)
 };
 
@@ -86,6 +88,9 @@ export type ScanPorts = {
   now: Date;
   maxCandidates: number;
   esikler?: Esikler;
+  // Kalite kapısı ayarı; null → kapı kapalı (her uygun aday kuyruğa girer).
+  kalite?: { minSkor: number; modulBasinaMax: number } | null;
+  getPendingCountsByModule?: () => Promise<Record<string, number>>;
   recordRun?: (summary: ScanSummary, hata: string | null) => Promise<void>;
   getErrors?: () => string[]; // YouTube/Gemini çağrılarında biriken hatalar
   getCurriculum: () => Promise<{ tracks: TrackRow[]; modules: ModuleRow[] }>;
