@@ -85,6 +85,9 @@ export function QuizRunner({
         >
           Puanın: %{result.puan} —{" "}
           {result.gecti ? "Geçtin!" : `Geçer not %${quiz.gecme_esigi}, tekrar deneyebilirsin.`}
+          <p className="mt-1 text-xs font-normal opacity-80">
+            Liderlik puanına ilk denemen sayılır; tekrar denemeler öğrenmek için serbest.
+          </p>
         </div>
       )}
 
