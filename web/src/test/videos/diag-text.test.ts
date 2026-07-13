@@ -53,3 +53,21 @@ describe("neOldu", () => {
     expect(neOldu(diag({ modul_sayisi: 0 }))).toContain("modül yok");
   });
 });
+
+describe("neOldu — kalite kapısı", () => {
+  it("kapı adayların hepsini elediyse sebep gösterir", () => {
+    const s = neOldu(diag({
+      gemini_uygun: 2,
+      kalite_eleme: { dusuk_skor: 2, modul_dolu: 0, ayni_kanal: 0 },
+    }));
+    expect(s).toContain("kalite kapısı hepsini eledi");
+  });
+
+  it("kapı adayların yalnız BİR KISMINI elediyse sebep yok (öneri eklendi)", () => {
+    const s = neOldu(diag({
+      gemini_uygun: 9,
+      kalite_eleme: { dusuk_skor: 0, modul_dolu: 1, ayni_kanal: 0 },
+    }));
+    expect(s).toBeNull();
+  });
+});

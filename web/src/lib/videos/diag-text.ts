@@ -58,7 +58,11 @@ export function neOldu(d: ScanDiag): string | null {
   }
   if (d.gemini_uygun === 0 && d.gemini_hata > 0) return "Gemini sınıflandırması hata verdi.";
   if (d.gemini_uygun === 0) return "Gemini hiçbir videoyu modüllere uygun bulmadı.";
-  const k = kaliteMetni(d);
-  if (k) return `Uygun adaylar bulundu ama kalite kapısı eledi (${k.replace("kalite kapısı: ", "")}).`;
+  // Kalite kapısı adayların HEPSİNİ elediyse sebep odur; bir kısmını elediyse sorun yok.
+  const k = d.kalite_eleme;
+  const elenen = k.dusuk_skor + k.modul_dolu + k.ayni_kanal;
+  if (elenen >= d.gemini_uygun && d.gemini_uygun > 0) {
+    return `Uygun adaylar bulundu ama kalite kapısı hepsini eledi (${kaliteMetni(d).replace("kalite kapısı: ", "")}).`;
+  }
   return null;
 }

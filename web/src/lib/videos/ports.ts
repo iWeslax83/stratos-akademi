@@ -123,13 +123,16 @@ export function createProductionPorts(
     },
 
     async notifyAdmins(newCount: number) {
-      const { data: admins } = await db.from("profiles").select("id").eq("role", "admin");
+      const { data: admins, error: aErr } = await db.from("profiles").select("id").eq("role", "admin");
+      if (aErr) { onError(`admin listesi okunamadı: ${aErr.message}`); return; }
       const rows = ((admins ?? []) as { id: string }[]).map((a) => ({
         user_id: a.id,
         mesaj: `${newCount} yeni video önerisi`,
         link: "/admin/oneriler",
       }));
-      if (rows.length > 0) await db.from("notifications").insert(rows);
+      if (rows.length === 0) return;
+      const { error } = await db.from("notifications").insert(rows);
+      if (error) onError(`admin bildirimi atılamadı: ${error.message}`);
     },
 
     async recordRun(summary: ScanSummary, hata: string | null) {

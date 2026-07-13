@@ -34,7 +34,17 @@ if (!url) {
   process.exit(1);
 }
 
-const client = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false } });
+// Supabase şifreleri #, ? gibi URL'de anlamlı karakterler içerebilir. Ham dizeyi
+// connectionString olarak vermek bunları fragment/query sanıp bağlantıyı bozar,
+// o yüzden alanlarına ayırıp tek tek geçiyoruz.
+function parcala(dsn) {
+  const m = /^postgres(?:ql)?:\/\/([^:]+):(.*)@([^/@]+?)(?::(\d+))?\/([^?]+)/.exec(dsn);
+  if (!m) throw new Error("DATABASE_URL biçimi tanınmadı (postgresql://kullanıcı:şifre@host:port/db bekleniyor)");
+  const [, user, password, host, port, database] = m;
+  return { user, password, host, port: Number(port ?? 5432), database };
+}
+
+const client = new pg.Client({ ...parcala(url), ssl: { rejectUnauthorized: false } });
 await client.connect();
 
 await client.query(`
