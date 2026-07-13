@@ -98,7 +98,17 @@ export async function taraSimdi(): Promise<ActionResult & { summary?: ScanSummar
 
     const youtubeKey = process.env.YOUTUBE_API_KEY;
     const geminiKey = process.env.GOOGLE_API_KEY;
-    if (!youtubeKey || !geminiKey) return { ok: false, error: "API anahtarları eksik (sunucu)." };
+    const eksik = [
+      !youtubeKey && "YOUTUBE_API_KEY",
+      !geminiKey && "GOOGLE_API_KEY",
+    ].filter(Boolean);
+    if (!youtubeKey || !geminiKey) {
+      return {
+        ok: false,
+        error: `Sunucuda şu ortam değişkeni tanımlı değil: ${eksik.join(", ")}. `
+          + "Tarama hiç başlatılamıyor — anahtarları web/.env.local (ve Vercel proje ayarları) içine ekle.",
+      };
+    }
 
     const svc = createServiceClient();
     const ports = createProductionPorts(svc, { youtubeKey, geminiKey });

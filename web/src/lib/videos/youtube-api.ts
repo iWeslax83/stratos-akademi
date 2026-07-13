@@ -1,4 +1,5 @@
 import type { VideoDetail } from "@/lib/videos/types";
+import { hataOzeti } from "@/lib/videos/google-error";
 
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos";
@@ -12,7 +13,10 @@ export function parseIsoDuration(iso: string): number {
 
 export async function searchVideoIds(
   query: string,
-  deps: { apiKey: string; publishedAfter: string; max?: number; fetchImpl?: typeof fetch },
+  deps: {
+    apiKey: string; publishedAfter: string; max?: number;
+    fetchImpl?: typeof fetch; onError?: (m: string) => void;
+  },
 ): Promise<string[]> {
   const f = deps.fetchImpl ?? fetch;
   const url = new URL(SEARCH_URL);
@@ -27,12 +31,14 @@ export async function searchVideoIds(
     const res = await f(url.toString());
     if (!res.ok) {
       console.error("searchVideoIds HTTP", res.status);
+      deps.onError?.(`YouTube search HTTP ${res.status}: ${await hataOzeti(res)}`);
       return [];
     }
     const data = (await res.json()) as { items?: { id?: { videoId?: string } }[] };
     return (data.items ?? []).map((it) => it.id?.videoId).filter((x): x is string => !!x);
   } catch (e) {
     console.error("searchVideoIds:", e);
+    deps.onError?.(`YouTube search ağ hatası: ${String(e)}`);
     return [];
   }
 }
@@ -64,7 +70,7 @@ function normalize(it: VideoItem): VideoDetail {
 
 export async function fetchVideoDetails(
   ids: string[],
-  deps: { apiKey: string; fetchImpl?: typeof fetch },
+  deps: { apiKey: string; fetchImpl?: typeof fetch; onError?: (m: string) => void },
 ): Promise<VideoDetail[]> {
   if (ids.length === 0) return [];
   const f = deps.fetchImpl ?? fetch;
@@ -79,12 +85,14 @@ export async function fetchVideoDetails(
       const res = await f(url.toString());
       if (!res.ok) {
         console.error("fetchVideoDetails HTTP", res.status);
+        deps.onError?.(`YouTube videos HTTP ${res.status}: ${await hataOzeti(res)}`);
         continue;
       }
       const data = (await res.json()) as { items?: VideoItem[] };
       for (const it of data.items ?? []) out.push(normalize(it));
     } catch (e) {
       console.error("fetchVideoDetails:", e);
+      deps.onError?.(`YouTube videos ağ hatası: ${String(e)}`);
     }
   }
   return out;

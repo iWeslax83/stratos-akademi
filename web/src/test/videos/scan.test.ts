@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { runVideoScan } from "@/lib/videos/scan";
-import type { ScanPorts, VideoDetail, PendingRow } from "@/lib/videos/types";
+import type { ScanPorts, VideoDetail, PendingRow, ScanSummary } from "@/lib/videos/types";
 
 function vd(id: string): VideoDetail {
   return {
@@ -49,7 +49,64 @@ describe("runVideoScan", () => {
       searchVideoIds,
     }));
     expect(searchVideoIds).not.toHaveBeenCalled();
-    expect(summary).toEqual({ taranan: 0, aday: 0, eklenen: 0, budanan: 0 });
+    expect(summary).toMatchObject({ taranan: 0, aday: 0, eklenen: 0, budanan: 0 });
+  });
+
+  it("mekanik elemeyi neden bazında sayar (teşhis hunisi)", async () => {
+    const kisa = { ...vd("kisa"), sure_sn: 30 };
+    const azIzlenme = { ...vd("az"), izlenme: 5 };
+    const eski = { ...vd("eski"), yayin_tarihi: "2010-01-01T00:00:00Z" };
+    const summary = await runVideoScan(ports({
+      searchVideoIds: async () => ["ok", "kisa", "az", "eski"],
+      fetchVideoDetails: async () => [vd("ok"), kisa, azIzlenme, eski],
+    }));
+    expect(summary.diag.detay_cekilen).toBe(4);
+    expect(summary.diag.eleme).toMatchObject({ kisa_sure: 1, az_izlenme: 1, eski: 1 });
+    expect(summary.diag.filtreden_gecen).toBe(1);
+    expect(summary.eklenen).toBe(1);
+  });
+
+  it("Gemini uygunsuz/hata sonuçlarını ayrı sayar", async () => {
+    let n = 0;
+    const summary = await runVideoScan(ports({
+      classify: async () => {
+        n += 1;
+        if (n === 1) return null; // API hatası
+        return { uygun: false, module_id: null, skor: 0, gerekce: "" };
+      },
+    }));
+    expect(summary.diag.siniflandirilan).toBe(2);
+    expect(summary.diag.gemini_hata).toBe(1);
+    expect(summary.diag.gemini_uygunsuz).toBe(1);
+    expect(summary.diag.gemini_uygun).toBe(0);
+    expect(summary.eklenen).toBe(0);
+  });
+
+  it("koşuyu hatalarıyla birlikte kaydeder", async () => {
+    const recordRun = vi.fn(async () => {});
+    await runVideoScan(ports({ recordRun, getErrors: () => ["YouTube search HTTP 403: quotaExceeded"] }));
+    expect(recordRun).toHaveBeenCalledOnce();
+    const [summary, hata] = recordRun.mock.calls[0] as unknown as [ScanSummary, string | null];
+    expect(hata).toBeNull();
+    expect(summary.diag.hatalar).toEqual(["YouTube search HTTP 403: quotaExceeded"]);
+  });
+
+  it("modül yoksa koşuyu hata sebebiyle kaydeder", async () => {
+    const recordRun = vi.fn(async () => {});
+    await runVideoScan(ports({ getCurriculum: async () => ({ tracks: [], modules: [] }), recordRun }));
+    const [, hata] = recordRun.mock.calls[0] as unknown as [ScanSummary, string | null];
+    expect(hata).toBe("müfredatta modül yok");
+  });
+
+  it("modülün track'i yoksa sorgu üretemez ve bunu hata olarak kaydeder", async () => {
+    const recordRun = vi.fn(async () => {});
+    const summary = await runVideoScan(ports({
+      getCurriculum: async () => ({ tracks: [], modules: [{ id: "m1", track_id: "yok", ad: "Temel" }] }),
+      recordRun,
+    }));
+    expect(summary.diag.sorgu_sayisi).toBe(0);
+    const [, hata] = recordRun.mock.calls[0] as unknown as [ScanSummary, string | null];
+    expect(hata).toContain("arama sorgusu");
   });
 
   it("uygun aday yoksa bildirmez ama budamayı yapar", async () => {

@@ -46,11 +46,48 @@ export type PendingRow = {
   durum: "pending";
 };
 
-export type ScanSummary = { taranan: number; aday: number; eklenen: number; budanan: number };
+// Bir videonun mekanik filtrede neden elendiği. Teşhis hunisinin ana ekseni.
+export type RedNedeni =
+  | "zaten_var"
+  | "canli_yayin"
+  | "gomulemez"
+  | "tr_engelli"
+  | "az_izlenme"
+  | "kisa_sure"
+  | "eski"
+  | "dil";
+
+export type ScanDiag = {
+  modul_sayisi: number;
+  sorgu_sayisi: number;
+  arama_sonucu: number; // tekrarlar dahil toplam id
+  tekil_id: number;
+  detay_cekilen: number;
+  eleme: Record<RedNedeni, number>;
+  filtreden_gecen: number; // maxCandidates kesiminden ÖNCE
+  siniflandirilan: number; // Gemini'ye gönderilen
+  gemini_uygun: number;
+  gemini_uygunsuz: number;
+  gemini_hata: number;
+  hatalar: string[]; // YouTube/Gemini HTTP + ağ hataları (kota vb.)
+};
+
+export type ScanSummary = {
+  taranan: number;
+  aday: number;
+  eklenen: number;
+  budanan: number;
+  diag: ScanDiag;
+};
+
+export type Esikler = { minViews: number; minDurationSn: number; maxAgeYears: number };
 
 export type ScanPorts = {
   now: Date;
   maxCandidates: number;
+  esikler?: Esikler;
+  recordRun?: (summary: ScanSummary, hata: string | null) => Promise<void>;
+  getErrors?: () => string[]; // YouTube/Gemini çağrılarında biriken hatalar
   getCurriculum: () => Promise<{ tracks: TrackRow[]; modules: ModuleRow[] }>;
   getExistingIds: () => Promise<Set<string>>;
   searchVideoIds: (query: string) => Promise<string[]>;

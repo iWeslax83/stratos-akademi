@@ -1,4 +1,4 @@
-import type { VideoDetail, FilterOpts } from "@/lib/videos/types";
+import type { VideoDetail, FilterOpts, RedNedeni } from "@/lib/videos/types";
 import { detectLang } from "@/lib/videos/lang";
 
 function ageYears(iso: string, now: Date): number {
@@ -7,27 +7,48 @@ function ageYears(iso: string, now: Date): number {
   return (now.getTime() - t) / (365.25 * 24 * 3600 * 1000);
 }
 
+// Elenme nedeni, ya da geçtiyse null. Sıra önemli: ilk eşleşen neden raporlanır.
+export function redNedeni(v: VideoDetail, opts: FilterOpts): RedNedeni | null {
+  if (opts.existingIds.has(v.youtube_video_id)) return "zaten_var";
+  if (v.isLiveRemnant) return "canli_yayin";
+  if (!v.embeddable) return "gomulemez";
+  if (v.blockedInTR) return "tr_engelli";
+  if ((v.izlenme ?? 0) < opts.minViews) return "az_izlenme";
+  if ((v.sure_sn ?? 0) < opts.minDurationSn) return "kisa_sure";
+  if (ageYears(v.yayin_tarihi, opts.now) > opts.maxAgeYears) return "eski";
+  if (detectLang(`${v.baslik} ${v.aciklama}`) === "other") return "dil";
+  return null;
+}
+
+export function bosEleme(): Record<RedNedeni, number> {
+  return {
+    zaten_var: 0, canli_yayin: 0, gomulemez: 0, tr_engelli: 0,
+    az_izlenme: 0, kisa_sure: 0, eski: 0, dil: 0,
+  };
+}
+
 export function passesFilter(v: VideoDetail, opts: FilterOpts): boolean {
-  if (opts.existingIds.has(v.youtube_video_id)) return false;
-  if (v.isLiveRemnant) return false;
-  if (!v.embeddable) return false;
-  if (v.blockedInTR) return false;
-  if ((v.izlenme ?? 0) < opts.minViews) return false;
-  if ((v.sure_sn ?? 0) < opts.minDurationSn) return false;
-  if (ageYears(v.yayin_tarihi, opts.now) > opts.maxAgeYears) return false;
-  const lang = detectLang(`${v.baslik} ${v.aciklama}`);
-  if (lang === "other") return false;
-  return true;
+  return redNedeni(v, opts) === null;
+}
+
+// Geçenleri ve her nedenin kaç videoyu elediğini birlikte döner (teşhis hunisi).
+export function filtreleVeSay(
+  vs: VideoDetail[],
+  opts: FilterOpts,
+): { gecen: VideoDetail[]; eleme: Record<RedNedeni, number> } {
+  const seen = new Set<string>();
+  const gecen: VideoDetail[] = [];
+  const eleme = bosEleme();
+  for (const v of vs) {
+    if (seen.has(v.youtube_video_id)) continue;
+    seen.add(v.youtube_video_id);
+    const neden = redNedeni(v, opts);
+    if (neden) { eleme[neden] += 1; continue; }
+    gecen.push(v);
+  }
+  return { gecen, eleme };
 }
 
 export function mechanicalFilter(vs: VideoDetail[], opts: FilterOpts): VideoDetail[] {
-  const seen = new Set<string>();
-  const out: VideoDetail[] = [];
-  for (const v of vs) {
-    if (seen.has(v.youtube_video_id)) continue;
-    if (!passesFilter(v, opts)) continue;
-    seen.add(v.youtube_video_id);
-    out.push(v);
-  }
-  return out;
+  return filtreleVeSay(vs, opts).gecen;
 }

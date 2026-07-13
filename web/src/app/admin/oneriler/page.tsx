@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { OneriKarti } from "@/components/admin/OneriKarti";
 import { CopKutusuKarti } from "@/components/admin/CopKutusuKarti";
 import { TaraSimdiButton } from "@/components/admin/TaraSimdiButton";
+import { TaramaTeshis, type ScanRun } from "@/components/admin/TaramaTeshis";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,12 @@ export default async function OnerilerPage() {
     .eq("durum", "rejected")
     .order("rejected_at", { ascending: false })
     .limit(30);
+
+  const { data: runs } = await supabase
+    .from("video_scan_runs")
+    .select("id, created_at, taranan, aday, eklenen, budanan, hata, diag")
+    .order("created_at", { ascending: false })
+    .limit(5);
 
   const pendingRows = (pending ?? []) as {
     id: string; youtube_video_id: string; baslik: string; kanal: string | null;
@@ -75,6 +82,13 @@ export default async function OnerilerPage() {
             </Card>
           ))
         )}
+      </div>
+
+      <h2 className="mt-10 font-display text-xl font-bold text-navy dark:text-white">
+        Tarama Geçmişi
+      </h2>
+      <div className="mt-4">
+        <TaramaTeshis runs={(runs ?? []) as ScanRun[]} />
       </div>
 
       <h2 className="mt-10 font-display text-xl font-bold text-navy dark:text-white">

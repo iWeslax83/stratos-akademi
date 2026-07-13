@@ -1,4 +1,5 @@
 import type { VideoDetail, ModuleRow, Classification } from "@/lib/videos/types";
+import { hataOzeti } from "@/lib/videos/google-error";
 
 const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
@@ -42,7 +43,7 @@ function buildPrompt(v: VideoDetail, modules: ModuleRow[]): string {
 export async function geminiClassify(
   v: VideoDetail,
   modules: ModuleRow[],
-  deps: { apiKey: string; fetchImpl?: typeof fetch },
+  deps: { apiKey: string; fetchImpl?: typeof fetch; onError?: (m: string) => void },
 ): Promise<Classification | null> {
   const f = deps.fetchImpl ?? fetch;
   try {
@@ -56,15 +57,19 @@ export async function geminiClassify(
     });
     if (!res.ok) {
       console.error("geminiClassify HTTP", res.status);
+      deps.onError?.(`Gemini HTTP ${res.status}: ${await hataOzeti(res)}`);
       return null;
     }
     const data = (await res.json()) as {
       candidates?: { content?: { parts?: { text?: string }[] } }[];
     };
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    return parseClassification(text, new Set(modules.map((m) => m.id)));
+    const c = parseClassification(text, new Set(modules.map((m) => m.id)));
+    if (!c) deps.onError?.(`Gemini yanıtı ayrıştırılamadı: ${text.slice(0, 120)}`);
+    return c;
   } catch (e) {
     console.error("geminiClassify:", e);
+    deps.onError?.(`Gemini ağ hatası: ${String(e)}`);
     return null;
   }
 }
