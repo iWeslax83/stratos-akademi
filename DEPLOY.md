@@ -6,7 +6,28 @@ Uygulama kodu prod-ready (tsc/eslint/build temiz). Aşağıdaki adımlar **kodda
 
 ## 1. Supabase: migration'ları uygula
 
-SQL editor'de `supabase/migrations/` altındaki dosyaları **numara sırasıyla** çalıştır (`0001` → `0027`). Zaten uygulanmışları atla.
+İki yol var.
+
+**A) Otomatik (önerilen).** Supabase Dashboard → Settings → Database → Connection string →
+*Session pooler* URI'sini `web/.env.local` içine `DATABASE_URL=` olarak koy, sonra:
+
+```bash
+cd web
+node scripts/migrate.mjs --baseline 0029   # 0001–0029 elle uygulanmıştı: çalıştırmadan işaretle
+node scripts/migrate.mjs                   # bekleyenleri uygular
+node scripts/migrate.mjs --status          # durumu gösterir
+```
+
+Uygulananlar `public.schema_migrations` tablosunda tutulur; tekrar çalıştırmak güvenlidir.
+
+**B) Elle.** SQL editor'de `supabase/migrations/` altındaki dosyaları **numara sırasıyla** çalıştır.
+Zaten uygulanmışları atla.
+
+> **service_role GRANT'leri şart.** Bu projede SQL editor'den açılan tablolara `service_role`
+> otomatik grant almıyor. Cron/sunucu işleri (video taraması, görev bildirimleri) service_role
+> ile koşar; grant yoksa `permission denied for table ...` alıp **sessizce hiçbir şey yapmaz**.
+> `0031_grant_service_role_videos.sql` bu grant'ları verir — atlanırsa otomatik video önerileri
+> hiç gelmez.
 
 Doğrulama — şu tabloların var olduğunu kontrol et:
 
