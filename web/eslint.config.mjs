@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Playwright çıktıları: üretilen dosyalar, lint edilmez.
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 
