@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { createServiceClient } from "@/lib/supabase/service";
 import { createProductionPorts } from "@/lib/videos/ports";
 import { runVideoScan } from "@/lib/videos/scan";
 import type { ScanSummary } from "@/lib/videos/types";
@@ -88,7 +87,7 @@ export async function geriGetir(id: string): Promise<ActionResult> {
   } catch (e) { console.error("geriGetir:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
 
-// "Şimdi Tara" — admin doğrular, sonra servis istemcisiyle tarama koşar.
+// "Şimdi Tara" — admin doğrulanır, sonra tarama admin'in kendi oturumuyla koşar.
 export async function taraSimdi(): Promise<ActionResult & { summary?: ScanSummary }> {
   try {
     const supabase = await createClient();
@@ -110,8 +109,10 @@ export async function taraSimdi(): Promise<ActionResult & { summary?: ScanSummar
       };
     }
 
-    const svc = createServiceClient();
-    const ports = createProductionPorts(svc, { youtubeKey, geminiKey });
+    // Taramayı admin'in KENDİ istemcisiyle koştur: RLS admin politikaları müfredatı okumaya ve
+    // öneri yazmaya zaten izin verir. service_role'e bağlanmazsak, service_role GRANT'leri
+    // eksik olsa bile (bkz. 0031) manuel tarama çalışır.
+    const ports = createProductionPorts(supabase, { youtubeKey, geminiKey });
     const summary = await runVideoScan(ports);
     revalidatePath("/admin/oneriler");
     return { ok: true, summary };

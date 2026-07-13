@@ -45,23 +45,27 @@ export default async function AdminTracksPage({
           list.map((t) => (
             <div
               key={t.id}
-              className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0"
+              className="flex flex-col gap-2 border-b border-[var(--line)] py-3 last:border-b-0 sm:flex-row sm:items-center sm:gap-x-3"
             >
-              <span className="w-7 text-center text-xs font-bold text-muted">{t.sira}</span>
-              <span className="text-lg">{t.ikon ?? "•"}</span>
-              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
-                {t.ad} <span className="text-xs font-normal text-muted">/{t.slug}</span>
-              </span>
-              <Link href={`/admin/mufredat/${t.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
-                Modüller →
-              </Link>
-              <Link href={`/admin/mufredat?edit=${t.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
-                Düzenle
-              </Link>
-              <DeleteButton
-                onDelete={deleteTrack.bind(null, t.id)}
-                uyari={`"${t.ad}" dalını silmek istediğine emin misin? Tüm modülleri, dersleri ve quizleri de silinecek.`}
-              />
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <span className="w-7 shrink-0 text-center text-xs font-bold text-muted">{t.sira}</span>
+                <span className="shrink-0 text-lg">{t.ikon ?? "•"}</span>
+                <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
+                  {t.ad} <span className="text-xs font-normal text-muted">/{t.slug}</span>
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 pl-10 sm:shrink-0 sm:pl-0">
+                <Link href={`/admin/mufredat/${t.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
+                  Modüller →
+                </Link>
+                <Link href={`/admin/mufredat?edit=${t.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+                  Düzenle
+                </Link>
+                <DeleteButton
+                  onDelete={deleteTrack.bind(null, t.id)}
+                  uyari={`"${t.ad}" dalını silmek istediğine emin misin? Tüm modülleri, dersleri ve quizleri de silinecek.`}
+                />
+              </div>
             </div>
           ))
         )}

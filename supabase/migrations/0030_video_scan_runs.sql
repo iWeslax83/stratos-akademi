@@ -17,8 +17,11 @@ create index if not exists idx_video_scan_runs_created
 
 alter table public.video_scan_runs enable row level security;
 
--- Yalnız admin okur. Yazan taraf cron/server action → servis anahtarı (RLS bypass).
+-- Yalnız admin okur/yazar. Cron servis anahtarıyla yazar (RLS bypass), "Şimdi Tara" ise
+-- admin'in kendi oturumuyla yazar → admin'e insert de gerekli.
 create policy "video_scan_runs admin okur" on public.video_scan_runs
   for select to authenticated using (public.is_admin());
+create policy "video_scan_runs admin yazar" on public.video_scan_runs
+  for insert to authenticated with check (public.is_admin());
 
-grant select on public.video_scan_runs to authenticated;
+grant select, insert on public.video_scan_runs to authenticated;

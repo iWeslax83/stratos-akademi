@@ -57,20 +57,24 @@ export default async function AdminModulesPage({
           list.map((m) => (
             <div
               key={m.id}
-              className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0"
+              className="flex flex-col gap-2 border-b border-[var(--line)] py-3 last:border-b-0 sm:flex-row sm:items-center sm:gap-x-3"
             >
-              <span className="w-7 text-center text-xs font-bold text-muted">{m.sira}</span>
-              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">{m.ad}</span>
-              <Link href={`/admin/mufredat/${trackId}/${m.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
-                Dersler →
-              </Link>
-              <Link href={`/admin/mufredat/${trackId}?edit=${m.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
-                Düzenle
-              </Link>
-              <DeleteButton
-                onDelete={deleteModule.bind(null, m.id, trackId)}
-                uyari={`"${m.ad}" modülünü silmek istediğine emin misin? Dersleri ve quizi de silinecek.`}
-              />
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <span className="w-7 shrink-0 text-center text-xs font-bold text-muted">{m.sira}</span>
+                <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">{m.ad}</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 pl-10 sm:shrink-0 sm:pl-0">
+                <Link href={`/admin/mufredat/${trackId}/${m.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
+                  Dersler →
+                </Link>
+                <Link href={`/admin/mufredat/${trackId}?edit=${m.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+                  Düzenle
+                </Link>
+                <DeleteButton
+                  onDelete={deleteModule.bind(null, m.id, trackId)}
+                  uyari={`"${m.ad}" modülünü silmek istediğine emin misin? Dersleri ve quizi de silinecek.`}
+                />
+              </div>
             </div>
           ))
         )}

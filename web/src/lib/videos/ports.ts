@@ -23,9 +23,12 @@ function esiklerFromEnv(): Esikler {
   };
 }
 
-// svc = createServiceClient() (RLS bypass). now enjekte edilebilir (test/deterministiklik).
+// db: taramanın tüm DB işlerini yapan istemci. İki geçerli seçenek var:
+//   • cron  → createServiceClient() (oturum yok; RLS bypass, ama service_role GRANT'leri şart — bkz. 0031)
+//   • "Şimdi Tara" → giriş yapmış admin'in kendi istemcisi (RLS admin politikaları zaten izin verir)
+// Admin istemcisiyle koşmak, service_role grant'leri eksikse bile manuel taramanın çalışmasını sağlar.
 export function createProductionPorts(
-  svc: SupabaseClient,
+  db: SupabaseClient,
   deps: { youtubeKey: string; geminiKey: string; now?: Date; esikler?: Esikler },
 ): ScanPorts {
   const now = deps.now ?? new Date();
@@ -47,8 +50,8 @@ export function createProductionPorts(
     getErrors: () => hatalar,
 
     async getCurriculum() {
-      const { data: tracks, error: tErr } = await svc.from("tracks").select("id, ad");
-      const { data: modules, error: mErr } = await svc.from("modules").select("id, track_id, ad");
+      const { data: tracks, error: tErr } = await db.from("tracks").select("id, ad");
+      const { data: modules, error: mErr } = await db.from("modules").select("id, track_id, ad");
       if (tErr) onError(`tracks okunamadı: ${tErr.message}`);
       if (mErr) onError(`modules okunamadı: ${mErr.message}`);
       return { tracks: (tracks ?? []) as TrackRow[], modules: (modules ?? []) as ModuleRow[] };
@@ -56,9 +59,9 @@ export function createProductionPorts(
 
     async getExistingIds() {
       const ids = new Set<string>();
-      const { data: l } = await svc.from("lessons").select("youtube_video_id");
-      const { data: s } = await svc.from("video_suggestions").select("youtube_video_id");
-      const { data: b } = await svc.from("video_blacklist").select("youtube_video_id");
+      const { data: l } = await db.from("lessons").select("youtube_video_id");
+      const { data: s } = await db.from("video_suggestions").select("youtube_video_id");
+      const { data: b } = await db.from("video_blacklist").select("youtube_video_id");
       for (const r of [...(l ?? []), ...(s ?? []), ...(b ?? [])] as { youtube_video_id: string }[]) {
         if (r.youtube_video_id) ids.add(r.youtube_video_id);
       }
@@ -71,7 +74,7 @@ export function createProductionPorts(
 
     async insertPending(rows: PendingRow[]) {
       // youtube_video_id unique → çakışanları yok say.
-      const { error } = await svc.from("video_suggestions").upsert(rows, {
+      const { error } = await db.from("video_suggestions").upsert(rows, {
         onConflict: "youtube_video_id",
         ignoreDuplicates: true,
       });
@@ -79,7 +82,7 @@ export function createProductionPorts(
     },
 
     async prune() {
-      const { data } = await svc
+      const { data } = await db
         .from("video_suggestions")
         .select("id, youtube_video_id, rejected_at")
         .eq("durum", "rejected");
@@ -87,27 +90,27 @@ export function createProductionPorts(
       const { deleteIds, blacklistVideoIds } = computePrune(rejected, now);
       if (deleteIds.length === 0) return 0;
       if (blacklistVideoIds.length > 0) {
-        await svc.from("video_blacklist").upsert(
+        await db.from("video_blacklist").upsert(
           blacklistVideoIds.map((youtube_video_id) => ({ youtube_video_id })),
           { onConflict: "youtube_video_id", ignoreDuplicates: true },
         );
       }
-      await svc.from("video_suggestions").delete().in("id", deleteIds);
+      await db.from("video_suggestions").delete().in("id", deleteIds);
       return deleteIds.length;
     },
 
     async notifyAdmins(newCount: number) {
-      const { data: admins } = await svc.from("profiles").select("id").eq("role", "admin");
+      const { data: admins } = await db.from("profiles").select("id").eq("role", "admin");
       const rows = ((admins ?? []) as { id: string }[]).map((a) => ({
         user_id: a.id,
         mesaj: `${newCount} yeni video önerisi`,
         link: "/admin/oneriler",
       }));
-      if (rows.length > 0) await svc.from("notifications").insert(rows);
+      if (rows.length > 0) await db.from("notifications").insert(rows);
     },
 
     async recordRun(summary: ScanSummary, hata: string | null) {
-      const { error } = await svc.from("video_scan_runs").insert({
+      const { error } = await db.from("video_scan_runs").insert({
         taranan: summary.taranan,
         aday: summary.aday,
         eklenen: summary.eklenen,
