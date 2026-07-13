@@ -45,7 +45,7 @@ export default async function KaynaklarPage() {
                       href={r.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-navy underline decoration-gold underline-offset-2 hover:text-gold-ink dark:hover:text-gold dark:text-white"
+                      className="font-semibold text-navy underline decoration-accent underline-offset-2 hover:text-accent-ink dark:hover:text-accent dark:text-white"
                     >
                       {r.baslik} →
                     </a>

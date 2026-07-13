@@ -60,11 +60,11 @@ export function NotificationItem({
         tiklanabilir ? "cursor-pointer" : ""
       } ${!okundu ? "font-semibold" : ""} ${pending ? "opacity-60" : ""}`}
     >
-      {!okundu && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold" />}
+      {!okundu && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent" />}
       <span className={`min-w-0 flex-1 break-words text-sm ${okundu ? "text-muted" : "text-navy dark:text-white"}`}>
         {mesaj}
       </span>
-      {link && <span className="shrink-0 text-xs font-semibold text-gold-ink dark:text-gold">→</span>}
+      {link && <span className="shrink-0 text-xs font-semibold text-accent-ink dark:text-accent">→</span>}
     </div>
   );
 }

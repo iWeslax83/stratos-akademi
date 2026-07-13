@@ -1,11 +1,11 @@
 import { buildActivityCalendar, activityLevel } from "@/lib/dashboard/calendar";
 
-// 0..3 yoğunluk → düz altın tonları (tek aksan rengi, gradyan yok).
+// 0..3 yoğunluk → düz turkuaz tonları (tek aksan rengi, gradyan yok).
 const LEVEL_CLASS = [
   "bg-black/[0.05] dark:bg-white/[0.06]",
-  "bg-gold-soft dark:bg-gold-dark",
-  "bg-gold/55",
-  "bg-gold",
+  "bg-accent-soft dark:bg-accent-dark",
+  "bg-accent/55",
+  "bg-accent",
 ];
 
 const GUN_ETIKET = ["Pzt", "", "Çar", "", "Cum", "", "Paz"];

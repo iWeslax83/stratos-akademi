@@ -9,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/panom",
     scope: "/",
     display: "standalone",
-    background_color: "#16243F",
-    theme_color: "#16243F",
+    background_color: "#05080F",
+    theme_color: "#05080F",
     lang: "tr",
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

@@ -42,7 +42,7 @@ export function AttemptHistory({ attempts }: { attempts: AttemptRow[] }) {
               <span
                 className={
                   a.gecti
-                    ? "rounded-full bg-gold-soft px-2 py-0.5 text-[11px] font-bold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
+                    ? "rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-ink dark:bg-accent-dark dark:text-accent"
                     : "rounded-full bg-black/[0.06] px-2 py-0.5 text-[11px] font-bold text-[#46526b] dark:bg-white/[0.08] dark:text-[#9fb0c9]"
                 }
               >
@@ -75,7 +75,7 @@ function Stat({
         {hint && (
           <span
             className={
-              hintUp ? "text-xs font-semibold text-gold-ink dark:text-gold" : "text-xs font-semibold text-red-600"
+              hintUp ? "text-xs font-semibold text-accent-ink dark:text-accent" : "text-xs font-semibold text-red-600"
             }
           >
             {hint}

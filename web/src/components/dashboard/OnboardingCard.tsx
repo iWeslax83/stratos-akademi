@@ -37,7 +37,7 @@ export function OnboardingCard({
       <ol className="mt-5 space-y-3">
         {steps.map((s) => (
           <li key={s.n} className="flex gap-3">
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-navy text-sm font-bold text-white dark:bg-gold dark:text-navy">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-navy text-sm font-bold text-white dark:bg-accent dark:text-navy">
               {s.n}
             </span>
             <div>
@@ -51,7 +51,7 @@ export function OnboardingCard({
       {firstLessonId && (
         <Link
           href={`/mufredat/${firstLessonId}`}
-          className="mt-6 inline-block rounded-full bg-gold px-5 py-2.5 text-sm font-bold text-navy hover:bg-gold-dark hover:text-white"
+          className="mt-6 inline-block rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-navy hover:bg-accent-dark hover:text-white"
         >
           {firstLessonTitle ? `İlk dersine başla: ${firstLessonTitle}` : "İlk dersine başla"} →
         </Link>

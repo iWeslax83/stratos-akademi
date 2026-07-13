@@ -37,7 +37,7 @@ export function NotificationBell({ unread }: { unread: number }) {
           <path d="M13.7 21a2 2 0 0 1-3.4 0" />
         </svg>
         {unread > 0 && (
-          <span className="absolute -right-1 -top-1 inline-grid h-[18px] min-w-[18px] place-items-center rounded-full bg-gold px-1 text-[10px] font-bold text-navy">
+          <span className="absolute -right-1 -top-1 inline-grid h-[18px] min-w-[18px] place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-navy">
             {unread > 9 ? "9+" : unread}
           </span>
         )}

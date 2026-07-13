@@ -34,7 +34,7 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
     <AppShell initial={initial} isAdmin={isAdmin}>
       <Eyebrow>Üye Profili</Eyebrow>
       <div className="mb-6 mt-3 flex items-center gap-4">
-        <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white dark:bg-gold dark:text-navy">
+        <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white dark:bg-accent dark:text-navy">
           {m.gorunenAd.charAt(0)}
         </span>
         <div>
@@ -45,7 +45,7 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
 
       <div className="grid grid-cols-3 gap-2 sm:gap-[18px]">
         <Card>
-          <StatCard value={m.puan} label="Puan" gold />
+          <StatCard value={m.puan} label="Puan" accent />
         </Card>
         <Card>
           <StatCard value={m.tamamlananDers} label="Tamamlanan ders" />

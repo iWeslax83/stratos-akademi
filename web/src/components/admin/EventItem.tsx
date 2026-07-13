@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { updateEvent, deleteEvent } from "@/app/actions/events";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white";
 
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
@@ -96,7 +96,7 @@ export function EventItem({
       <div className="flex items-start gap-3">
         <div className={gecmis ? "min-w-0 flex-1 opacity-60" : "min-w-0 flex-1"}>
           <div className="break-words font-display font-bold text-navy dark:text-white">{baslik}</div>
-          <div className="text-xs font-semibold text-gold-ink dark:text-gold">
+          <div className="text-xs font-semibold text-accent-ink dark:text-accent">
             {formatDateTime(baslangic)}
             {yer && <span className="text-muted"> · {yer}</span>}
           </div>

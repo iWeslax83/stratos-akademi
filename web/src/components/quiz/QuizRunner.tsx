@@ -80,7 +80,7 @@ export function QuizRunner({
             "rounded-core p-4 font-display font-bold",
             result.gecti
               ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
-              : "bg-gold-soft text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]",
+              : "bg-accent-soft text-accent-ink dark:bg-accent-dark dark:text-accent",
           )}
         >
           Puanın: %{result.puan} —{" "}
@@ -127,7 +127,7 @@ export function QuizRunner({
               })}
             </div>
             {result?.aciklamaByQuestion?.[q.id] && (
-              <p className="mt-3 rounded-xl bg-gold-soft p-3 text-sm text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]">
+              <p className="mt-3 rounded-xl bg-accent-soft p-3 text-sm text-accent-ink dark:bg-accent-dark dark:text-accent">
                 {result.aciklamaByQuestion[q.id]}
               </p>
             )}
@@ -137,7 +137,7 @@ export function QuizRunner({
 
       <div className="flex gap-3">
         {!result ? (
-          <Button variant="gold" onClick={submit} disabled={isPending}>
+          <Button variant="accent" onClick={submit} disabled={isPending}>
             {isPending ? "Gönderiliyor…" : "Gönder"}
           </Button>
         ) : (

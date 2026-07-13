@@ -65,7 +65,7 @@ export function LessonQa({
               <div className="mb-0.5 flex items-center gap-2 text-xs">
                 <span className="font-semibold">{c.authorAd}</span>
                 {c.authorIsAdmin && (
-                  <span className="rounded-full bg-gold-soft px-2 py-0.5 text-[10px] font-bold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]">
+                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink dark:bg-accent-dark dark:text-accent">
                     Kaptan
                   </span>
                 )}
@@ -96,7 +96,7 @@ export function LessonQa({
             if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
           }}
           placeholder="Soru sor ya da yanıtla…"
-          className="flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
         <button
           onClick={send}

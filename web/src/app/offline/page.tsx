@@ -14,7 +14,7 @@ export default function OfflinePage() {
         </p>
         <Link
           href="/panom"
-          className="mt-6 inline-block rounded-full bg-[#C9A23A] px-5 py-2 text-sm font-semibold text-[#16243F]"
+          className="mt-6 inline-block rounded-full bg-[#4FB3BF] px-5 py-2 text-sm font-semibold text-[#16243F]"
         >
           Tekrar dene
         </Link>

@@ -6,8 +6,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: { DEFAULT: "#16243f", deep: "#0d1526", panel: "#111c33" },
-        gold: { DEFAULT: "#c9a23a", soft: "#f6ecca", dark: "#3a2f0e", ink: "#7a5f0c" },
+        // Amblemden türetilmiş palet: lacivert gövde + tek turkuaz aksan.
+        // logo.svg iki renk kullanır — #05080F zemin, #4FB3BF delta.
+        navy: { DEFAULT: "#0e1a2e", deep: "#05080f", panel: "#0e1826" },
+        // DEFAULT doğrudan amblemin turkuazı. ink → açık temada AA metin
+        // kontrastı için koyultulmuş; soft/dark → çip zeminleri.
+        accent: { DEFAULT: "#4fb3bf", soft: "#dcf0f2", dark: "#0c2f35", ink: "#0b5a64" },
         ink: "#0f1a30",
         muted: "#64708a",
       },

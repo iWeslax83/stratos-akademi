@@ -11,7 +11,7 @@ export function ActionButton({
 }: {
   onAction: () => Promise<{ ok: boolean; error?: string }>;
   children: React.ReactNode;
-  variant?: "primary" | "ghost" | "gold";
+  variant?: "primary" | "ghost" | "accent";
 }) {
   const [pending, start] = useTransition();
   const router = useRouter();

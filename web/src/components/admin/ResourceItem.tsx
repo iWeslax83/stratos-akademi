@@ -6,7 +6,7 @@ import { updateResource, deleteResource } from "@/app/actions/resources";
 import { KATEGORILER } from "@/lib/resources/group";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white";
 
 export function ResourceItem({
   id,
@@ -78,7 +78,7 @@ export function ResourceItem({
     <div className="border-b border-[var(--line)] py-3 last:border-b-0">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <a href={url} target="_blank" rel="noopener noreferrer" className="break-words font-semibold text-navy underline decoration-gold underline-offset-2 hover:text-gold-ink dark:hover:text-gold dark:text-white">
+          <a href={url} target="_blank" rel="noopener noreferrer" className="break-words font-semibold text-navy underline decoration-accent underline-offset-2 hover:text-accent-ink dark:hover:text-accent dark:text-white">
             {baslik}
           </a>
           {aciklama && <p className="mt-0.5 text-sm text-muted">{aciklama}</p>}

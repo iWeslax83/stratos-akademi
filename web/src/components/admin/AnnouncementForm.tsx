@@ -31,16 +31,16 @@ export function AnnouncementForm() {
         name="baslik"
         required
         placeholder="Başlık (ör. Salı sprint toplantısı)"
-        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none placeholder:text-muted/60 focus:border-gold dark:text-white"
+        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
       />
       <textarea
         name="icerik"
         required
         rows={4}
         placeholder="Duyuru metni…"
-        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-gold dark:text-white"
+        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
       />
-      <Button variant="gold" disabled={pending}>{pending ? "Yayınlanıyor…" : "Yayınla"}</Button>
+      <Button variant="accent" disabled={pending}>{pending ? "Yayınlanıyor…" : "Yayınla"}</Button>
     </form>
   );
 }

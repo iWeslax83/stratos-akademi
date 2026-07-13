@@ -58,7 +58,7 @@ export default async function LiderlikPage({
             className={clsx(
               "rounded-full px-3.5 py-1.5 text-[13px] font-semibold",
               aralik === s.key
-                ? "bg-navy text-white dark:bg-gold dark:text-navy"
+                ? "bg-navy text-white dark:bg-accent dark:text-navy"
                 : "bg-black/5 text-muted hover:text-navy dark:bg-white/10 dark:hover:text-white",
             )}
           >
@@ -77,28 +77,28 @@ export default async function LiderlikPage({
               key={r.userId}
               className={clsx(
                 "flex items-center gap-3 border-b border-[var(--line)] py-3 last:border-b-0",
-                r.userId === user!.id && "-mx-3 rounded-xl border-b-0 bg-gold-soft px-3 dark:bg-gold-dark",
+                r.userId === user!.id && "-mx-3 rounded-xl border-b-0 bg-accent-soft px-3 dark:bg-accent-dark",
               )}
             >
               <span
                 className={clsx(
                   "w-7 text-center font-display text-sm font-extrabold",
-                  r.sira <= 3 ? "text-gold-ink dark:text-gold" : "text-muted",
+                  r.sira <= 3 ? "text-accent-ink dark:text-accent" : "text-muted",
                 )}
               >
                 {r.sira}
               </span>
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-accent dark:text-navy">
                 {r.gorunenAd.charAt(0)}
               </span>
               <Link
                 href={`/uye/${r.userId}`}
-                className="min-w-0 flex-1 truncate text-sm font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white"
+                className="min-w-0 flex-1 truncate text-sm font-bold text-navy hover:text-accent-ink dark:hover:text-accent dark:text-white"
               >
                 {r.gorunenAd}
                 {r.userId === user!.id && " (sen)"}
               </Link>
-              <span className="shrink-0 font-display text-sm font-bold text-[#6f560a] dark:text-[#ffd54a]">
+              <span className="shrink-0 font-display text-sm font-bold text-accent-ink dark:text-accent">
                 {r.puan} puan
               </span>
             </div>

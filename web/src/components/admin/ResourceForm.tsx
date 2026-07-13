@@ -7,7 +7,7 @@ import { createResource } from "@/app/actions/resources";
 import { KATEGORILER } from "@/lib/resources/group";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-gold dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white";
 
 // Yeni kaynak ekleme formu (admin).
 export function ResourceForm() {
@@ -41,7 +41,7 @@ export function ResourceForm() {
         </select>
       </div>
       <textarea name="aciklama" rows={2} placeholder="Açıklama (opsiyonel)…" className={inputCls} />
-      <Button variant="gold" disabled={pending}>{pending ? "Ekleniyor…" : "Ekle"}</Button>
+      <Button variant="accent" disabled={pending}>{pending ? "Ekleniyor…" : "Ekle"}</Button>
     </form>
   );
 }

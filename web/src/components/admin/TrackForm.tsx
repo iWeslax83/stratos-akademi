@@ -30,7 +30,7 @@ function Field({
         type={type}
         defaultValue={defaultValue}
         required={required}
-        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
       />
     </label>
   );
@@ -68,7 +68,7 @@ export function TrackForm({ editing }: { editing: Track | null }) {
       <Field name="ikon" label="İkon (emoji)" defaultValue={editing?.ikon ?? ""} />
       <Field name="sira" label="Sıra" type="number" defaultValue={String(editing?.sira ?? 0)} />
       <div className="flex gap-3">
-        <Button variant="gold" disabled={pending}>
+        <Button variant="accent" disabled={pending}>
           {pending ? "Kaydediliyor…" : editing ? "Güncelle" : "Ekle"}
         </Button>
         {editing && (

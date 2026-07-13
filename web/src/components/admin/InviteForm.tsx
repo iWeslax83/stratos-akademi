@@ -33,7 +33,7 @@ export function InviteForm() {
           type="email"
           required
           placeholder="uye@okul.edu.tr"
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
         />
       </label>
       <label className="block w-32">
@@ -41,13 +41,13 @@ export function InviteForm() {
         <select
           name="role"
           defaultValue="uye"
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         >
           <option value="uye">Üye</option>
           <option value="admin">Admin</option>
         </select>
       </label>
-      <Button variant="gold" disabled={pending}>{pending ? "…" : "Davet et"}</Button>
+      <Button variant="accent" disabled={pending}>{pending ? "…" : "Davet et"}</Button>
     </form>
   );
 }

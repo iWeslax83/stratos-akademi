@@ -37,7 +37,7 @@ export function TaraSimdiButton() {
       <button
         onClick={tara}
         disabled={pending}
-        className="shrink-0 rounded-full bg-gold px-4 py-2 text-sm font-semibold text-navy disabled:opacity-50"
+        className="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-navy disabled:opacity-50"
       >
         {pending ? "Taranıyor…" : "Şimdi Tara"}
       </button>

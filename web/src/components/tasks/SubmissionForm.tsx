@@ -82,7 +82,7 @@ export function SubmissionForm({
           href={dosyaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mb-2 inline-block text-sm font-semibold text-gold-ink dark:text-gold underline"
+          className="mb-2 inline-block text-sm font-semibold text-accent-ink dark:text-accent underline"
         >
           Yüklenen dosya →
         </a>
@@ -96,7 +96,7 @@ export function SubmissionForm({
             defaultValue={submission?.icerik ?? ""}
             rows={3}
             placeholder="Link (Drive/video) veya açıklama yaz…"
-            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
           />
           <input
             type="file"
@@ -104,7 +104,7 @@ export function SubmissionForm({
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             className="block w-full text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-black/5 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navy dark:file:bg-white/10 dark:file:text-white"
           />
-          <Button variant="gold" disabled={pending}>{pending ? "Gönderiliyor…" : "Gönder"}</Button>
+          <Button variant="accent" disabled={pending}>{pending ? "Gönderiliyor…" : "Gönder"}</Button>
         </form>
       ) : (
         <p className="rounded-core border border-[var(--line)] p-3 text-sm text-muted">

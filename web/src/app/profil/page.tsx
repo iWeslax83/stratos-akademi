@@ -60,7 +60,7 @@ export default async function ProfilPage() {
       <Reveal>
         <Eyebrow>Profil</Eyebrow>
         <div className="mb-6 mt-3 flex items-center gap-4">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white shadow-soft dark:bg-gold dark:text-navy">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white shadow-soft dark:bg-accent dark:text-navy">
             {initial}
           </span>
           <div>
@@ -81,7 +81,7 @@ export default async function ProfilPage() {
           <StatRing pct={stats.overall.pct} label="İlerleme" />
         </Card>
         <Card>
-          <StatCard countTo={stats.points} label="Puan" gold />
+          <StatCard countTo={stats.points} label="Puan" accent />
         </Card>
         <Card>
           <StatCard countTo={stats.streak} label="Günlük seri" />
@@ -112,7 +112,7 @@ export default async function ProfilPage() {
               <Link
                 key={s.slug}
                 href={`/sertifika/${s.slug}`}
-                className="inline-flex items-center gap-2 rounded-full border border-gold px-4 py-2 text-sm font-semibold text-navy hover:bg-gold-soft dark:text-white dark:hover:bg-gold-dark"
+                className="inline-flex items-center gap-2 rounded-full border border-accent px-4 py-2 text-sm font-semibold text-navy hover:bg-accent-soft dark:text-white dark:hover:bg-accent-dark"
               >
                 <span>{s.ikon}</span> {s.ad} belgesi →
               </Link>

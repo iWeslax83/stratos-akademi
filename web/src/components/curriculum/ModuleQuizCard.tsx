@@ -14,7 +14,7 @@ export function ModuleQuizCard({
     <Card className="mt-6 p-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#6f560a] dark:text-[#ffd54a]">
+          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent-ink dark:text-accent">
             📝 Modül Quizi
           </span>
           <h3 className="mt-1 font-display text-lg font-bold text-navy dark:text-white">{baslik}</h3>
@@ -27,7 +27,7 @@ export function ModuleQuizCard({
         </div>
         <Link
           href={`/mufredat/quiz/${quizId}`}
-          className="rounded-full bg-gold px-5 py-2.5 font-display text-sm font-semibold text-navy"
+          className="rounded-full bg-accent px-5 py-2.5 font-display text-sm font-semibold text-navy"
         >
           {best ? "Tekrar çöz" : "Başla"}
         </Link>

@@ -6,6 +6,7 @@ import { getDashboardData } from "@/lib/dashboard/queries";
 import { buildStats } from "@/lib/dashboard/stats";
 import { certificateFor } from "@/lib/certificate/eligibility";
 import { PrintButton } from "@/components/certificate/PrintButton";
+import { LogoMark } from "@/components/brand/LogoMark";
 
 export const dynamic = "force-dynamic";
 
@@ -50,8 +51,8 @@ export default async function SertifikaPage({ params }: { params: Promise<{ slug
         <PrintButton />
       </div>
 
-      <div className="rounded-bezel border-2 border-gold bg-white p-6 text-center text-navy shadow-[0_20px_50px_-24px_rgba(16,28,55,0.4)] sm:p-16">
-        <div className="font-display text-sm font-bold uppercase tracking-[0.3em] text-gold-ink">
+      <div className="rounded-bezel border-2 border-accent bg-white p-6 text-center text-navy shadow-[0_20px_50px_-24px_rgba(16,28,55,0.4)] sm:p-16">
+        <div className="font-display text-sm font-bold uppercase tracking-[0.3em] text-accent-ink">
           Stratos Akademi
         </div>
         <div className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-navy/60">
@@ -62,7 +63,7 @@ export default async function SertifikaPage({ params }: { params: Promise<{ slug
         <p className="mt-6 text-sm text-navy/70">Bu belge</p>
         <p className="mt-2 font-display text-2xl font-bold">{ad}</p>
         <p className="mt-4 text-sm text-navy/70">adlı üyenin</p>
-        <p className="mt-2 font-display text-xl font-bold text-gold-ink">
+        <p className="mt-2 font-display text-xl font-bold text-accent-ink">
           {dal.ikon} {dal.ad} dalını
         </p>
         <p className="mt-2 text-sm text-navy/70">başarıyla tamamladığını belgeler.</p>
@@ -72,7 +73,7 @@ export default async function SertifikaPage({ params }: { params: Promise<{ slug
             <div className="text-[11px] uppercase tracking-wide text-navy/50">Tarih</div>
             <div className="font-display text-sm font-bold">{bugun()}</div>
           </div>
-          <div className="text-3xl text-gold-ink">◆</div>
+          <LogoMark size={46} className="text-navy/70" deltaClassName="fill-accent-ink" />
           <div className="text-right">
             <div className="text-[11px] uppercase tracking-wide text-navy/50">Kulüp</div>
             <div className="font-display text-sm font-bold">Stratos / TMT-İHA</div>

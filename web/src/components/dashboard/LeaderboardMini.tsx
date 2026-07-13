@@ -7,24 +7,24 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
     <div
       className={clsx(
         "flex items-center gap-3 border-b border-[var(--line)] py-2.5 last:border-b-0",
-        me && "-mx-2.5 rounded-xl border-b-0 bg-gold-soft px-2.5 dark:bg-gold-dark",
+        me && "-mx-2.5 rounded-xl border-b-0 bg-accent-soft px-2.5 dark:bg-accent-dark",
       )}
     >
       <span
         className={clsx(
           "w-6 text-center font-display text-sm font-extrabold",
-          row.sira <= 3 ? "text-gold-ink dark:text-gold" : "text-muted",
+          row.sira <= 3 ? "text-accent-ink dark:text-accent" : "text-muted",
         )}
       >
         {row.sira}
       </span>
-      <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-gold dark:text-navy">
+      <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-accent dark:text-navy">
         {row.gorunenAd.charAt(0)}
       </span>
-      <Link href={`/uye/${row.userId}`} className="min-w-0 flex-1 truncate text-[13.5px] font-bold text-navy hover:text-gold-ink dark:hover:text-gold dark:text-white">
+      <Link href={`/uye/${row.userId}`} className="min-w-0 flex-1 truncate text-[13.5px] font-bold text-navy hover:text-accent-ink dark:hover:text-accent dark:text-white">
         {row.gorunenAd}
       </Link>
-      <span className="shrink-0 font-display text-[13px] font-bold text-[#6f560a] dark:text-[#ffd54a]">
+      <span className="shrink-0 font-display text-[13px] font-bold text-accent-ink dark:text-accent">
         {row.puan}
       </span>
     </div>

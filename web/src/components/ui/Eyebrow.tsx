@@ -1,6 +1,6 @@
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full bg-gold-soft px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]">
+    <span className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-accent-ink dark:bg-accent-dark dark:text-accent">
       {children}
     </span>
   );

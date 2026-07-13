@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { LogoMark } from "@/components/brand/LogoMark";
 
 export default function LoginPage() {
   async function signIn() {
@@ -20,8 +21,8 @@ export default function LoginPage() {
       <Reveal className="w-full">
         <Card className="w-full p-8 text-center">
           <div className="mb-5 flex justify-center">
-            <span className="grid h-12 w-12 place-items-center rounded-bezel bg-navy text-2xl text-gold shadow-soft dark:bg-white/10">
-              ◆
+            <span className="grid h-20 w-20 place-items-center rounded-bezel bg-navy shadow-soft dark:bg-white/10">
+              <LogoMark size={34} className="text-white" deltaClassName="fill-accent" />
             </span>
           </div>
           <Eyebrow>Stratos Akademi</Eyebrow>
@@ -32,7 +33,7 @@ export default function LoginPage() {
             Kulüp hesabınla giriş yap. Yalnız izin listesindeki üyeler girebilir.
           </p>
           <div className="mt-6 flex justify-center">
-            <Button variant="gold" icon="→" onClick={signIn}>
+            <Button variant="accent" icon="→" onClick={signIn}>
               Google ile giriş yap
             </Button>
           </div>

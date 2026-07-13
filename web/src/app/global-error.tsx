@@ -31,7 +31,7 @@ export default function GlobalError({
           padding: "24px",
         }}
       >
-        <p style={{ fontSize: "48px", fontWeight: 800, color: "#C9A23A", margin: 0 }}>Hata</p>
+        <p style={{ fontSize: "48px", fontWeight: 800, color: "#4FB3BF", margin: 0 }}>Hata</p>
         <h1 style={{ fontSize: "20px", fontWeight: 700, margin: 0 }}>Bir şeyler ters gitti</h1>
         <p style={{ opacity: 0.7, margin: 0 }}>Uygulama beklenmeyen bir hatayla karşılaştı.</p>
         <button
@@ -41,7 +41,7 @@ export default function GlobalError({
             padding: "10px 20px",
             borderRadius: "9999px",
             border: "none",
-            background: "#C9A23A",
+            background: "#4FB3BF",
             color: "#16243F",
             fontWeight: 600,
             cursor: "pointer",

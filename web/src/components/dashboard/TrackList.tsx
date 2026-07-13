@@ -18,7 +18,7 @@ export function TrackList({ tracks }: { tracks: TrackProgress[] }) {
             key={t.slug}
             className="flex items-center gap-3.5 border-b border-[var(--line)] py-3 last:border-b-0"
           >
-            <div className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-xl bg-gold-soft text-[17px] dark:bg-gold-dark">
+            <div className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-xl bg-accent-soft text-[17px] dark:bg-accent-dark">
               {t.ikon ?? "•"}
             </div>
             <div className="min-w-0">
@@ -26,7 +26,7 @@ export function TrackList({ tracks }: { tracks: TrackProgress[] }) {
               <div className="text-xs text-muted">{t.moduleCount} modül</div>
             </div>
             <div className="ml-auto h-[7px] w-full max-w-[160px] flex-1 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
-              <div className="h-full rounded-full bg-gold" style={{ width: `${t.pct}%` }} />
+              <div className="h-full rounded-full bg-accent" style={{ width: `${t.pct}%` }} />
             </div>
             <div className="w-9 shrink-0 text-right font-display text-[13px] font-bold text-navy dark:text-white">
               %{t.pct}

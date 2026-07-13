@@ -26,7 +26,7 @@ function EventCard({ e, gecmis }: { e: EventLite; gecmis?: boolean }) {
   return (
     <Card className={gecmis ? "p-6 opacity-70" : "p-6"}>
       <h2 className="font-display text-lg font-bold text-navy dark:text-white">{e.baslik}</h2>
-      <div className="text-sm font-semibold text-gold-ink dark:text-gold">
+      <div className="text-sm font-semibold text-accent-ink dark:text-accent">
         {formatDateTime(e.baslangic)}
         {e.yer && <span className="text-muted"> · {e.yer}</span>}
       </div>

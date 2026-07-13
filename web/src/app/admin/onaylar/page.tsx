@@ -45,14 +45,14 @@ export default async function OnaylarPage() {
         <div className="mt-5 space-y-4">
           {pending.map((s) => (
             <Card key={s.id} className="p-5">
-              <div className="mb-1 text-xs font-semibold text-gold-ink dark:text-gold">
+              <div className="mb-1 text-xs font-semibold text-accent-ink dark:text-accent">
                 {s.trackAd} · {s.modulAd}
               </div>
               <div className="font-display font-bold text-navy dark:text-white">{s.taskBaslik}</div>
               <div className="mb-2 text-xs text-muted">{s.uyeEmail}</div>
               <div className="mb-3 rounded-core border border-[var(--line)] p-3 text-sm text-navy dark:text-white">
                 {/^https?:\/\//.test(s.icerik) ? (
-                  <a href={s.icerik} target="_blank" rel="noopener noreferrer" className="break-all font-semibold text-gold-ink dark:text-gold underline">
+                  <a href={s.icerik} target="_blank" rel="noopener noreferrer" className="break-all font-semibold text-accent-ink dark:text-accent underline">
                     {s.icerik}
                   </a>
                 ) : (
@@ -64,7 +64,7 @@ export default async function OnaylarPage() {
                   href={urlMap.get(s.dosya_yolu)!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mb-3 inline-block text-sm font-semibold text-gold-ink dark:text-gold underline"
+                  className="mb-3 inline-block text-sm font-semibold text-accent-ink dark:text-accent underline"
                 >
                   Yüklenen dosya →
                 </a>

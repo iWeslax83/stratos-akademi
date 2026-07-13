@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "ghost" | "gold";
+  variant?: "primary" | "ghost" | "accent";
   icon?: React.ReactNode;
 };
 
@@ -11,7 +11,7 @@ export function Button({ children, variant = "primary", icon, className, ...rest
   const pad = icon ? "pl-5 pr-3 py-3" : "px-5 py-3";
   const variants = {
     primary: "bg-navy text-white shadow-soft hover:shadow-soft-hover",
-    gold: "bg-gold text-navy shadow-soft hover:shadow-soft-hover",
+    accent: "bg-accent text-navy shadow-soft hover:shadow-soft-hover",
     ghost: "bg-black/[0.06] text-navy dark:bg-white/10 dark:text-white",
   } as const;
 

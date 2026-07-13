@@ -54,7 +54,7 @@ export default async function AdminUyelerPage() {
               <span className="min-w-0 flex-1 break-words text-sm font-semibold text-navy dark:text-white">
                 {m.ad ?? m.email}{" "}
                 <span className="text-xs font-normal text-muted">{m.email}</span>
-                {m.id === selfId && <span className="ml-2 text-xs font-bold text-gold-ink dark:text-gold">(sen)</span>}
+                {m.id === selfId && <span className="ml-2 text-xs font-bold text-accent-ink dark:text-accent">(sen)</span>}
               </span>
               <RoleSelect email={m.email} role={m.role} userId={m.id} selfId={selfId} />
               {m.id !== selfId && (

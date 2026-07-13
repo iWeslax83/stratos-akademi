@@ -65,7 +65,7 @@ export default async function AdminQuizPage({
       ) : !quiz ? (
         <Card className="mt-5 p-6">
           <p className="mb-4 text-sm text-muted">Bu modülün quizi yok.</p>
-          <ActionButton variant="gold" onAction={createQuiz.bind(null, moduleId)}>
+          <ActionButton variant="accent" onAction={createQuiz.bind(null, moduleId)}>
             Quiz oluştur
           </ActionButton>
         </Card>

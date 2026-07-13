@@ -46,9 +46,9 @@ export default async function AraPage({
           defaultValue={q ?? ""}
           placeholder="Ders, duyuru, etkinlik, kaynak…"
           aria-label="Arama terimi"
-          className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-transparent px-4 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-transparent px-4 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
-        <button className="shrink-0 rounded-full bg-gold px-4 py-2 text-sm font-semibold text-navy">
+        <button className="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-navy">
           Ara
         </button>
       </form>

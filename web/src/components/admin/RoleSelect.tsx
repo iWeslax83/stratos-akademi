@@ -34,7 +34,7 @@ export function RoleSelect({
       value={role}
       onChange={onChange}
       disabled={pending || isSelf}
-      className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-gold disabled:opacity-60 dark:text-white"
+      className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white"
     >
       <option value="uye">Üye</option>
       <option value="admin">Admin</option>

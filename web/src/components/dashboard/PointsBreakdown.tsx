@@ -20,7 +20,7 @@ export function PointsBreakdown({ data }: { data: Breakdown }) {
       </div>
       <div className="mt-2 flex items-center justify-between border-t-2 border-[var(--line)] pt-2.5">
         <span className="font-display text-sm font-bold text-navy dark:text-white">Toplam</span>
-        <span className="font-display text-base font-extrabold text-gold-ink dark:text-gold">{data.toplam}</span>
+        <span className="font-display text-base font-extrabold text-accent-ink dark:text-accent">{data.toplam}</span>
       </div>
     </div>
   );

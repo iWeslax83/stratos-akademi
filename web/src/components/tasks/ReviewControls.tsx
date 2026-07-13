@@ -33,7 +33,7 @@ export function ReviewControls({ submissionId, adminId }: { submissionId: string
           onChange={(e) => setNot(e.target.value)}
           rows={2}
           placeholder="Reddetme nedeni…"
-          className="min-w-[200px] flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="min-w-[200px] flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
         <div className="flex gap-2">
           <button onClick={reject} disabled={pending} className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">

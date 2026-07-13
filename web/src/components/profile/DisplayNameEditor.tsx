@@ -21,7 +21,7 @@ export function DisplayNameEditor({ userId, current }: { userId: string; current
           setError(null);
           setEditing(true);
         }}
-        className="text-xs font-semibold text-gold-ink dark:text-gold hover:underline"
+        className="text-xs font-semibold text-accent-ink dark:text-accent hover:underline"
       >
         Adı düzenle
       </button>
@@ -48,13 +48,13 @@ export function DisplayNameEditor({ userId, current }: { userId: string; current
         onChange={(e) => setValue(e.target.value)}
         maxLength={80}
         aria-label="Görünen ad"
-        className="w-56 rounded-xl border border-[var(--line)] bg-transparent px-3 py-1.5 text-sm text-navy outline-none focus:border-gold dark:text-white"
+        className="w-56 rounded-xl border border-[var(--line)] bg-transparent px-3 py-1.5 text-sm text-navy outline-none focus:border-accent dark:text-white"
         onKeyDown={(e) => {
           if (e.key === "Enter") save();
           if (e.key === "Escape") setEditing(false);
         }}
       />
-      <Button variant="gold" onClick={save} disabled={pending}>
+      <Button variant="accent" onClick={save} disabled={pending}>
         {pending ? "…" : "Kaydet"}
       </Button>
       <button

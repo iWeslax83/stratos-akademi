@@ -42,7 +42,7 @@ export function CurriculumBrowser({
           onChange={(e) => setQ(e.target.value)}
           placeholder="Ders, modül veya dal ara…"
           aria-label="Müfredatta ara"
-          className="w-full flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-gold dark:text-white"
+          className="w-full flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
         />
         <div className="flex shrink-0 rounded-full border border-[var(--line)] p-0.5" role="tablist" aria-label="Duruma göre süz">
           {MODLAR.map((m) => (
@@ -53,7 +53,7 @@ export function CurriculumBrowser({
               onClick={() => setMode(m.key)}
               className={
                 mode === m.key
-                  ? "rounded-full bg-navy px-3 py-1.5 text-xs font-semibold text-white dark:bg-gold dark:text-navy"
+                  ? "rounded-full bg-navy px-3 py-1.5 text-xs font-semibold text-white dark:bg-accent dark:text-navy"
                   : "rounded-full px-3 py-1.5 text-xs font-semibold text-muted hover:text-navy dark:hover:text-white"
               }
             >

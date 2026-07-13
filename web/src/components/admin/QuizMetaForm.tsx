@@ -34,7 +34,7 @@ export function QuizMetaForm({
           name="baslik"
           defaultValue={quiz.baslik}
           required
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
       <label className="block w-32">
@@ -45,10 +45,10 @@ export function QuizMetaForm({
           min={0}
           max={100}
           defaultValue={String(quiz.gecme_esigi)}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
-      <Button variant="gold" disabled={pending}>{pending ? "…" : "Kaydet"}</Button>
+      <Button variant="accent" disabled={pending}>{pending ? "…" : "Kaydet"}</Button>
       {error && <p className="w-full text-sm font-semibold text-red-600">{error}</p>}
     </form>
   );

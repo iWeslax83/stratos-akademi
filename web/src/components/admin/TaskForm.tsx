@@ -48,7 +48,7 @@ export function TaskForm({
           name="baslik"
           defaultValue={editing?.baslik}
           required
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
       <label className="block">
@@ -57,7 +57,7 @@ export function TaskForm({
           name="aciklama"
           defaultValue={editing?.aciklama ?? ""}
           rows={3}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
       <label className="block w-32">
@@ -66,7 +66,7 @@ export function TaskForm({
           name="puan"
           type="number"
           defaultValue={String(editing?.puan ?? 30)}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
       <label className="block w-32">
@@ -75,10 +75,10 @@ export function TaskForm({
           name="sira"
           type="number"
           defaultValue={String(editing?.sira ?? 0)}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
-      <Button variant="gold" disabled={pending}>{pending ? "…" : editing ? "Güncelle" : "Ekle"}</Button>
+      <Button variant="accent" disabled={pending}>{pending ? "…" : editing ? "Güncelle" : "Ekle"}</Button>
     </form>
   );
 }

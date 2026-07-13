@@ -58,7 +58,7 @@ export default async function AnalitikPage() {
       </div>
 
       {pasifler.length > 0 && (
-        <Card className="mt-5 border-gold p-6">
+        <Card className="mt-5 border-accent p-6">
           <h2 className="mb-1 font-display text-lg font-bold text-navy dark:text-white">
             Pasif üyeler ({pasifler.length})
           </h2>
@@ -67,7 +67,7 @@ export default async function AnalitikPage() {
             {pasifler.map((u, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent"
               >
                 {u.ad} · {u.gun === null ? "hiç" : `${u.gun} gün`}
               </span>
@@ -91,7 +91,7 @@ export default async function AnalitikPage() {
                   <span className="text-xs font-bold text-muted">%{d.pct} · {d.lessonCount} ders</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
-                  <div className="h-full rounded-full bg-gold" style={{ width: `${d.pct}%` }} />
+                  <div className="h-full rounded-full bg-accent" style={{ width: `${d.pct}%` }} />
                 </div>
               </div>
             ))}

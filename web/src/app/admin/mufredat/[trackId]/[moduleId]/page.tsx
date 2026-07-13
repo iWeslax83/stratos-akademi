@@ -59,7 +59,7 @@ export default async function AdminLessonsPage({
           <span className="text-sm font-semibold text-navy dark:text-white">Modül Quizi</span>
           <a
             href={`/admin/mufredat/${trackId}/${moduleId}/quiz`}
-            className="rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
+            className="rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent"
           >
             Quiz&apos;i düzenle →
           </a>
@@ -71,7 +71,7 @@ export default async function AdminLessonsPage({
           <span className="text-sm font-semibold text-navy dark:text-white">Pratik Görevler</span>
           <a
             href={`/admin/mufredat/${trackId}/${moduleId}/gorevler`}
-            className="rounded-full bg-gold-soft px-3 py-1.5 text-xs font-semibold text-[#6f560a] dark:bg-gold-dark dark:text-[#ffd54a]"
+            className="rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent"
           >
             Görevleri düzenle →
           </a>

@@ -10,7 +10,7 @@ export function MobileMenu({ isAdmin }: { isAdmin: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative sm:hidden">
+    <div className="relative lg:hidden">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -48,7 +48,7 @@ export function MobileMenu({ isAdmin }: { isAdmin: boolean }) {
                     key={l.href}
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm font-semibold text-gold-ink dark:text-gold hover:bg-black/5 dark:hover:bg-white/10"
+                    className="block rounded-lg px-3 py-2 text-sm font-semibold text-accent-ink dark:text-accent hover:bg-black/5 dark:hover:bg-white/10"
                   >
                     {l.label}
                   </Link>

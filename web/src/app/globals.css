@@ -11,8 +11,9 @@
 }
 
 .dark {
-  --bg: #070d18;
-  --panel: #111c33;
+  /* Amblemin zemini (#05080F) koyu temanın taban rengi. */
+  --bg: #05080f;
+  --panel: #0e1826;
   --text: #e4ecf8;
   --muted: #8294b0;
   --line: rgba(255, 255, 255, 0.07);

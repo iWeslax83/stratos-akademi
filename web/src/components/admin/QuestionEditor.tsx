@@ -48,7 +48,7 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
             name="metin"
             defaultValue={question.metin}
             placeholder="Soru metni"
-            className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-gold dark:text-white"
+            className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-accent dark:text-white"
           />
           <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
             Kaydet
@@ -61,7 +61,7 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
           name="aciklama"
           defaultValue={question.aciklama ?? ""}
           placeholder="Açıklama (cevaptan sonra gösterilir — opsiyonel)"
-          className="w-full rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-xs text-muted outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-xs text-muted outline-none focus:border-accent dark:text-white"
         />
       </form>
 

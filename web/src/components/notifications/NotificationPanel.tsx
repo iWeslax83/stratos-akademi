@@ -68,7 +68,7 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
                   router.refresh();
                 })
               }
-              className="shrink-0 text-xs font-semibold text-gold-ink hover:underline disabled:opacity-60 dark:text-gold"
+              className="shrink-0 text-xs font-semibold text-accent-ink hover:underline disabled:opacity-60 dark:text-accent"
             >
               {pending ? "…" : "Tümünü okundu işaretle"}
             </button>
@@ -102,7 +102,7 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
           <Link
             href="/bildirimler"
             onClick={onClose}
-            className="text-xs font-semibold text-gold-ink hover:underline dark:text-gold"
+            className="text-xs font-semibold text-accent-ink hover:underline dark:text-accent"
           >
             Tüm bildirimler →
           </Link>

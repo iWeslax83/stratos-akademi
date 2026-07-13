@@ -26,7 +26,7 @@ export function CompetencyShelf({
                 className={clsx(
                   "grid h-10 w-10 place-items-center rounded-xl border text-lg",
                   has
-                    ? "border-[#efdfa8] bg-gold-soft dark:border-gold-dark dark:bg-gold-dark"
+                    ? "border-[#efdfa8] bg-accent-soft dark:border-accent-dark dark:bg-accent-dark"
                     : "border-[var(--line)] bg-black/[0.04] opacity-50 grayscale dark:bg-white/[0.04]",
                 )}
               >

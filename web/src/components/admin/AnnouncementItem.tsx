@@ -57,14 +57,14 @@ export function AnnouncementItem({
           name="baslik"
           required
           defaultValue={baslik}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-accent dark:text-white"
         />
         <textarea
           name="icerik"
           required
           rows={4}
           defaultValue={icerik}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-gold dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
         <div className="flex gap-2">
           <button disabled={pending} className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-white dark:text-navy">
