@@ -14,6 +14,8 @@ type Props = {
   izlenme: number | null;
   yayinTarihi: string | null;
   skor: number | null;
+  // Kuyruğun sıralandığı bileşik skor: uygunluk + izlenme + tazelik.
+  siralamaSkoru: number | null;
   gerekce: string | null;
   onerilenModuleId: string | null;
   modules: ModuleOpt[];
@@ -41,7 +43,17 @@ export function OneriKarti(p: Props) {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="font-display text-lg font-semibold text-navy dark:text-white">{p.baslik}</h3>
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-lg font-semibold text-navy dark:text-white">{p.baslik}</h3>
+          {p.siralamaSkoru === null ? null : (
+            <span
+              title="Sıralama skoru: uygunluk %75, izlenme %15, tazelik %10"
+              className="shrink-0 rounded-full bg-navy px-2.5 py-1 text-xs font-semibold text-white dark:bg-accent dark:text-navy"
+            >
+              {Math.round(p.siralamaSkoru)}
+            </span>
+          )}
+        </div>
         <p className="text-sm text-navy/70 dark:text-white/70">
           {p.kanal ?? "—"} · {(p.izlenme ?? 0).toLocaleString("tr-TR")} izlenme
           {p.yayinTarihi ? ` · ${new Date(p.yayinTarihi).toLocaleDateString("tr-TR")}` : ""}

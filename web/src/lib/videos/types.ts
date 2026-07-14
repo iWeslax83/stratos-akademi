@@ -42,6 +42,9 @@ export type PendingRow = {
   yayin_tarihi: string | null;
   onerilen_module_id: string;
   uygunluk_skoru: number;
+  // Uygunluk + izlenme + tazelik bileşimi (0–100). Kuyruğun sıralaması buna göre; eleme
+  // eşiği ise hâlâ ham uygunluk_skoru'na bakar. Bkz. lib/videos/kalite.ts.
+  siralama_skoru: number;
   gerekce: string;
   durum: "pending";
 };

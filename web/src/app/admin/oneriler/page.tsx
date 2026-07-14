@@ -22,9 +22,9 @@ export default async function OnerilerPage() {
 
   const { data: pending } = await supabase
     .from("video_suggestions")
-    .select("id, youtube_video_id, baslik, kanal, izlenme, yayin_tarihi, uygunluk_skoru, gerekce, onerilen_module_id")
+    .select("id, youtube_video_id, baslik, kanal, izlenme, yayin_tarihi, uygunluk_skoru, siralama_skoru, gerekce, onerilen_module_id")
     .eq("durum", "pending")
-    .order("uygunluk_skoru", { ascending: false });
+    .order("siralama_skoru", { ascending: false, nullsFirst: false });
 
   const { data: trash } = await supabase
     .from("video_suggestions")
@@ -42,7 +42,7 @@ export default async function OnerilerPage() {
   const pendingRows = (pending ?? []) as {
     id: string; youtube_video_id: string; baslik: string; kanal: string | null;
     izlenme: number | null; yayin_tarihi: string | null; uygunluk_skoru: number | null;
-    gerekce: string | null; onerilen_module_id: string | null;
+    siralama_skoru: number | null; gerekce: string | null; onerilen_module_id: string | null;
   }[];
   const trashRows = (trash ?? []) as {
     id: string; youtube_video_id: string; baslik: string; rejected_at: string | null;
@@ -74,6 +74,7 @@ export default async function OnerilerPage() {
                 izlenme={r.izlenme}
                 yayinTarihi={r.yayin_tarihi}
                 skor={r.uygunluk_skoru}
+                siralamaSkoru={r.siralama_skoru}
                 gerekce={r.gerekce}
                 onerilenModuleId={r.onerilen_module_id}
                 modules={modules}

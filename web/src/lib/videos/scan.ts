@@ -1,7 +1,7 @@
 import type { ScanPorts, ScanSummary, PendingRow, ScanDiag } from "@/lib/videos/types";
 import { buildQueries } from "@/lib/videos/queries";
 import { filtreleVeSay, bosEleme } from "@/lib/videos/filter";
-import { kaliteKapisi } from "@/lib/videos/kalite";
+import { kaliteKapisi, siralamaSkoru } from "@/lib/videos/kalite";
 
 const VARSAYILAN_ESIKLER = { minViews: 10000, minDurationSn: 180, maxAgeYears: 4 };
 
@@ -58,13 +58,17 @@ export async function runVideoScan(ports: ScanPorts): Promise<ScanSummary> {
   const filtered = gecen.slice(0, ports.maxCandidates);
   diag.siniflandirilan = filtered.length;
 
+  // Tazelik, mekanik filtreyle aynı yaş sınırına göre ölçülür: filtreden geçen en eski
+  // video tazelikte tam 0 alsın.
+  const siralama = { now: ports.now, maxAgeYears: esikler.maxAgeYears };
+
   const rows: PendingRow[] = [];
   for (const v of filtered) {
     const c = await ports.classify(v, modules);
     if (!c) { diag.gemini_hata += 1; continue; }
     if (!c.uygun || !c.module_id) { diag.gemini_uygunsuz += 1; continue; }
     diag.gemini_uygun += 1;
-    rows.push({
+    const aday = {
       youtube_video_id: v.youtube_video_id,
       baslik: v.baslik,
       aciklama: v.aciklama || null,
@@ -75,8 +79,9 @@ export async function runVideoScan(ports: ScanPorts): Promise<ScanSummary> {
       onerilen_module_id: c.module_id,
       uygunluk_skoru: c.skor,
       gerekce: c.gerekce,
-      durum: "pending",
-    });
+      durum: "pending" as const,
+    };
+    rows.push({ ...aday, siralama_skoru: siralamaSkoru(aday, siralama) });
   }
 
   // Kalite kapısı: düşük güvenli, tek modüle yığılan ve tek kanaldan tekrar eden adaylar
