@@ -3,6 +3,7 @@ import { Chip } from "@/components/ui/Chip";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { MobileMenu } from "./MobileMenu";
 import { AdminMenu } from "./AdminMenu";
+import { NavLink } from "./NavLink";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { createClient } from "@/lib/supabase/server";
 import { unreadCount } from "@/lib/notifications/queries";
@@ -47,13 +48,7 @@ export async function Nav({
       </Link>
       <div className="ml-1 hidden shrink-0 items-center gap-0.5 lg:flex">
         {MEMBER_LINKS.map((l) => (
-          <Link
-            key={l.href}
-            href={l.href}
-            className="whitespace-nowrap rounded-full px-2.5 py-1.5 text-[13px] font-semibold text-muted hover:text-navy dark:hover:text-white"
-          >
-            {l.label}
-          </Link>
+          <NavLink key={l.href} href={l.href} label={l.label} />
         ))}
         {isAdmin && <AdminMenu />}
       </div>

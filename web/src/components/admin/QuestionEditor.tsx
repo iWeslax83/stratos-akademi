@@ -1,8 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { updateQuestion, deleteQuestion, createOption } from "@/app/actions/admin-quiz";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { useServerAction } from "@/lib/ui/useServerAction";
 import { OptionRow } from "./OptionRow";
 import { ActionButton } from "./ActionButton";
 
@@ -15,25 +15,16 @@ type Q = {
 };
 
 export function QuestionEditor({ question, index }: { question: Q; index: number }) {
-  const [pending, start] = useTransition();
-  const router = useRouter();
+  const { pending, error, run } = useServerAction("Hata");
 
   function saveText(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    start(async () => {
-      const r = await updateQuestion(fd);
-      if (!r.ok) window.alert(r.error ?? "Hata");
-      else router.refresh();
-    });
+    run(() => updateQuestion(fd));
   }
   function del() {
     if (!window.confirm("Bu soruyu ve şıklarını silmek istediğine emin misin?")) return;
-    start(async () => {
-      const r = await deleteQuestion(question.id);
-      if (!r.ok) window.alert(r.error ?? "Hata");
-      else router.refresh();
-    });
+    run(() => deleteQuestion(question.id));
   }
 
   const hasCorrect = question.options.some((o) => o.dogru);
@@ -64,6 +55,7 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
           className="w-full rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-xs text-muted outline-none focus:border-accent dark:text-white"
         />
       </form>
+      <ErrorText>{error}</ErrorText>
 
       <div className="mt-3 space-y-2 pl-6">
         {question.options.map((o) => (

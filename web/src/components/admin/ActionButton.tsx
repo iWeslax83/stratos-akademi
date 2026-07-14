@@ -1,8 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { useServerAction } from "@/lib/ui/useServerAction";
 
 export function ActionButton({
   onAction,
@@ -13,20 +13,14 @@ export function ActionButton({
   children: React.ReactNode;
   variant?: "primary" | "ghost" | "accent";
 }) {
-  const [pending, start] = useTransition();
-  const router = useRouter();
-
-  function click() {
-    start(async () => {
-      const r = await onAction();
-      if (!r.ok) window.alert(r.error ?? "İşlem başarısız");
-      else router.refresh();
-    });
-  }
+  const { pending, error, run } = useServerAction();
 
   return (
-    <Button variant={variant} type="button" onClick={click} disabled={pending}>
-      {pending ? "…" : children}
-    </Button>
+    <span>
+      <Button variant={variant} type="button" onClick={() => run(onAction)} disabled={pending}>
+        {pending ? "…" : children}
+      </Button>
+      <ErrorText>{error}</ErrorText>
+    </span>
   );
 }

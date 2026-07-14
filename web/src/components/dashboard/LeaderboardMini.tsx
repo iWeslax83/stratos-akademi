@@ -12,7 +12,7 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
     >
       <span
         className={clsx(
-          "w-6 text-center font-display text-sm font-extrabold",
+          "w-6 text-center font-display text-sm font-extrabold tabular-nums",
           row.sira <= 3 ? "text-accent-ink dark:text-accent" : "text-muted",
         )}
       >
@@ -24,7 +24,7 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <Link href={`/uye/${row.userId}`} className="min-w-0 flex-1 truncate text-[13.5px] font-bold text-navy hover:text-accent-ink dark:hover:text-accent dark:text-white">
         {row.gorunenAd}
       </Link>
-      <span className="shrink-0 font-display text-[13px] font-bold text-accent-ink dark:text-accent">
+      <span className="shrink-0 font-display text-[13px] font-bold tabular-nums text-accent-ink dark:text-accent">
         {row.puan}
       </span>
     </div>

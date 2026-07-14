@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { updateAnnouncement, deleteAnnouncement } from "@/app/actions/announcements";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { useServerAction } from "@/lib/ui/useServerAction";
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -23,35 +24,26 @@ export function AnnouncementItem({
   createdAt: string;
 }) {
   const [edit, setEdit] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, start] = useTransition();
-  const router = useRouter();
+  const { pending, error, run } = useServerAction("Hata");
 
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    setError(null);
-    start(async () => {
-      const r = await updateAnnouncement(fd);
-      if (!r.ok) { setError(r.error ?? "Hata"); return; }
-      setEdit(false);
-      router.refresh();
-    });
+    run(() => updateAnnouncement(fd), () => setEdit(false));
   }
 
   function remove() {
     if (!window.confirm(`"${baslik}" duyurusunu silmek istediğine emin misin?`)) return;
-    start(async () => {
+    run(async () => {
       const r = await deleteAnnouncement(id);
-      if (!r.ok) { window.alert(r.error ?? "Silinemedi"); return; }
-      router.refresh();
+      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
     });
   }
 
   if (edit) {
     return (
       <form onSubmit={save} className="space-y-2 border-b border-[var(--line)] py-4 last:border-b-0">
-        {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
+        <ErrorText>{error}</ErrorText>
         <input type="hidden" name="id" value={id} />
         <input
           name="baslik"
@@ -95,6 +87,7 @@ export function AnnouncementItem({
           </button>
         </div>
       </div>
+      <ErrorText>{error}</ErrorText>
     </div>
   );
 }

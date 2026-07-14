@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { kabulEt, reddet } from "@/app/actions/video-oneri";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { useServerAction } from "@/lib/ui/useServerAction";
 
 type ModuleOpt = { id: string; ad: string; trackAd: string };
 type Props = {
@@ -19,23 +20,14 @@ type Props = {
 };
 
 export function OneriKarti(p: Props) {
-  const [pending, start] = useTransition();
   const [moduleId, setModuleId] = useState(p.onerilenModuleId ?? p.modules[0]?.id ?? "");
-  const router = useRouter();
+  const { pending, error, run } = useServerAction("Hata");
 
   function accept() {
-    start(async () => {
-      const r = await kabulEt(p.id, moduleId);
-      if (!r.ok) { window.alert(r.error ?? "Hata"); return; }
-      router.refresh();
-    });
+    run(() => kabulEt(p.id, moduleId));
   }
   function decline() {
-    start(async () => {
-      const r = await reddet(p.id);
-      if (!r.ok) { window.alert(r.error ?? "Hata"); return; }
-      router.refresh();
-    });
+    run(() => reddet(p.id));
   }
 
   return (
@@ -77,6 +69,7 @@ export function OneriKarti(p: Props) {
             Reddet
           </button>
         </div>
+        <ErrorText>{error}</ErrorText>
       </div>
     </div>
   );

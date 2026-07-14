@@ -52,8 +52,9 @@ export function CountUp({ value, prefix = "" }: { value: number; prefix?: string
     };
   }, [value]);
 
+  // tabular-nums: sayarken rakam genişliği sabit kalır, sayı zıplamaz.
   return (
-    <span ref={ref}>
+    <span ref={ref} className="tabular-nums">
       {prefix}
       {shown}
     </span>

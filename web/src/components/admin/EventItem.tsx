@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { updateEvent, deleteEvent } from "@/app/actions/events";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { useServerAction } from "@/lib/ui/useServerAction";
 
 const inputCls =
   "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white";
@@ -43,35 +44,26 @@ export function EventItem({
   gecmis?: boolean;
 }) {
   const [edit, setEdit] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, start] = useTransition();
-  const router = useRouter();
+  const { pending, error, run } = useServerAction("Hata");
 
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    setError(null);
-    start(async () => {
-      const r = await updateEvent(fd);
-      if (!r.ok) { setError(r.error ?? "Hata"); return; }
-      setEdit(false);
-      router.refresh();
-    });
+    run(() => updateEvent(fd), () => setEdit(false));
   }
 
   function remove() {
     if (!window.confirm(`"${baslik}" etkinliğini silmek istediğine emin misin?`)) return;
-    start(async () => {
+    run(async () => {
       const r = await deleteEvent(id);
-      if (!r.ok) { window.alert(r.error ?? "Silinemedi"); return; }
-      router.refresh();
+      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
     });
   }
 
   if (edit) {
     return (
       <form onSubmit={save} className="space-y-2 border-b border-[var(--line)] py-4 last:border-b-0">
-        {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
+        <ErrorText>{error}</ErrorText>
         <input type="hidden" name="id" value={id} />
         <input name="baslik" required defaultValue={baslik} className={inputCls} />
         <div className="grid gap-2 sm:grid-cols-2">
@@ -113,6 +105,7 @@ export function EventItem({
           </button>
         </div>
       </div>
+      <ErrorText>{error}</ErrorText>
     </div>
   );
 }

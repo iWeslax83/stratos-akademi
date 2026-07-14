@@ -19,12 +19,36 @@
   --line: rgba(255, 255, 255, 0.07);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
   min-height: 100dvh;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Tipografi: başlıklar sıkı, gövde nefes alsın ---- */
+h1,
+h2,
+h3 {
+  /* Son satırda tek kelime kalmasın; büyük başlıkta harf aralığı sıkılaşır. */
+  text-wrap: balance;
+  letter-spacing: -0.02em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Klavye odağı her yerde görünür (fare tıklamasında çıkmaz). */
+:focus-visible {
+  outline: 2px solid theme("colors.accent.DEFAULT");
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ---- Derinlik: yumuşak, navy-tonlu gölgeler (gradyan/glass DEĞİL, düz yüzey + gölge) ---- */
@@ -79,6 +103,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .reveal,
   .reveal.is-visible {
     opacity: 1;

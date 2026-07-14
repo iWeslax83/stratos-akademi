@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { addLessonQuestion, deleteLessonQuestion } from "@/app/actions/lessons";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { useServerAction } from "@/lib/ui/useServerAction";
 import { canDeleteQa, type QaItem } from "@/lib/lessons/qa";
 
 function formatTime(iso: string): string {
@@ -24,28 +25,19 @@ export function LessonQa({
   items: QaItem[];
 }) {
   const [mesaj, setMesaj] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [pending, start] = useTransition();
-  const router = useRouter();
+  const { pending, error, run } = useServerAction("Hata");
 
   function send() {
     const metin = mesaj.trim();
     if (!metin) return;
-    setError(null);
-    start(async () => {
-      const r = await addLessonQuestion(lessonId, metin, viewerId);
-      if (!r.ok) { setError(r.error ?? "Hata"); return; }
-      setMesaj("");
-      router.refresh();
-    });
+    run(() => addLessonQuestion(lessonId, metin, viewerId), () => setMesaj(""));
   }
 
   function remove(id: string) {
     if (!window.confirm("Bu mesajı silmek istediğine emin misin?")) return;
-    start(async () => {
+    run(async () => {
       const r = await deleteLessonQuestion(id);
-      if (!r.ok) { window.alert(r.error ?? "Silinemedi"); return; }
-      router.refresh();
+      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
     });
   }
 
@@ -87,7 +79,7 @@ export function LessonQa({
         </ul>
       )}
 
-      {error && <p className="mb-1 text-sm font-semibold text-red-600">{error}</p>}
+      <ErrorText>{error}</ErrorText>
       <div className="flex gap-2">
         <input
           value={mesaj}
