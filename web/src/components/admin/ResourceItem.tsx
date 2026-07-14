@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { updateResource, deleteResource } from "@/app/actions/resources";
+import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 import { KATEGORILER } from "@/lib/resources/group";
@@ -29,14 +30,6 @@ export function ResourceItem({
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     run(() => updateResource(fd), () => setEdit(false));
-  }
-
-  function remove() {
-    if (!window.confirm(`"${baslik}" kaynağını silmek istediğine emin misin?`)) return;
-    run(async () => {
-      const r = await deleteResource(id);
-      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
-    });
   }
 
   if (edit) {
@@ -80,9 +73,10 @@ export function ResourceItem({
           <button onClick={() => setEdit(true)} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy disabled:opacity-50 dark:bg-white/10 dark:text-white">
             Düzenle
           </button>
-          <button onClick={remove} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-red-900/30 dark:text-red-300">
-            Sil
-          </button>
+          <ConfirmButton
+            onConfirm={() => deleteResource(id)}
+            soru={`"${baslik}" kaynağı silinsin mi?`}
+          />
         </div>
       </div>
       <ErrorText>{error}</ErrorText>

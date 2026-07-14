@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { addLessonQuestion, deleteLessonQuestion } from "@/app/actions/lessons";
+import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 import { canDeleteQa, type QaItem } from "@/lib/lessons/qa";
@@ -33,14 +34,6 @@ export function LessonQa({
     run(() => addLessonQuestion(lessonId, metin, viewerId), () => setMesaj(""));
   }
 
-  function remove(id: string) {
-    if (!window.confirm("Bu mesajı silmek istediğine emin misin?")) return;
-    run(async () => {
-      const r = await deleteLessonQuestion(id);
-      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
-    });
-  }
-
   return (
     <section className="mt-8">
       <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">Soru-Cevap</h2>
@@ -63,14 +56,13 @@ export function LessonQa({
                 )}
                 <span className="text-muted">{formatTime(c.created_at)}</span>
                 {canDeleteQa(c, viewerId, viewerIsAdmin) && (
-                  <button
-                    onClick={() => remove(c.id)}
-                    disabled={pending}
-                    className="ml-auto text-muted hover:text-red-600 disabled:opacity-50"
-                    aria-label="Sil"
-                  >
-                    Sil
-                  </button>
+                  <span className="ml-auto">
+                    <ConfirmButton
+                      onConfirm={() => deleteLessonQuestion(c.id)}
+                      soru="Bu mesaj silinsin mi?"
+                      sade
+                    />
+                  </span>
                 )}
               </div>
               <p className="whitespace-pre-line">{c.mesaj}</p>

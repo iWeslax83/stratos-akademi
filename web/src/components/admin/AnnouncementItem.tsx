@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { updateAnnouncement, deleteAnnouncement } from "@/app/actions/announcements";
+import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 
@@ -30,14 +31,6 @@ export function AnnouncementItem({
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     run(() => updateAnnouncement(fd), () => setEdit(false));
-  }
-
-  function remove() {
-    if (!window.confirm(`"${baslik}" duyurusunu silmek istediğine emin misin?`)) return;
-    run(async () => {
-      const r = await deleteAnnouncement(id);
-      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
-    });
   }
 
   if (edit) {
@@ -82,9 +75,10 @@ export function AnnouncementItem({
           <button onClick={() => setEdit(true)} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy disabled:opacity-50 dark:bg-white/10 dark:text-white">
             Düzenle
           </button>
-          <button onClick={remove} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-red-900/30 dark:text-red-300">
-            Sil
-          </button>
+          <ConfirmButton
+            onConfirm={() => deleteAnnouncement(id)}
+            soru={`"${baslik}" duyurusu silinsin mi?`}
+          />
         </div>
       </div>
       <ErrorText>{error}</ErrorText>

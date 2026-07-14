@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { updateEvent, deleteEvent } from "@/app/actions/events";
+import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 
@@ -52,14 +53,6 @@ export function EventItem({
     run(() => updateEvent(fd), () => setEdit(false));
   }
 
-  function remove() {
-    if (!window.confirm(`"${baslik}" etkinliğini silmek istediğine emin misin?`)) return;
-    run(async () => {
-      const r = await deleteEvent(id);
-      return r.ok ? r : { ok: false, error: r.error ?? "Silinemedi" };
-    });
-  }
-
   if (edit) {
     return (
       <form onSubmit={save} className="space-y-2 border-b border-[var(--line)] py-4 last:border-b-0">
@@ -100,9 +93,10 @@ export function EventItem({
           <button onClick={() => setEdit(true)} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy disabled:opacity-50 dark:bg-white/10 dark:text-white">
             Düzenle
           </button>
-          <button onClick={remove} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-red-900/30 dark:text-red-300">
-            Sil
-          </button>
+          <ConfirmButton
+            onConfirm={() => deleteEvent(id)}
+            soru={`"${baslik}" etkinliği silinsin mi?`}
+          />
         </div>
       </div>
       <ErrorText>{error}</ErrorText>

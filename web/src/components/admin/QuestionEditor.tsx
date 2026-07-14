@@ -1,6 +1,7 @@
 "use client";
 
 import { updateQuestion, deleteQuestion, createOption } from "@/app/actions/admin-quiz";
+import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 import { OptionRow } from "./OptionRow";
@@ -22,11 +23,6 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
     const fd = new FormData(e.currentTarget);
     run(() => updateQuestion(fd));
   }
-  function del() {
-    if (!window.confirm("Bu soruyu ve şıklarını silmek istediğine emin misin?")) return;
-    run(() => deleteQuestion(question.id));
-  }
-
   const hasCorrect = question.options.some((o) => o.dogru);
 
   return (
@@ -44,9 +40,10 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
           <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
             Kaydet
           </button>
-          <button type="button" onClick={del} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
-            Sil
-          </button>
+          <ConfirmButton
+            onConfirm={() => deleteQuestion(question.id)}
+            soru="Bu soru ve şıkları silinsin mi?"
+          />
         </div>
         <input
           name="aciklama"
