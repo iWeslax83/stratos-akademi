@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { bestScoresPerQuiz, sumApprovedTaskPoints, type ApprovedTaskRow } from "./aggregate";
 
 // Dashboard için kullanıcıya özel ham veriyi okur:
-// tamamlanan ders id'leri, quiz başına en iyi puan, ve tüm aktivite tarihleri (streak için).
+// tamamlanan ders id'leri, quiz başına en iyi puan, ve tüm aktivite tarihleri (aktivite takvimi için).
 export async function getDashboardData(
   supabase: SupabaseClient,
   userId: string,

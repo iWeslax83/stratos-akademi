@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { EventForm } from "@/components/admin/EventForm";
 import { EventItem } from "@/components/admin/EventItem";
 import { getEvents } from "@/lib/events/queries";
@@ -24,7 +23,7 @@ export default async function AdminEtkinliklerPage() {
 
   return (
     <AppShell initial={initial} isAdmin>
-      <Eyebrow>Yönetim · Etkinlikler</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Etkinlikler</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Etkinlikler</h1>
 
       <Card className="mt-5 p-6">

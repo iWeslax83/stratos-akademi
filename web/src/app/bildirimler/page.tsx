@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MarkReadButton } from "@/components/notifications/MarkReadButton";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { Reveal } from "@/components/ui/Reveal";
@@ -30,7 +29,6 @@ export default async function BildirimlerPage() {
     <AppShell initial={initial} isAdmin={isAdmin}>
       <Reveal className="mb-5 flex items-end justify-between gap-3">
         <div>
-          <Eyebrow>Bildirimler</Eyebrow>
           <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Bildirimler</h1>
         </div>
         {unread > 0 && <MarkReadButton />}

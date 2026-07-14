@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { getResources } from "@/lib/resources/queries";
 import { groupByCategory, KATEGORILER } from "@/lib/resources/group";
@@ -24,7 +23,6 @@ export default async function KaynaklarPage() {
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
       <Reveal>
-        <Eyebrow>Kaynaklar</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Kaynak kütüphanesi</h1>
         <p className="mt-1.5 text-muted">Datasheet, CAD, BOM, repo ve faydalı bağlantılar.</p>
       </Reveal>

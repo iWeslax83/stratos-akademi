@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ResourceForm } from "@/components/admin/ResourceForm";
 import { ResourceItem } from "@/components/admin/ResourceItem";
 import { getResources } from "@/lib/resources/queries";
@@ -22,7 +21,7 @@ export default async function AdminKaynaklarPage() {
 
   return (
     <AppShell initial={initial} isAdmin>
-      <Eyebrow>Yönetim · Kaynaklar</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Kaynaklar</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Kaynak kütüphanesi</h1>
 
       <Card className="mt-5 p-6">

@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CurriculumBrowser } from "@/components/curriculum/CurriculumBrowser";
 import { Reveal } from "@/components/ui/Reveal";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
@@ -25,7 +24,6 @@ export default async function MufredatPage() {
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <Reveal className="mb-4">
-        <Eyebrow>Müfredat</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
           Öğrenme yolun
         </h1>

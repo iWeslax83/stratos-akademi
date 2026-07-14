@@ -32,8 +32,6 @@ export default async function SertifikaPage({ params }: { params: Promise<{ slug
     curriculum,
     completedIds: dash.completedIds,
     bestQuizScores: dash.bestQuizScores,
-    activityDates: dash.activityDates,
-    today: new Date(),
     approvedTaskPoints: dash.approvedTaskPoints,
   });
 

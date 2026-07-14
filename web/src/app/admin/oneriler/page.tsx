@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { OneriKarti } from "@/components/admin/OneriKarti";
 import { CopKutusuKarti } from "@/components/admin/CopKutusuKarti";
 import { TaraSimdiButton } from "@/components/admin/TaraSimdiButton";
@@ -53,7 +52,7 @@ export default async function OnerilerPage() {
     <AppShell initial={initial} isAdmin>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Eyebrow>Yönetim · Öneriler</Eyebrow>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Öneriler</p>
           <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
             Video Önerileri ({pendingRows.length})
           </h1>

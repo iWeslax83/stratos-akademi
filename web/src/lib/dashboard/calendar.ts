@@ -1,9 +1,19 @@
-import { istanbulDayKey } from "./streak";
-
 // Aktivite takvimi: son N hafta için gün-gün aktivite ızgarası (GitHub katkı grafiği tarzı).
 // Mevcut activityDates'ten türetilir (ders tamamlama + quiz denemesi) — migration yok.
 
+const TZ = "Europe/Istanbul";
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+// Bir Date'i Türkiye saat diliminde "YYYY-MM-DD" gün anahtarına çevirir.
+// (Türkiye 2016'dan beri sabit UTC+3; yaz saati yok → 24sa çıkarmak güvenli.)
+export function istanbulDayKey(date: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
 
 export type DayCell = {
   key: string; // Istanbul "YYYY-MM-DD"

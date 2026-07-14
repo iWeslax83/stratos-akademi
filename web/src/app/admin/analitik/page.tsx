@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { analitikVerisi } from "@/lib/admin/rapor";
 import { RaporIndir } from "@/components/admin/RaporIndir";
 
@@ -39,7 +38,7 @@ export default async function AnalitikPage() {
 
   return (
     <AppShell initial={initial} isAdmin>
-      <Eyebrow>Yönetim · Analitik</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Analitik</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">İçerik Analitiği</h1>
       <p className="mt-1.5 text-muted">
         {uyeSayisi} üye · {aktifSayisi} aktif (son 7 gün)

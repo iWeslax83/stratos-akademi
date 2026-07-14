@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { getCurriculum } from "@/lib/curriculum/queries";
@@ -35,7 +34,7 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Eyebrow>Üye Profili</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Üye Profili</p>
       <div className="mb-6 mt-3 flex items-center gap-4">
         <Avatar ad={m.gorunenAd} src={photoFor(photos, m.gorunenAd)} size="lg" />
         <div>

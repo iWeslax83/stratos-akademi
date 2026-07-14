@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ara } from "@/lib/search/queries";
 import { gecerliSorgu, type SonucTuru } from "@/lib/search/rank";
 import { isAdminUser } from "@/lib/auth/is-admin";
@@ -36,7 +35,6 @@ export default async function AraPage({
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Eyebrow>Arama</Eyebrow>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Ara</h1>
 
       <form action="/ara" className="mt-5 flex gap-2">

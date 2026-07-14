@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
@@ -45,8 +44,6 @@ export default async function ProfilPage() {
     curriculum,
     completedIds,
     bestQuizScores,
-    activityDates,
-    today: new Date(),
     approvedTaskPoints,
   });
 
@@ -59,10 +56,9 @@ export default async function ProfilPage() {
   );
 
   return (
-    <AppShell initial={initial} isAdmin={isAdmin} streak={stats.streak} points={stats.points}>
+    <AppShell initial={initial} isAdmin={isAdmin} points={stats.points}>
       <Reveal>
-        <Eyebrow>Profil</Eyebrow>
-        <div className="mb-6 mt-3 flex items-center gap-4">
+        <div className="mb-6 flex items-center gap-4">
           <Avatar ad={ad} src={foto} size="lg" className="shadow-soft" />
           <div>
             <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{ad}</h1>
@@ -74,15 +70,12 @@ export default async function ProfilPage() {
         </div>
       </Reveal>
 
-      <Reveal delay={80} className="grid grid-cols-2 gap-[18px] sm:grid-cols-4">
+      <Reveal delay={80} className="grid grid-cols-2 gap-[18px] sm:grid-cols-3">
         <Card>
           <StatRing pct={stats.overall.pct} label="İlerleme" />
         </Card>
         <Card>
           <StatCard countTo={stats.points} label="Puan" accent />
-        </Card>
-        <Card>
-          <StatCard countTo={stats.streak} label="Günlük seri" />
         </Card>
         <Card>
           <StatCard countTo={onayliGorev ?? 0} label="Onaylı görev" />

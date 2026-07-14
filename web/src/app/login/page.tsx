@@ -3,7 +3,6 @@
 import { createClient } from "@/lib/supabase/client";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { LogoMark } from "@/components/brand/LogoMark";
 
@@ -25,7 +24,6 @@ export default function LoginPage() {
               <LogoMark size={34} className="text-white" deltaClassName="fill-accent" />
             </span>
           </div>
-          <Eyebrow>Stratos Akademi</Eyebrow>
           <h1 className="mt-4 font-display text-2xl font-bold text-navy dark:text-white">
             Tekrar hoş geldin
           </h1>

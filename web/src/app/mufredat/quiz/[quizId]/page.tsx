@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { QuizRunner } from "@/components/quiz/QuizRunner";
 import { AttemptHistory } from "@/components/quiz/AttemptHistory";
 import { Reveal } from "@/components/ui/Reveal";
@@ -27,7 +26,7 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <Reveal className="mb-5">
-        <Eyebrow>Modül Quizi</Eyebrow>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Modül Quizi</p>
         <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
           {quiz.baslik}
         </h1>

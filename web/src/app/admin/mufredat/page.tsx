@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { TrackForm } from "@/components/admin/TrackForm";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteTrack } from "@/app/actions/admin-curriculum";
@@ -35,7 +34,7 @@ export default async function AdminTracksPage({
 
   return (
     <AppShell initial={initial} isAdmin>
-      <Eyebrow>Yönetim · Müfredat</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Müfredat</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Dallar</h1>
 
       <Card className="mt-5 p-6">

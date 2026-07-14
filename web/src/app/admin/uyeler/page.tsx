@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { InviteForm } from "@/components/admin/InviteForm";
 import { RoleSelect } from "@/components/admin/RoleSelect";
 import { DeleteButton } from "@/components/admin/DeleteButton";
@@ -37,7 +36,7 @@ export default async function AdminUyelerPage() {
 
   return (
     <AppShell initial={initial} isAdmin>
-      <Eyebrow>Yönetim · Üyeler</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Üyeler</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
         Üyeler ve Davetler
       </h1>

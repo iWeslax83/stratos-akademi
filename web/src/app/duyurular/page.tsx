@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { getAnnouncements } from "@/lib/announcements/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
@@ -28,7 +27,6 @@ export default async function DuyurularPage() {
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
       <Reveal>
-        <Eyebrow>Duyurular</Eyebrow>
         <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Duyurular</h1>
       </Reveal>
 

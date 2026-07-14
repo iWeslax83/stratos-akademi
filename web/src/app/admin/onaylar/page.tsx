@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ReviewControls } from "@/components/tasks/ReviewControls";
 import { SubmissionThread } from "@/components/tasks/SubmissionThread";
 import { getPendingSubmissions, getSubmissionThreads } from "@/lib/tasks/queries";
@@ -32,7 +31,7 @@ export default async function OnaylarPage() {
 
   return (
     <AppShell initial={initial} isAdmin>
-      <Eyebrow>Yönetim · Onaylar</Eyebrow>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Onaylar</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
         Onay Kuyruğu ({pending.length})
       </h1>

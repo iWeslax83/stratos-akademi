@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SubmissionForm } from "@/components/tasks/SubmissionForm";
 import { SubmissionThread } from "@/components/tasks/SubmissionThread";
 import { getModuleTasks, getSubmissionThreads } from "@/lib/tasks/queries";
@@ -50,7 +49,7 @@ export default async function UyeGorevlerPage({
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <div className="mb-4">
-        <Eyebrow>{trackAd} · {modul.ad}</Eyebrow>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">{trackAd} · {modul.ad}</p>
         <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
           Pratik Görevler
         </h1>

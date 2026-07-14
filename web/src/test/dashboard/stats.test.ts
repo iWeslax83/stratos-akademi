@@ -38,13 +38,10 @@ describe("buildStats", () => {
       curriculum,
       completedIds: new Set(["a", "b"]), // ortak-temel %100
       bestQuizScores: [90, 75],
-      activityDates: [new Date("2026-06-17T08:00:00+03:00")],
-      today: new Date("2026-06-17T09:00:00+03:00"),
       approvedTaskPoints: 50,
     });
     expect(stats.completedCount).toBe(2);
     expect(stats.points).toBe(255); // 2*20 + 90 + 75 + 50
-    expect(stats.streak).toBe(1);
     expect(stats.overall).toEqual({ done: 2, total: 3, pct: 67 });
     expect(stats.earnedCompetencies).toEqual(["ortak-temel"]);
     expect(stats.perTrack.map((t) => t.slug)).toEqual(["ortak-temel", "elektronik"]);

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { LessonSection } from "@/components/curriculum/LessonSection";
 import { ModuleQuizCard } from "@/components/curriculum/ModuleQuizCard";
@@ -44,10 +43,10 @@ export default async function LessonPage({
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <Reveal className="mb-4">
-        <Eyebrow>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           {found.track.ad} · {found.module.ad}
-        </Eyebrow>
-        <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
+        </p>
+        <h1 className="mt-2 font-display text-2xl font-bold text-navy dark:text-white">
           {found.lesson.baslik}
         </h1>
       </Reveal>

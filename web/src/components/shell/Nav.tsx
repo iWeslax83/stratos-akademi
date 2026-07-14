@@ -13,12 +13,10 @@ import { getTeamPhotos, photoFor } from "@/lib/team/photos";
 
 export async function Nav({
   initial = "E",
-  streak,
   points,
   isAdmin = false,
 }: {
   initial?: string;
-  streak?: number;
   points?: number;
   isAdmin?: boolean;
 }) {
@@ -62,7 +60,6 @@ export async function Nav({
       {/* Sağ küme hiçbir genişlikte sıkışmaz; daralınca menü linkleri kısalır. */}
       <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2.5">
         <div className="hidden items-center gap-2.5 xl:flex">
-          {streak != null && <Chip>Seri · {streak} gün</Chip>}
           {points != null && <Chip accent>{points} puan</Chip>}
         </div>
         <NotificationBell unread={unread} />
