@@ -2,23 +2,22 @@
 
 Tofaş Fen Lisesi drone/İHA kulübü (Stratos / TMT-İHA, Bursa) için **video tabanlı
 eğitim platformu** (w3schools tarzı LMS). Üyeler curated YouTube videolarını izler,
-quiz çözer, pratik görev gönderir; ilerleme, streak, puan, yetkinlik ve liderlik takip
-edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
+quiz çözer, pratik görev gönderir; ilerleme, puan, yetkinlik ve liderlik takip edilir.
+Kaptanlar içeriği ve üyeleri web panelinden yönetir; bir cron işi müfredata uygun yeni
+YouTube videolarını **önerir** (karar hep insanda).
 
-> **ÖNEMLİ — bekleyen migration'lar (Supabase SQL editöründe sırayla uygula):**
-> `0020_user_badges`, `0021_guard_profile_role`, `0022_quiz_attempts_server_only`,
-> `0023_submission_comments`, `0024_announcements`, `0025_events`, `0026_resources`,
-> `0027_lesson_questions`.
-> **0021 ve 0022 GÜVENLİK düzeltmesidir** (sırasıyla: üyenin kendini admin yapması;
-> üyenin quiz puanını şişirmesi) — en kısa sürede uygula. `0023` görev yorum dizisini,
-> `0024` duyurular özelliğini açar. Uygulanana kadar uygulama çalışır ama ilgili
-> koruma/özellik devrede olmaz. Ayrıntı: aşağıdaki migration tablosu.
+> **ÖNEMLİ — henüz uygulanmamış migration'lar:** `0035_seed_tasarim`,
+> `0036_video_siralama_skoru`. `0035` Tasarım dalının müfredatını ekler; `0036` video
+> öneri kuyruğuna sıralama skoru kolonu getirir. Uygulanana kadar uygulama çalışır ama
+> ilgili içerik/sıralama devrede olmaz. Sırayla uygula (`node scripts/migrate.mjs` ya da
+> Supabase SQL editörü) — ayrıntı: aşağıdaki migration tablosu.
 
 ## Teknoloji
 
 - **Next.js 16** (App Router, RSC + Server Actions, TypeScript, `src/`, `@/*` alias)
-- **Tailwind CSS v3** — lacivert `#16243F` + altın `#C9A23A`; Sora (başlık) + Plus Jakarta Sans (gövde); açık/koyu tema
+- **Tailwind CSS v3** — amblemden türetilmiş palet: lacivert `#0e1a2e` gövde + tek turkuaz aksan `#4fb3bf`; Sora (başlık) + Plus Jakarta Sans (gövde); açık/koyu tema
 - **Supabase** — Postgres + Auth (Google OAuth) + RLS + Storage
+- **YouTube Data API v3** + **Gemini** — otomatik video önerileri (2 günde bir GitHub Actions cron)
 - **Vitest** + Testing Library
 - Dağıtım: Vercel
 
@@ -26,22 +25,24 @@ edilir. Kaptanlar içeriği ve üyeleri web panelinden yönetir.
 
 - **Giriş:** Google OAuth, e-posta izin listesi (`allowlist`) ile sınırlı; `uye`/`admin` rolleri.
 - **Müfredat:** Dal → Modül → Ders hiyerarşisi; YouTube IFrame ile izleme; anti-skip tamamlama (konum ≥%90 **ve** gerçekten izlenen ≥%20). **Arama:** `/mufredat`'ta ders/modül/dal adına göre canlı süzme (Türkçe duyarlı; hiyerarşi korunur).
-- **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat). Her denemede **soru ve şık sırası karıştırılır** (cevap paylaşımını zorlaştırır; puanlama ID bazlı olduğundan etkilenmez). Migration yok; saf `lib/quiz/shuffle`.
-- **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, günlük seri (streak), puan, mini liderlik, dal yetkinlikleri.
+- **Quiz:** Modül sonu çoktan/çok-doğru seçmeli; sunucu tarafı puanlama; cevaplar yalnız submit sonrası (anti-cheat). Her denemede **soru ve şık sırası karıştırılır** (cevap paylaşımını zorlaştırır; puanlama ID bazlı olduğundan etkilenmez). **Puana quiz başına yalnız İLK deneme sayılır** (`0034`) — sonuç ekranı doğru cevapları gösterdiği için tekrar denemeler öğrenme amaçlı serbest, ama puanı şişirmez.
+- **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, puan, mini liderlik, dal yetkinlikleri, son duyurular + yaklaşan etkinlikler.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
-- **Profil (`/profil`):** üyenin kendi puan/streak/ilerleme/onaylı görev özeti + yetkinlik vitrini + aktivite takvimi. **Görünen ad düzenleme:** üye Google adını değiştirebilir (liderlikte de görünür); `role` 0021 trigger'ı ile korunduğundan yalnız `ad` yazılır.
+- **Profil (`/profil`):** üyenin kendi puan/ilerleme/onaylı görev özeti + yetkinlik vitrini + aktivite takvimi. **Ad düzenleme yoktur** — adları kaptanlar `/admin/uyeler`'den yönetir (avatar eşleştirmesi isim üzerinden yapıldığı için ad üyeye kapalı).
+- **Profil fotoğrafları:** `stratosiha.com` içerik reposundan (`site.json`) isim eşleştirmesiyle çekilir; siteye foto eklenince akademiye kendiliğinden yansır (1 saat revalidate). Fotoğrafı olmayan üyede baş harf dairesi. Migration yok; `lib/team/photos`.
+- **Global arama (`/ara`):** ders, modül, dal, duyuru, etkinlik ve kaynaklarda tek kutudan arama (Türkçe duyarlı).
 - **Sertifika:** üye bir dalı tamamlayınca yazdırılabilir/PDF katılım belgesi (`/sertifika/[slug]`). **Migration yok** — tamamlama verisinden türetilir, uygunluk sunucuda doğrulanır. `/profil`'de hak edilen belgelere link.
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir. **Yorum dizisi:** her gönderimde kaptan ↔ üye karşılıklı konuşma (revize iste → üye düzeltir); yeni yoruma in-app bildirim. (`0023`)
 - **Duyurular (`/duyurular`):** kaptanlar üyelere toplu duyuru yapar (toplantı, deadline, yeni içerik); panomda son 3 kartı + yeni duyuruda tüm üyelere in-app bildirim. (`0024`)
 - **Etkinlikler / takvim (`/etkinlikler`):** toplantı/atölye/deadline; tarih-saat + yer; yaklaşan/geçmiş ayrımı; panomda yaklaşan 3 + yeni etkinlikte tüm üyelere bildirim. Admin CRUD. (`0025`)
 - **Kaynak kütüphanesi (`/kaynaklar`):** kaptanlar **link tabanlı** referans paylaşır (datasheet/CAD/BOM/repo); kategoriye göre gruplu; http(s) doğrulaması. Dosya yükleme yok (Storage gerekmez). Admin CRUD. (`0026`)
 - **Ders soru-cevap:** her ders sayfasında paylaşılan soru-cevap thread'i (kulüp bilgi tabanı); üye soru sorar, kaptan/akran yanıtlar; yeni soruda kaptanlara bildirim; yazan/admin siler. (`0027`)
-- **Bildirimler:** görev onay/red + yeni yorum + yeni duyuru/etkinlik + ders sorusu → in-app bildirim; Nav'da okunmamış sayacı.
-- **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/silme), görev tanımı CRUD, onay kuyruğu, duyuru CRUD.
-- **Analitik (`/admin/analitik`):** KPI şeridi (üye/aktif/bekleyen onay/tamamlanan ders/ort. tamamlama), **pasif üyeler** (14+ gün — kimi dürtmeli), dal bazlı tamamlama %, üye katılımı, en az tamamlanan dersler, quiz performansı. Migration yok; saf `lib/admin/analytics`.
+- **Bildirimler:** görev onay/red + yeni yorum + yeni duyuru/etkinlik + ders sorusu → in-app bildirim. Nav'daki zilde okunmamış sayacı; tıklayınca **popup panelde** açılır (mobilde alttan sheet) — ayrı sayfaya gitmek gerekmez.
+- **Otomatik video önerileri (`/admin/oneriler`):** GitHub Actions cron'u **2 günde bir** müfredat başlıklarıyla YouTube'u tarar; adaylar kalite kapısından (izlenme/süre/yaş eşikleri, dil, kopya/kara liste) geçer, Gemini uygunluk skoru verir, kuyruk `uygunluk + izlenme + tazelik` bileşik skoruna göre sıralanır (`0036`). Kaptan **Kabul** ederse video seçtiği modüle ders olur, **Reddet** ederse kalıcı kara listeye düşer. Hiçbir video admin onayı olmadan müfredata girmez. "Tarama Geçmişi" her koşunun hunisini gösterir (hangi eşik kaç videoyu eledi — `video_scan_runs`).
+- **Admin paneli:** müfredat CRUD, quiz CRUD, üye/izin listesi yönetimi (davet/rol/ad/silme), görev tanımı CRUD, onay kuyruğu, duyuru/etkinlik/kaynak CRUD, video öneri kuyruğu.
+- **Analitik (`/admin/analitik`):** KPI şeridi (üye/aktif/bekleyen onay/tamamlanan ders/ort. tamamlama), **pasif üyeler** (14+ gün — kimi dürtmeli), dal bazlı tamamlama %, üye katılımı, en az tamamlanan dersler, quiz performansı. **CSV dışa aktarımı** (üyeler / dersler / quizler — `/api/admin/rapor`). Hesap saf `lib/admin/analytics`.
 
-**Puan formülü:** `tamamlanan ders × 20 + Σ(quiz en iyi %) + Σ(onaylı görev puanı)`.
-**Streak:** ders/quiz aktivitesi olan peş peşe günler (Türkiye saati, 1 gün tolerans).
+**Puan formülü:** `tamamlanan ders × 20 + Σ(quiz İLK deneme %) + Σ(onaylı görev puanı)`.
 
 ## Kurulum (yerel)
 
@@ -53,14 +54,26 @@ npm run dev   # http://localhost:3000
 ```
 
 ### Ortam değişkenleri (`web/.env.local`)
+Tam liste ve açıklamalar `web/.env.example`'da; özet:
 ```
+# Zorunlu
 NEXT_PUBLIC_SUPABASE_URL=https://<proje-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key>   # YALNIZ sunucu; asla NEXT_PUBLIC_ değil, asla commit'lenmez
-# E-posta bildirimleri (opsiyonel — yoksa e-posta sessizce atlanır):
+
+# E-posta bildirimleri (opsiyonel — yoksa e-posta sessizce atlanır)
 NEXT_PUBLIC_SITE_URL=https://stratosiha.com           # e-posta linkleri için mutlak adres
 RESEND_API_KEY=<resend-key>                           # https://resend.com → API Keys
 MAIL_FROM=Stratos Akademi <bildirim@alanadi.com>      # Resend'de doğrulanmış gönderen
+
+# Otomatik video önerileri
+YOUTUBE_API_KEY=<youtube-data-api-key>   # Google Cloud → YouTube Data API v3
+GOOGLE_API_KEY=<gemini-api-key>          # https://aistudio.google.com/apikey
+CRON_SECRET=<rastgele-uzun-dizge>        # cron route'unu korur; YOKSA uç nokta her isteği 401'ler
+# GEMINI_MODEL, VIDEO_MIN_VIEWS, VIDEO_MIN_SURE_SN, VIDEO_MAX_YAS_YIL — opsiyonel eşikler
+
+# Migration çalıştırmak için (yalnız yerel)
+DATABASE_URL=postgresql://...   # Supabase → Settings → Database → Session pooler (URI)
 ```
 
 ### E-posta kurulumu (Resend)
@@ -70,12 +83,26 @@ MAIL_FROM=Stratos Akademi <bildirim@alanadi.com>      # Resend'de doğrulanmış
 4. Bu üç değişken yoksa kaptan görev onay/red'inde e-posta gönderilmez; uygulama normal çalışır (yalnız in-app bildirim).
 `.env.local` gitignore'da. Service role anahtarı yalnız server action'larda (quiz puanlama, imzalı URL, üye silme, eski dosya temizliği) kullanılır.
 
+### Otomatik video önerileri kurulumu
+1. Google Cloud'da **YouTube Data API v3**'ü aç → `YOUTUBE_API_KEY`.
+2. [aistudio.google.com/apikey](https://aistudio.google.com/apikey)'dan Gemini anahtarı → `GOOGLE_API_KEY`.
+3. Rastgele uzun bir dizge üret → `CRON_SECRET`; **aynısını** GitHub repo secret'ı olarak ekle
+   (`CRON_SECRET`, `SITE_URL` ile birlikte — `.github/workflows/video-tara.yml` bunları kullanır).
+4. Cron 2 günde bir `POST /api/cron/video-tara`'ya vurur. Admin `/admin/oneriler`'den **elle de** tarama başlatabilir.
+
 ## Veritabanı (Supabase)
 
-Migration'lar `supabase/migrations/` altında **sıralı numaralı**. Bu projede
-migration'lar **Supabase SQL editöründe elle** çalıştırılır (postgres rolü; SECURITY
-DEFINER fonksiyonları ve storage politikaları için gerekli). Sırayla 0001 → 0016
-uygulanmalı:
+Migration'lar `supabase/migrations/` altında **sıralı numaralı** ve 0001 → 0036 sırayla
+uygulanmalı. İki yol var:
+
+```bash
+cd web
+node scripts/migrate.mjs        # DATABASE_URL (session pooler) gerekir
+node scripts/check-grants.mjs   # service_role grant'leri yerinde mi (aşağıdaki tuzağa bak)
+```
+
+Alternatif: **Supabase SQL editöründe elle** çalıştır (postgres rolü; SECURITY DEFINER
+fonksiyonları ve storage politikaları için zaten bu rol gerekir).
 
 | # | Dosya | Ne |
 |---|---|---|
@@ -107,6 +134,14 @@ uygulanmalı:
 | 0026 | resources | kaynak kütüphanesi (link tabanlı: baslik, url, kategori); okuma herkese, yazma admin; `author_id default auth.uid()`. Storage gerekmez. Uygulanana kadar liste boş, ekleme hata verir (graceful). |
 | 0027 | lesson_questions | ders altı soru-cevap; okuma herkese, ekleme kendi adına (her üye), silme yazan/admin; immutable. Uygulanana kadar thread boş, gönderim hata verir (graceful). |
 | 0028 | drop_user_badges | rozet sistemi kaldırıldı → `user_badges` tablosunu düşürür (uygulanmazsa tablo zararsız boş durur). |
+| 0029 | video_suggestions | video öneri kuyruğu + kalıcı kara liste (reddedilen video bir daha önerilmez). |
+| 0030 | video_scan_runs | her tarama koşusunun teşhis hunisi (`diag`) — "neden hiç öneri gelmiyor?" tahminsiz cevaplansın diye. |
+| 0031 | grant_service_role_videos | **KÖK NEDEN:** müfredat + video tablolarına `service_role` GRANT'i yoktu → tarama daha ilk adımda "permission denied for table tracks" ile sessizce ölüyordu. |
+| 0032 | grant_service_role_notifications_select | 0031 yalnız INSERT verdi; sunucu akışlarının bildirimi okuması da gerekiyor. |
+| 0033 | grant_service_role_analytics | aynı grant tuzağı: `/admin/analitik` service_role ile okuyup "permission denied" alınca **herkesin ilerlemesini SIFIR** gösteriyordu. |
+| 0034 | leaderboard_first_attempt | **GÜVENLİK:** liderlik quiz başına `max(puan)` alıyordu; sonuç ekranı doğru cevapları gösterdiği için üye boş deneme → cevapları öğren → 100 yapıyordu. Artık **ilk deneme** sayılır; tekrar denemeler öğrenme için serbest. |
+| 0035 | seed_tasarim | Tasarım dalı müfredatı: 3 modül / 10 ders (SolidWorks kursu + alıştırmalar + 3D baskı). Track açıklamasından "(yakında)" kalkar. Yalnız dal modülsüzken ekler — tekrar çalıştırmak güvenli. |
+| 0036 | video_siralama_skoru | öneri kuyruğuna `siralama_skoru` (uygunluk + izlenme + tazelik) + indeks; eski satırlar tek seferlik geri doldurulur. Ağırlıklar `lib/videos/kalite.ts` ile birebir. |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen
@@ -126,10 +161,16 @@ Yeni üye davet etmek: admin `/admin/uyeler` sayfasından e-posta ekler (veya
 ```bash
 cd web
 npm run dev        # geliştirme
-npm run test       # vitest (saf hesap fonksiyonları: puan, streak, yetkinlik, slug, vb.)
+npm run test       # vitest (saf hesap fonksiyonları: puan, yetkinlik, video kalite skoru, slug, vb.)
+npm run lint       # eslint
 npm run build      # production derleme
 npx tsc --noEmit   # tip kontrolü
+
+node scripts/migrate.mjs       # bekleyen migration'ları uygula (DATABASE_URL)
+node scripts/check-grants.mjs  # service_role grant'leri yerinde mi
 ```
+
+CI (`.github/workflows/ci.yml`) `main`'e push ve PR'da tip kontrolü + lint + testleri koşar.
 
 ## Dağıtım (Vercel)
 
@@ -153,6 +194,14 @@ npx tsc --noEmit   # tip kontrolü
   istemci-tarafı/best-effort. (2) `user_competencies` üye kendi satırını ekleyebilir →
   profilde **kozmetik** sahte yetkinlik rozeti (puan/liderliğe etki etmez; onlar
   `lesson_progress`+`quiz_attempts`'tan türetilir). Kulüp-içi onur-sistemi bağlamında kabul.
+- **`service_role` GRANT tuzağı (0031/0033'ün kök nedeni — YENİ TABLODA TEKRARLAR):** bu
+  projede SQL editörüyle açılan tablolar `service_role`'a **otomatik GRANT almaz**. RLS'i
+  bypass eden sunucu işleri (tarama, puanlama, analitik) grant yoksa "permission denied"
+  alır ve çoğu yerde **sessizce boş sonuç** döner — sayfa hata vermeden yanlış veri gösterir.
+  Yeni tablo eklerken grant'i migration'a elle yaz; `node scripts/check-grants.mjs` ile doğrula.
+- **Avatar ↔ ad kilidi:** profil fotoğrafları `stratosiha.com`'daki isimle eşleştiği için üye
+  kendi `ad`'ını **değiştiremez** (yoksa adını değiştirip başkasının fotoğrafını üstlenebilirdi).
+  Ad değişikliği yalnız admin'de.
 - **RLS her yerde:** içerik okuması authenticated; yazma `is_admin()` ile admin'e açık.
   Quiz `dogru` kolonu üyeye kapalı (kolon-grant); admin/puanlama service_role ile okur.
   Pratik görev gönderiminde "self-approval" RLS WITH CHECK ile engellenir (üye durumu
