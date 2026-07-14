@@ -6,11 +6,11 @@ quiz çözer, pratik görev gönderir; ilerleme, puan, yetkinlik ve liderlik tak
 Kaptanlar içeriği ve üyeleri web panelinden yönetir; bir cron işi müfredata uygun yeni
 YouTube videolarını **önerir** (karar hep insanda).
 
-> **ÖNEMLİ — henüz uygulanmamış migration'lar:** `0035_seed_tasarim`,
-> `0036_video_siralama_skoru`. `0035` Tasarım dalının müfredatını ekler; `0036` video
-> öneri kuyruğuna sıralama skoru kolonu getirir. Uygulanana kadar uygulama çalışır ama
-> ilgili içerik/sıralama devrede olmaz. Sırayla uygula (`node scripts/migrate.mjs` ya da
-> Supabase SQL editörü) — ayrıntı: aşağıdaki migration tablosu.
+> **Migration durumu:** 0001–0036 uygulanmış, bekleyen yok. Yeni migration eklediğinde
+> `cd web && node scripts/migrate.mjs` ile uygula; `--status` bekleyenleri listeler.
+> **SQL editöründe elle çalıştırırsan** `schema_migrations` defterine yazılmaz — runner
+> o migration'ı "bekliyor" sanıp tekrar çalıştırır. Bu yüzden migration'lar
+> tekrar-çalıştırmaya dayanıklı yazılmalı (`if not exists`, guard'lı insert).
 
 ## Teknoloji
 
