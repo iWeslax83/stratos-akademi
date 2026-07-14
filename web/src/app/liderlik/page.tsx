@@ -7,6 +7,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { getLeaderboard, getLeaderboardRanged } from "@/lib/dashboard/leaderboard";
 import { parseAralik, rangeStartISO, aralikLabel, type Aralik } from "@/lib/dashboard/range";
+import { Avatar } from "@/components/ui/Avatar";
+import { getTeamPhotos, photoFor } from "@/lib/team/photos";
 
 export const dynamic = "force-dynamic";
 
@@ -29,13 +31,14 @@ export default async function LiderlikPage({
     data: { user },
   } = await supabase.auth.getUser();
   // Profil ve sıralama bağımsız → eşzamanlı.
-  const [{ data: profile }, rows] = await Promise.all([
+  const [{ data: profile }, rows, photos] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     aralik === "tum"
       ? getLeaderboard(supabase)
       : // dinamik server component; şu anki zaman kasıtlı (saf-render kuralı burada geçerli değil)
         // eslint-disable-next-line react-hooks/purity
         getLeaderboardRanged(supabase, rangeStartISO(aralik, Date.now())),
+    getTeamPhotos(),
   ]);
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = profile?.role === "admin";
@@ -88,9 +91,7 @@ export default async function LiderlikPage({
               >
                 {r.sira}
               </span>
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-accent dark:text-navy">
-                {r.gorunenAd.charAt(0)}
-              </span>
+              <Avatar ad={r.gorunenAd} src={photoFor(photos, r.gorunenAd)} />
               <Link
                 href={`/uye/${r.userId}`}
                 className="min-w-0 flex-1 truncate text-sm font-bold text-navy hover:text-accent-ink dark:hover:text-accent dark:text-white"

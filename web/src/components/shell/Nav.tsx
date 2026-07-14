@@ -8,6 +8,8 @@ import { createClient } from "@/lib/supabase/server";
 import { unreadCount } from "@/lib/notifications/queries";
 import { MEMBER_LINKS } from "@/lib/nav/links";
 import { LogoMark } from "@/components/brand/LogoMark";
+import { Avatar } from "@/components/ui/Avatar";
+import { getTeamPhotos, photoFor } from "@/lib/team/photos";
 
 export async function Nav({
   initial = "E",
@@ -22,6 +24,16 @@ export async function Nav({
 }) {
   const supabase = await createClient();
   const unread = await unreadCount(supabase);
+  // Avatarı Nav kendi çözer: her sayfaya avatar prop'u geçirmek yerine
+  // kullanıcının adını burada okuyup site fotoğraflarıyla eşleştiriyoruz.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const [{ data: me }, photos] = await Promise.all([
+    supabase.from("profiles").select("ad").eq("id", user!.id).single(),
+    getTeamPhotos(),
+  ]);
+  const foto = photoFor(photos, me?.ad);
   return (
     <nav className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel)] px-3 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)] sm:gap-3 sm:px-4">
       <Link
@@ -55,12 +67,8 @@ export async function Nav({
         </div>
         <NotificationBell unread={unread} />
         <ThemeToggle />
-        <Link
-          href="/profil"
-          title="Profil"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-navy text-sm font-bold text-white dark:bg-accent dark:text-navy"
-        >
-          {initial}
+        <Link href="/profil" title="Profil" className="shrink-0">
+          <Avatar ad={me?.ad ?? initial} src={foto} />
         </Link>
         <MobileMenu isAdmin={isAdmin} />
       </div>

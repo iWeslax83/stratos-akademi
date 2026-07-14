@@ -7,7 +7,8 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { ActivityCalendar } from "@/components/dashboard/ActivityCalendar";
 import { Reveal } from "@/components/ui/Reveal";
-import { DisplayNameEditor } from "@/components/profile/DisplayNameEditor";
+import { Avatar } from "@/components/ui/Avatar";
+import { getTeamPhotos, photoFor } from "@/lib/team/photos";
 import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
 import { pointsBreakdown } from "@/lib/dashboard/points";
 import { getCurriculum } from "@/lib/curriculum/queries";
@@ -26,15 +27,17 @@ export default async function ProfilPage() {
     data: { user },
   } = await supabase.auth.getUser();
   // Bağımsız sorgular eşzamanlı (sayfa gecikmesini azaltır).
-  const [{ data: profile }, curriculum, dash, onayliGorev, leaderboard] = await Promise.all([
+  const [{ data: profile }, curriculum, dash, onayliGorev, leaderboard, photos] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
     getCurriculum(supabase),
     getDashboardData(supabase, user!.id),
     getApprovedTaskCount(supabase, user!.id),
     getLeaderboard(supabase),
+    getTeamPhotos(),
   ]);
   const ad = profile?.ad ?? profile?.email ?? "Üye";
   const initial = ad.charAt(0).toUpperCase();
+  const foto = photoFor(photos, profile?.ad);
   const isAdmin = profile?.role === "admin";
 
   const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = dash;
@@ -60,18 +63,13 @@ export default async function ProfilPage() {
       <Reveal>
         <Eyebrow>Profil</Eyebrow>
         <div className="mb-6 mt-3 flex items-center gap-4">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-navy text-2xl font-bold text-white shadow-soft dark:bg-accent dark:text-navy">
-            {initial}
-          </span>
+          <Avatar ad={ad} src={foto} size="lg" className="shadow-soft" />
           <div>
             <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{ad}</h1>
             <p className="text-sm text-muted">
               {profile?.email}
               {isAdmin && " · Kaptan"}
             </p>
-            <div className="mt-1.5">
-              <DisplayNameEditor userId={user!.id} current={profile?.ad ?? ""} />
-            </div>
           </div>
         </div>
       </Reveal>

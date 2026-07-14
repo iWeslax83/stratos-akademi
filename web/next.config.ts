@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  images: {
+    // Üye profil fotoğrafları stratosiha.com'un içerik reposundan gelir.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        pathname: "/iWeslax83/stratos-website/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
