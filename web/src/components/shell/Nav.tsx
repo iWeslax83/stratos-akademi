@@ -29,10 +29,10 @@ export async function Nav({
     data: { user },
   } = await supabase.auth.getUser();
   const [{ data: me }, photos] = await Promise.all([
-    supabase.from("profiles").select("ad").eq("id", user!.id).single(),
+    supabase.from("profiles").select("ad, stratosiha_ad").eq("id", user!.id).single(),
     getTeamPhotos(),
   ]);
-  const foto = photoFor(photos, me?.ad);
+  const foto = photoFor(photos, me?.ad, me?.stratosiha_ad);
   return (
     <nav className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel)] px-3 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)] sm:gap-3 sm:px-4">
       <Link

@@ -27,7 +27,7 @@ export default async function ProfilPage() {
   } = await supabase.auth.getUser();
   // Bağımsız sorgular eşzamanlı (sayfa gecikmesini azaltır).
   const [{ data: profile }, curriculum, dash, onayliGorev, leaderboard, photos] = await Promise.all([
-    supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
+    supabase.from("profiles").select("ad, email, role, stratosiha_ad").eq("id", user!.id).single(),
     getCurriculum(supabase),
     getDashboardData(supabase, user!.id),
     getApprovedTaskCount(supabase, user!.id),
@@ -36,7 +36,7 @@ export default async function ProfilPage() {
   ]);
   const ad = profile?.ad ?? profile?.email ?? "Üye";
   const initial = ad.charAt(0).toUpperCase();
-  const foto = photoFor(photos, profile?.ad);
+  const foto = photoFor(photos, profile?.ad, profile?.stratosiha_ad);
   const isAdmin = profile?.role === "admin";
 
   const { completedIds, bestQuizScores, activityDates, approvedTaskPoints } = dash;
