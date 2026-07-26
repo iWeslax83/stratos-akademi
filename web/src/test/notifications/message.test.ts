@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { taskReviewMessage } from "@/lib/notifications/message";
+import { taskReviewMessage, passiveNudgeMessage } from "@/lib/notifications/message";
 
 describe("taskReviewMessage", () => {
   it("onay mesajı", () => {
@@ -7,5 +7,13 @@ describe("taskReviewMessage", () => {
   });
   it("red mesajı", () => {
     expect(taskReviewMessage("red", "Lehimleme")).toBe('"Lehimleme" görevin reddedildi.');
+  });
+});
+
+describe("passiveNudgeMessage", () => {
+  it("sabit hatırlatma metni döner", () => {
+    expect(passiveNudgeMessage()).toBe(
+      "Bir süredir akademiye uğramadın — kaldığın yerden devam edebilirsin.",
+    );
   });
 });

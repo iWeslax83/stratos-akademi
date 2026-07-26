@@ -20,3 +20,8 @@ export function announcementNotifyMessage(baslik: string): string {
 export function eventNotifyMessage(baslik: string): string {
   return `Yeni etkinlik: "${baslik}"`;
 }
+
+// Admin pasif üyeyi elle dürttüğünde giden sabit bildirim.
+export function passiveNudgeMessage(): string {
+  return "Bir süredir akademiye uğramadın — kaldığın yerden devam edebilirsin.";
+}
