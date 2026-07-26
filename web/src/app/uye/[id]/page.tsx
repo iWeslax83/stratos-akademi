@@ -36,7 +36,7 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
     <AppShell initial={initial} isAdmin={isAdmin}>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Üye Profili</p>
       <div className="mb-6 mt-3 flex items-center gap-4">
-        <Avatar ad={m.gorunenAd} src={photoFor(photos, m.gorunenAd)} size="lg" />
+        <Avatar ad={m.gorunenAd} src={photoFor(photos, m.tamAd, m.stratosihaAd)} size="lg" />
         <div>
           <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{m.gorunenAd}</h1>
           <p className="text-sm text-muted">Liderlikte #{m.sira}</p>

@@ -2,6 +2,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type MemberProfile = {
   gorunenAd: string;
+  tamAd: string | null;
+  stratosihaAd: string | null;
   puan: number;
   tamamlananDers: number;
   onayliGorev: number;
@@ -11,6 +13,8 @@ export type MemberProfile = {
 
 type RawRow = {
   gorunen_ad: string | null;
+  tam_ad: string | null;
+  stratosiha_ad: string | null;
   puan: number | null;
   tamamlanan_ders: number | null;
   onayli_gorev: number | null;
@@ -30,6 +34,8 @@ export async function getMemberProfile(
     if (!row || !row.gorunen_ad) return null;
     return {
       gorunenAd: row.gorunen_ad,
+      tamAd: row.tam_ad ?? null,
+      stratosihaAd: row.stratosiha_ad ?? null,
       puan: row.puan ?? 0,
       tamamlananDers: row.tamamlanan_ders ?? 0,
       onayliGorev: row.onayli_gorev ?? 0,
