@@ -4,6 +4,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { analitikVerisi } from "@/lib/admin/rapor";
 import { RaporIndir } from "@/components/admin/RaporIndir";
+import { PassiveNudgeButton } from "@/components/admin/PassiveNudgeButton";
 
 export const dynamic = "force-dynamic";
 
@@ -62,14 +63,14 @@ export default async function AnalitikPage() {
             Pasif üyeler ({pasifler.length})
           </h2>
           <p className="mb-3 text-sm text-muted">14+ gündür pasif ya da hiç aktivitesi olmayanlar — bir dürtme iyi gelebilir.</p>
-          <div className="flex flex-wrap gap-2">
-            {pasifler.map((u, i) => (
-              <span
-                key={i}
-                className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent"
-              >
-                {u.ad} · {u.gun === null ? "hiç" : `${u.gun} gün`}
-              </span>
+          <div className="flex flex-col gap-2">
+            {pasifler.map((u) => (
+              <div key={u.id} className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent">
+                  {u.ad} · {u.gun === null ? "hiç" : `${u.gun} gün`}
+                </span>
+                <PassiveNudgeButton userId={u.id} />
+              </div>
             ))}
           </div>
         </Card>
