@@ -1,13 +1,29 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type LeaderRow = { userId: string; gorunenAd: string; puan: number; sira: number };
+export type LeaderRow = {
+  userId: string;
+  gorunenAd: string;
+  tamAd: string | null;
+  stratosihaAd: string | null;
+  puan: number;
+  sira: number;
+};
 
-type RawRow = { user_id: string; gorunen_ad: string; puan: number; sira: number };
+type RawRow = {
+  user_id: string;
+  gorunen_ad: string;
+  tam_ad: string | null;
+  stratosiha_ad: string | null;
+  puan: number;
+  sira: number;
+};
 
 function mapRows(data: RawRow[]): LeaderRow[] {
   return data.map((r) => ({
     userId: r.user_id,
     gorunenAd: r.gorunen_ad,
+    tamAd: r.tam_ad ?? null,
+    stratosihaAd: r.stratosiha_ad ?? null,
     puan: r.puan,
     sira: Number(r.sira),
   }));

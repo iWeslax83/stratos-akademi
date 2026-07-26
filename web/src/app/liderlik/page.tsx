@@ -89,7 +89,7 @@ export default async function LiderlikPage({
               >
                 {r.sira}
               </span>
-              <Avatar ad={r.gorunenAd} src={photoFor(photos, r.gorunenAd)} />
+              <Avatar ad={r.gorunenAd} src={photoFor(photos, r.tamAd, r.stratosihaAd)} />
               <Link
                 href={`/uye/${r.userId}`}
                 className="min-w-0 flex-1 truncate text-sm font-bold text-navy hover:text-accent-ink dark:hover:text-accent dark:text-white"
