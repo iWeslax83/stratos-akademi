@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { normalizeEmail, isValidEmail, type Role } from "@/lib/admin/members";
+import { normalizeEmail, isValidEmail, cleanAd, type Role } from "@/lib/admin/members";
 
 export type ActionResult = { ok: boolean; error?: string };
 
@@ -92,4 +92,45 @@ export async function removeMember(
     revalidatePath("/admin/uyeler");
     return { ok: true };
   } catch (e) { console.error("removeMember:", e); return { ok: false, error: "Beklenmeyen hata." }; }
+}
+
+export async function renameMember(
+  userId: string,
+  ad: string,
+  selfId: string,
+): Promise<ActionResult> {
+  try {
+    if (userId === selfId) return { ok: false, error: "Kendi adını değiştiremezsin." };
+    const temiz = cleanAd(ad);
+    if (!temiz) return { ok: false, error: "Ad 1-60 karakter olmalı." };
+    const supabase = await createClient();
+    const { error } = await supabase.from("profiles").update({ ad: temiz }).eq("id", userId);
+    if (error) return { ok: false, error: errMsg(error) };
+    revalidatePath("/admin/uyeler");
+    return { ok: true };
+  } catch (e) {
+    console.error("renameMember:", e);
+    return { ok: false, error: "Beklenmeyen hata." };
+  }
+}
+
+export async function linkStratosiha(
+  userId: string,
+  stratosihaAd: string | null,
+  selfId: string,
+): Promise<ActionResult> {
+  try {
+    if (userId === selfId) return { ok: false, error: "Kendi eşleştirmeni değiştiremezsin." };
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({ stratosiha_ad: stratosihaAd })
+      .eq("id", userId);
+    if (error) return { ok: false, error: errMsg(error) };
+    revalidatePath("/admin/uyeler");
+    return { ok: true };
+  } catch (e) {
+    console.error("linkStratosiha:", e);
+    return { ok: false, error: "Beklenmeyen hata." };
+  }
 }
