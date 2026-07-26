@@ -8,7 +8,7 @@ type ProgressRow = { user_id: string; lesson_id: string; completed_at: string | 
 type AttemptRow = { user_id: string; quiz_id: string; puan: number; created_at: string };
 type SubRow = { user_id: string; created_at: string };
 
-export type UyeSatiri = { ad: string; puan: number; ders: number; gun: number | null; aktif: boolean };
+export type UyeSatiri = { id: string; ad: string; puan: number; ders: number; gun: number | null; aktif: boolean };
 export type DersSatiri = { baslik: string; yer: string; tamam: number };
 export type QuizSatiri = { baslik: string; yer: string; ortBest: number; gecen: number; deneyen: number };
 export type DalSatiri = { ad: string; ikon: string | null; lessonCount: number; pct: number };
@@ -73,6 +73,7 @@ export async function analitikVerisi(
       const son = sonAktivite(tarihByUser.get(r.userId) ?? []);
       const gun = gunOnce(son, nowMs);
       return {
+        id: r.userId,
         ad: r.gorunenAd,
         puan: r.puan,
         ders: dersByUser.get(r.userId) ?? 0,
