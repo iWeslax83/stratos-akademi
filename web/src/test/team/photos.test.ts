@@ -103,7 +103,7 @@ describe("photoFor", () => {
   });
 
   it("stratosihaAd eşleşmiyorsa ad'a düşer", () => {
-    expect(photoFor(map, "Arda Akalın", "Var Olmayan İsim")).toBeNull();
+    expect(photoFor(map, "Arda Akalın", "Var Olmayan İsim")).toContain("arda.jpg");
   });
 
   it("stratosihaAd yoksa (undefined/null) ad ile otomatik eşleştirir (geriye dönük davranış)", () => {

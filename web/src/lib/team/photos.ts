@@ -82,8 +82,8 @@ export const getTeamNames = cache(async function fetchTeamNames(): Promise<strin
 
 /**
  * Bir üyenin fotoğrafı (yoksa null). `stratosihaAd` (admin'in manuel eşleştirdiği isim)
- * doluysa ÖNCE onunla bakılır; boşsa `ad` ile otomatik eşleştirmeye düşülür
- * (geriye dönük davranış — bugün doğru eşleşen kimsenin fotoğrafı kaybolmaz).
+ * doluysa ÖNCE onunla bakılır; bulunamazsa ya da boşsa `ad` ile otomatik eşleştirmeye
+ * düşülür (geriye dönük davranış — bugün doğru eşleşen kimsenin fotoğrafı kaybolmaz).
  */
 export function photoFor(
   map: Map<string, string>,
@@ -91,7 +91,8 @@ export function photoFor(
   stratosihaAd?: string | null,
 ): string | null {
   if (stratosihaAd) {
-    return map.get(normalizeName(stratosihaAd)) ?? null;
+    const hit = map.get(normalizeName(stratosihaAd));
+    if (hit) return hit;
   }
   if (!ad) return null;
   return map.get(normalizeName(ad)) ?? null;
