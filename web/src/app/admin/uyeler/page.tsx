@@ -4,6 +4,9 @@ import { Card } from "@/components/ui/Card";
 import { InviteForm } from "@/components/admin/InviteForm";
 import { RoleSelect } from "@/components/admin/RoleSelect";
 import { DeleteButton } from "@/components/admin/DeleteButton";
+import { NameEditor } from "@/components/admin/NameEditor";
+import { StratosihaSelect } from "@/components/admin/StratosihaSelect";
+import { getTeamNames } from "@/lib/team/photos";
 import { removeInvite, removeMember } from "@/app/actions/admin-members";
 import { pendingInvites, type AllowlistRow, type MemberRow } from "@/lib/admin/members";
 
@@ -24,12 +27,13 @@ export default async function AdminUyelerPage() {
 
   const { data: membersData } = await supabase
     .from("profiles")
-    .select("id, email, ad, role, created_at")
+    .select("id, email, ad, stratosiha_ad, role, created_at")
     .order("created_at");
   const { data: allowData } = await supabase
     .from("allowlist")
     .select("email, role, created_at")
     .order("created_at");
+  const teamNames = await getTeamNames();
   const members = (membersData ?? []) as MemberRow[];
   const allowlist = (allowData ?? []) as AllowlistRow[];
   const pending = pendingInvites(allowlist, members);
@@ -55,6 +59,8 @@ export default async function AdminUyelerPage() {
                 <span className="text-xs font-normal text-muted">{m.email}</span>
                 {m.id === selfId && <span className="ml-2 text-xs font-bold text-accent-ink dark:text-accent">(sen)</span>}
               </span>
+              <NameEditor userId={m.id} ad={m.ad} selfId={selfId} />
+              <StratosihaSelect userId={m.id} stratosihaAd={m.stratosiha_ad} names={teamNames} selfId={selfId} />
               <RoleSelect email={m.email} role={m.role} userId={m.id} selfId={selfId} />
               {m.id !== selfId && (
                 <DeleteButton
