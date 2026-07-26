@@ -44,7 +44,10 @@ export async function sendPassiveNudge(userId: string): Promise<{ ok: boolean; e
     const { error } = await supabase
       .from("notifications")
       .insert({ user_id: userId, mesaj: passiveNudgeMessage(), link: "/panom" });
-    if (error) return { ok: false, error: "Bildirim gönderilemedi." };
+    if (error) {
+      console.error("sendPassiveNudge:", error);
+      return { ok: false, error: "Bildirim gönderilemedi." };
+    }
     return { ok: true };
   } catch (e) {
     console.error("sendPassiveNudge:", e);
