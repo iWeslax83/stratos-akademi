@@ -6,7 +6,7 @@ quiz çözer, pratik görev gönderir; ilerleme, puan, yetkinlik ve liderlik tak
 Kaptanlar içeriği ve üyeleri web panelinden yönetir; bir cron işi müfredata uygun yeni
 YouTube videolarını **önerir** (karar hep insanda).
 
-> **Migration durumu:** 0001–0036 uygulanmış, bekleyen yok. Yeni migration eklediğinde
+> **Migration durumu:** 0001–0036 uygulanmış, **0037 yazıldı/bekliyor** (SQL editöründe elle uygulanmalı). Yeni migration eklediğinde
 > `cd web && node scripts/migrate.mjs` ile uygula; `--status` bekleyenleri listeler.
 > **SQL editöründe elle çalıştırırsan** `schema_migrations` defterine yazılmaz — runner
 > o migration'ı "bekliyor" sanıp tekrar çalıştırır. Bu yüzden migration'lar
@@ -29,7 +29,7 @@ YouTube videolarını **önerir** (karar hep insanda).
 - **Dashboard (`/panom`):** kaldığın yer, ilerleme halkası, dal kartları, puan, mini liderlik, dal yetkinlikleri, son duyurular + yaklaşan etkinlikler.
 - **Liderlik (`/liderlik`):** güvenli `SECURITY DEFINER` RPC; "Ad S." formatı; zaman aralığı sekmeleri (tüm zamanlar / son 30 gün / son 7 gün).
 - **Profil (`/profil`):** üyenin kendi puan/ilerleme/onaylı görev özeti + yetkinlik vitrini + aktivite takvimi. **Ad düzenleme yoktur** — adları kaptanlar `/admin/uyeler`'den yönetir (avatar eşleştirmesi isim üzerinden yapıldığı için ad üyeye kapalı).
-- **Profil fotoğrafları:** `stratosiha.com` içerik reposundan (`site.json`) isim eşleştirmesiyle çekilir; siteye foto eklenince akademiye kendiliğinden yansır (1 saat revalidate). Fotoğrafı olmayan üyede baş harf dairesi. Migration yok; `lib/team/photos`.
+- **Profil fotoğrafları:** `stratosiha.com` içerik reposundan (`site.json`) çekilir. Admin `/admin/uyeler`'den bir üyeyi site'deki isimle **elle eşleştirebilir** (`profiles.stratosiha_ad`, `0037`) — eşleştirme varsa o öncelikli, yoksa isim otomatik (normalize edilmiş `ad`) eşleştirilir. Siteye foto eklenince akademiye kendiliğinden yansır (1 saat revalidate). Fotoğrafı olmayan üyede baş harf dairesi. `lib/team/photos`.
 - **Global arama (`/ara`):** ders, modül, dal, duyuru, etkinlik ve kaynaklarda tek kutudan arama (Türkçe duyarlı).
 - **Sertifika:** üye bir dalı tamamlayınca yazdırılabilir/PDF katılım belgesi (`/sertifika/[slug]`). **Migration yok** — tamamlama verisinden türetilir, uygunluk sunucuda doğrulanır. `/profil`'de hak edilen belgelere link.
 - **Pratik görev:** modül başına görev; üye link/metin **ve/veya** dosya (foto/PDF, Supabase Storage) gönderir; kaptan onaylar/reddeder + geri bildirim; onaylı görev puana katkı verir. **Yorum dizisi:** her gönderimde kaptan ↔ üye karşılıklı konuşma (revize iste → üye düzeltir); yeni yoruma in-app bildirim. (`0023`)
@@ -92,7 +92,7 @@ DATABASE_URL=postgresql://...   # Supabase → Settings → Database → Session
 
 ## Veritabanı (Supabase)
 
-Migration'lar `supabase/migrations/` altında **sıralı numaralı** ve 0001 → 0036 sırayla
+Migration'lar `supabase/migrations/` altında **sıralı numaralı** ve 0001 → 0037 sırayla
 uygulanmalı. İki yol var:
 
 ```bash
@@ -142,6 +142,7 @@ fonksiyonları ve storage politikaları için zaten bu rol gerekir).
 | 0034 | leaderboard_first_attempt | **GÜVENLİK:** liderlik quiz başına `max(puan)` alıyordu; sonuç ekranı doğru cevapları gösterdiği için üye boş deneme → cevapları öğren → 100 yapıyordu. Artık **ilk deneme** sayılır; tekrar denemeler öğrenme için serbest. |
 | 0035 | seed_tasarim | Tasarım dalı müfredatı: 3 modül / 10 ders (SolidWorks kursu + alıştırmalar + 3D baskı). Track açıklamasından "(yakında)" kalkar. Yalnız dal modülsüzken ekler — tekrar çalıştırmak güvenli. |
 | 0036 | video_siralama_skoru | öneri kuyruğuna `siralama_skoru` (uygunluk + izlenme + tazelik) + indeks; eski satırlar tek seferlik geri doldurulur. Ağırlıklar `lib/videos/kalite.ts` ile birebir. |
+| 0037 | uye_stratosiha_link | Admin üyeyi stratosiha.com ismiyle elle eşleştirir (`profiles.stratosiha_ad`) + `ad`/`stratosiha_ad` kilidi (0021'in genişlemesi) + `leaderboard`/`leaderboard_ranged`/`member_profile` RPC'lerine `tam_ad` eklendi (kısaltılmış ad ile foto eşleşmeme bug'ı düzeltildi). |
 
 > **Not (gemiyi yüzdürürken kritik):** SECURITY DEFINER fonksiyonlarını SQL editöre
 > yazarken `$$` yerine adlandırılmış sınırlayıcı (`$func$`) kullan — `$$` bazen
