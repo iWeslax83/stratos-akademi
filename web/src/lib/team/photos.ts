@@ -21,8 +21,17 @@ export function normalizeName(input: string): string {
     .replace(/\s+/g, " ");
 }
 
-function add(map: Map<string, string>, entry: unknown) {
-  const { name, photo } = (entry ?? {}) as Named;
+function teamEntries(site: unknown): Named[] {
+  const team = (site as { team?: { advisor?: unknown; members?: unknown } } | null)?.team;
+  if (!team) return [];
+  const entries: Named[] = [];
+  if (team.advisor) entries.push(team.advisor as Named);
+  if (Array.isArray(team.members)) entries.push(...(team.members as Named[]));
+  return entries;
+}
+
+function add(map: Map<string, string>, entry: Named) {
+  const { name, photo } = entry ?? {};
   if (typeof name !== "string" || typeof photo !== "string" || !photo) return;
   map.set(normalizeName(name), `${RAW}/public${photo.startsWith("/") ? photo : `/${photo}`}`);
 }
@@ -30,33 +39,60 @@ function add(map: Map<string, string>, entry: unknown) {
 /** site.json içeriğinden `normalize edilmiş isim → mutlak foto URL` haritası kurar. */
 export function buildPhotoMap(site: unknown): Map<string, string> {
   const map = new Map<string, string>();
-  const team = (site as { team?: { advisor?: unknown; members?: unknown } } | null)?.team;
-  if (!team) return map;
-  add(map, team.advisor);
-  if (Array.isArray(team.members)) team.members.forEach((m) => add(map, m));
+  teamEntries(site).forEach((e) => add(map, e));
   return map;
 }
 
-/** Siteden haritayı çeker. Herhangi bir hatada boş harita — çağıran baş harfe düşer. */
-export async function fetchTeamPhotos(): Promise<Map<string, string>> {
+/** site.json içeriğindeki danışman+üyelerin ham (normalize edilmemiş) isimlerini sırayla döner. */
+export function teamMemberNames(site: unknown): string[] {
+  return teamEntries(site)
+    .map((e) => e.name)
+    .filter((n): n is string => typeof n === "string" && n.trim().length > 0);
+}
+
+async function fetchSiteJson(): Promise<unknown> {
   try {
     const res = await fetch(SITE_JSON, { next: { revalidate: REVALIDATE_SN } });
     if (!res.ok) {
-      console.error("fetchTeamPhotos: site.json alınamadı", res.status);
-      return new Map();
+      console.error("fetchSiteJson: site.json alınamadı", res.status);
+      return null;
     }
-    return buildPhotoMap(await res.json());
+    return await res.json();
   } catch (e) {
-    console.error("fetchTeamPhotos:", e);
-    return new Map();
+    console.error("fetchSiteJson:", e);
+    return null;
   }
+}
+
+/** İstek başına tek fetch; getTeamPhotos ve getTeamNames aynı çağrıyı paylaşır. */
+const getSiteJson = cache(fetchSiteJson);
+
+/** Siteden haritayı çeker. Herhangi bir hatada boş harita — çağıran baş harfe düşer. */
+export async function fetchTeamPhotos(): Promise<Map<string, string>> {
+  return buildPhotoMap(await getSiteJson());
 }
 
 /** İstek başına tek fetch. */
 export const getTeamPhotos = cache(fetchTeamPhotos);
 
-/** Kısayol: bir üyenin fotoğrafı (yoksa null). */
-export function photoFor(map: Map<string, string>, ad: string | null | undefined): string | null {
+/** Admin eşleştirme dropdown'u için: siteden ham isim listesi. */
+export const getTeamNames = cache(async function fetchTeamNames(): Promise<string[]> {
+  return teamMemberNames(await getSiteJson());
+});
+
+/**
+ * Bir üyenin fotoğrafı (yoksa null). `stratosihaAd` (admin'in manuel eşleştirdiği isim)
+ * doluysa ÖNCE onunla bakılır; boşsa `ad` ile otomatik eşleştirmeye düşülür
+ * (geriye dönük davranış — bugün doğru eşleşen kimsenin fotoğrafı kaybolmaz).
+ */
+export function photoFor(
+  map: Map<string, string>,
+  ad: string | null | undefined,
+  stratosihaAd?: string | null,
+): string | null {
+  if (stratosihaAd) {
+    return map.get(normalizeName(stratosihaAd)) ?? null;
+  }
   if (!ad) return null;
   return map.get(normalizeName(ad)) ?? null;
 }

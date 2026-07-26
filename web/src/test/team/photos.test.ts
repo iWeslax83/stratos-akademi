@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { normalizeName, buildPhotoMap, fetchTeamPhotos } from "@/lib/team/photos";
+import { normalizeName, buildPhotoMap, fetchTeamPhotos, photoFor, teamMemberNames } from "@/lib/team/photos";
 
 const SITE = {
   team: {
@@ -92,5 +92,48 @@ describe("fetchTeamPhotos", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn(async () => new Response("{bozuk", { status: 200 })));
     expect((await fetchTeamPhotos()).size).toBe(0);
+  });
+});
+
+describe("photoFor", () => {
+  const map = buildPhotoMap(SITE);
+
+  it("stratosihaAd doluysa onunla eşleştirir", () => {
+    expect(photoFor(map, "Farklı Görünen Ad", "Arda Akalın")).toContain("arda.jpg");
+  });
+
+  it("stratosihaAd eşleşmiyorsa ad'a düşer", () => {
+    expect(photoFor(map, "Arda Akalın", "Var Olmayan İsim")).toBeNull();
+  });
+
+  it("stratosihaAd yoksa (undefined/null) ad ile otomatik eşleştirir (geriye dönük davranış)", () => {
+    expect(photoFor(map, "Arda Akalın")).toContain("arda.jpg");
+    expect(photoFor(map, "Arda Akalın", null)).toContain("arda.jpg");
+  });
+
+  it("ikisi de yoksa/eşleşmiyorsa null", () => {
+    expect(photoFor(map, null, null)).toBeNull();
+    expect(photoFor(map, undefined)).toBeNull();
+  });
+});
+
+describe("teamMemberNames", () => {
+  it("danışman + üyelerin ham isimlerini sırayla döner", () => {
+    expect(teamMemberNames(SITE)).toEqual([
+      "Kadir Hançer",
+      "Arda Akalın",
+      "Sualp Çelik",
+      "Emir Sakarya",
+    ]);
+  });
+
+  it("beklenmeyen şekilde boş dizi döner", () => {
+    expect(teamMemberNames(null)).toEqual([]);
+    expect(teamMemberNames({ team: {} })).toEqual([]);
+    expect(teamMemberNames({ team: { members: "bozuk" } })).toEqual([]);
+  });
+
+  it("isimsiz üyeleri atlar", () => {
+    expect(teamMemberNames({ team: { members: [{ role: "x" }] } })).toEqual([]);
   });
 });
