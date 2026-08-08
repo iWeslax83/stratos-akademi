@@ -48,7 +48,7 @@ export default async function AnalitikPage() {
         <RaporIndir />
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-5">
         {kpis.map((k) => (
           <Card key={k.label} className="p-4 text-center">
             <div className="font-display text-2xl font-extrabold text-navy dark:text-white">{k.value}</div>
@@ -65,9 +65,10 @@ export default async function AnalitikPage() {
           <p className="mb-3 text-sm text-muted">14+ gündür pasif ya da hiç aktivitesi olmayanlar — bir dürtme iyi gelebilir.</p>
           <div className="flex flex-col gap-2">
             {pasifler.map((u) => (
-              <div key={u.id} className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent">
-                  {u.ad} · {u.gun === null ? "hiç" : `${u.gun} gün`}
+              <div key={u.id} className="flex items-center justify-between gap-3">
+                <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-accent-ink/25 bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:border-accent/25 dark:bg-accent-dark dark:text-accent">
+                  <span className="truncate">{u.ad}</span>
+                  <span className="shrink-0">· {u.gun === null ? "hiç" : `${u.gun} gün`}</span>
                 </span>
                 <PassiveNudgeButton userId={u.id} />
               </div>

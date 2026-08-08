@@ -50,7 +50,7 @@ export function LessonQa({
               <div className="mb-0.5 flex items-center gap-2 text-xs">
                 <span className="font-semibold">{c.authorAd}</span>
                 {c.authorIsAdmin && (
-                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink dark:bg-accent-dark dark:text-accent">
+                  <span className="rounded border border-accent-ink/25 bg-accent-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink dark:border-accent/25 dark:bg-accent-dark dark:text-accent">
                     Kaptan
                   </span>
                 )}
