@@ -6,7 +6,7 @@ const PX = { sm: 36, lg: 64 } as const;
 const TEXT = { sm: "text-sm", lg: "text-2xl" } as const;
 
 /**
- * Üye avatarı: fotoğraf varsa fotoğraf, yoksa baş harf dairesi.
+ * Üye avatarı: fotoğraf varsa fotoğraf, yoksa baş harf squircle'ı.
  * Fotoğraflar stratosiha.com içerik reposundan gelir (bkz. lib/team/photos.ts).
  */
 export function Avatar({
@@ -27,7 +27,7 @@ export function Avatar({
         alt={ad}
         width={PX[size]}
         height={PX[size]}
-        className={clsx(BOX[size], "shrink-0 rounded-full object-cover", className)}
+        className={clsx(BOX[size], "shrink-0 rounded-[30%] object-cover", className)}
       />
     );
   }
@@ -36,7 +36,7 @@ export function Avatar({
       className={clsx(
         BOX[size],
         TEXT[size],
-        "grid shrink-0 place-items-center rounded-full bg-navy font-bold text-white dark:bg-accent dark:text-navy",
+        "grid shrink-0 place-items-center rounded-[30%] bg-navy font-bold text-white dark:bg-accent dark:text-navy",
         className,
       )}
     >

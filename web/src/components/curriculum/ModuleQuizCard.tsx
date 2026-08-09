@@ -15,7 +15,7 @@ export function ModuleQuizCard({
       <div className="flex items-center justify-between gap-4">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent-ink dark:text-accent">
-            📝 Modül Quizi
+            Modül Quizi
           </span>
           <h3 className="mt-1 font-display text-lg font-bold text-navy dark:text-white">{baslik}</h3>
           {best && (
