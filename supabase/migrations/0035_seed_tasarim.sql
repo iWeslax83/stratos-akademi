@@ -3,12 +3,12 @@
 
 update public.tracks
 set aciklama = 'CAD, 3D baskı ve üretim'
-where slug = 'tasarim';
+where slug = 'mekanik';
 
 -- Yalnız Tasarım dalı modülsüzken çalışır; tekrar çalıştırılırsa hiçbir şey eklemez.
 with t as (
   select tr.id from public.tracks tr
-  where tr.slug = 'tasarim'
+  where tr.slug = 'mekanik'
     and not exists (select 1 from public.modules m where m.track_id = tr.id)
 ),
 m1 as (

@@ -2,10 +2,11 @@
 
 insert into public.tracks (slug, ad, aciklama, ikon, sira) values
   ('ortak-temel', 'Ortak Temel', 'Herkesin başladığı drone temelleri', '🚀', 1),
-  ('elektronik', 'Elektronik', 'Temel elektronik, lehimleme ve PCB', '⚡', 2),
+  ('aviyonik', 'Aviyonik', 'Devre tasarımı, sensör entegrasyonu ve güç dağıtımı', '⚡', 2),
   ('yazilim', 'Yazılım', 'Web ve uygulama geliştirme', '💻', 3),
-  ('tasarim', 'Tasarım', 'CAD ve aerodinamik (yakında)', '✏️', 4),
-  ('pilot', 'Pilot', 'Uçuş ve görev (yakında)', '🎮', 5);
+  ('mekanik', 'Mekanik', 'Aerodinamik tasarım, yapısal analiz ve üretim', '🏗️', 4),
+  ('pilot', 'Pilot', 'Uçuş ve görev (yakında)', '🎮', 5),
+  ('tanitim-sponsorluk', 'Tanıtım ve Sponsorluk', 'Takım tanıtımı, sponsorluk kazanımı ve halkla ilişkiler', '📣', 6);
 
 with t as (select id from public.tracks where slug = 'ortak-temel'),
      m1 as (insert into public.modules (track_id, ad, sira) select id, 'Drone Temelleri', 1 from t returning id),
@@ -20,7 +21,7 @@ union all select id, 'QGroundControl ile Uçuşa Giriş', 'z0a_rQZTbBg', 3 from 
 union all select id, 'Betaflight Detaylı Türkçe — Bölüm 1', 'kaYSmWefx3A', 4 from m2
 union all select id, 'Betaflight Detaylı Türkçe — Bölüm 2', 'K-Khq7sYVcQ', 5 from m2;
 
-with t as (select id from public.tracks where slug = 'elektronik'),
+with t as (select id from public.tracks where slug = 'aviyonik'),
      m1 as (insert into public.modules (track_id, ad, sira) select id, 'Temel Elektronik', 1 from t returning id),
      m2 as (insert into public.modules (track_id, ad, sira) select id, 'Lehimleme', 2 from t returning id),
      m3 as (insert into public.modules (track_id, ad, sira) select id, 'PCB Tasarımı (KiCad)', 3 from t returning id)
