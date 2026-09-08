@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { isComplete, accumulateWatched, hasWatchedEnough } from "@/lib/curriculum/progress";
+import { CheckIcon } from "@/components/ui/icons";
 
 declare global {
   interface Window {
@@ -35,14 +36,19 @@ function loadYouTubeApi(): Promise<void> {
   return apiPromise;
 }
 
+export type WatchStats = { watched: number; position: number };
+
 export function LessonPlayer({
   videoId,
   onComplete,
   onManualEligible,
+  onProgress,
 }: {
   videoId: string;
-  onComplete: () => void;
+  // (izlenen saniye, konum oranı 0..1) — sunucu doğrulaması için iletilir.
+  onComplete: (stats: WatchStats) => void;
   onManualEligible?: () => void;
+  onProgress?: (stats: WatchStats) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YtPlayer | null>(null);
@@ -77,6 +83,11 @@ export function LessonPlayer({
               const dur = p.getDuration();
               watchedRef.current = accumulateWatched(watchedRef.current, lastTimeRef.current, cur);
               lastTimeRef.current = cur;
+              const stats: WatchStats = {
+                watched: watchedRef.current,
+                position: dur > 0 ? cur / dur : 0,
+              };
+              onProgress?.(stats);
               if (!eligibleFiredRef.current && hasWatchedEnough(watchedRef.current, dur)) {
                 eligibleFiredRef.current = true;
                 onManualEligible?.();
@@ -84,7 +95,7 @@ export function LessonPlayer({
               if (!firedRef.current && isComplete(cur, dur, watchedRef.current)) {
                 firedRef.current = true;
                 setDone(true);
-                onComplete();
+                onComplete(stats);
                 if (interval) clearInterval(interval);
               }
             }, 1000);
@@ -99,7 +110,7 @@ export function LessonPlayer({
       playerRef.current?.destroy?.();
       playerRef.current = null;
     };
-  }, [videoId, onComplete, onManualEligible]);
+  }, [videoId, onComplete, onManualEligible, onProgress]);
 
   return (
     <div>
@@ -107,8 +118,9 @@ export function LessonPlayer({
         <div ref={containerRef} className="h-full w-full" />
       </div>
       {done && (
-        <p className="mt-2 text-sm font-semibold text-green-700 dark:text-green-400">
-          ✓ Bu ders tamamlandı olarak işaretlendi
+        <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-green-700 dark:text-green-400">
+          <CheckIcon size={16} />
+          Bu ders tamamlandı olarak işaretlendi
         </p>
       )}
     </div>

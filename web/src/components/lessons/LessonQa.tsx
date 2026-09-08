@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { addLessonQuestion, deleteLessonQuestion } from "@/app/actions/lessons";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
@@ -26,12 +26,13 @@ export function LessonQa({
   items: QaItem[];
 }) {
   const [mesaj, setMesaj] = useState("");
+  const inputId = useId();
   const { pending, error, run } = useServerAction("Hata");
 
   function send() {
     const metin = mesaj.trim();
     if (!metin) return;
-    run(() => addLessonQuestion(lessonId, metin, viewerId), () => setMesaj(""));
+    run(() => addLessonQuestion(lessonId, metin), () => setMesaj(""));
   }
 
   return (
@@ -72,22 +73,28 @@ export function LessonQa({
       )}
 
       <ErrorText>{error}</ErrorText>
-      <div className="flex gap-2">
-        <input
-          value={mesaj}
-          onChange={(e) => setMesaj(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
-          }}
-          placeholder="Soru sor ya da yanıtla…"
-          className="flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
-        />
+      <div className="flex items-end gap-2">
+        <label className="flex-1">
+          <span className="mb-1 block text-xs font-semibold text-muted">Soru sor ya da yanıtla</span>
+          <input
+            id={inputId}
+            value={mesaj}
+            onChange={(e) => setMesaj(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+            }}
+            placeholder="Mesajını yaz, Enter ile gönder…"
+            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          />
+        </label>
         <button
+          type="button"
           onClick={send}
           disabled={pending}
-          className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-white dark:text-navy"
+          aria-label="Mesajı gönder"
+          className="rounded-full bg-navy px-4 py-2 text-xs font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 dark:bg-white dark:text-navy"
         >
-          {pending ? "…" : "Gönder"}
+          {pending ? "Gönderiliyor…" : "Gönder"}
         </button>
       </div>
     </section>

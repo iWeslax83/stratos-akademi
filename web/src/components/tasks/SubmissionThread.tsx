@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { FormError } from "@/components/ui/FormError";
 import { addSubmissionComment } from "@/app/actions/tasks";
 import type { ThreadItem } from "@/lib/tasks/comment";
 
@@ -14,11 +15,9 @@ function formatTime(iso: string): string {
 // Görev gönderimi yorum dizisi: kaptan ↔ üye karşılıklı konuşma.
 export function SubmissionThread({
   submissionId,
-  authorId,
   comments,
 }: {
   submissionId: string;
-  authorId: string;
   comments: ThreadItem[];
 }) {
   const [mesaj, setMesaj] = useState("");
@@ -31,7 +30,7 @@ export function SubmissionThread({
     if (!metin) return;
     setError(null);
     start(async () => {
-      const r = await addSubmissionComment(submissionId, metin, authorId);
+      const r = await addSubmissionComment(submissionId, metin);
       if (!r.ok) { setError(r.error ?? "Hata"); return; }
       setMesaj("");
       router.refresh();
@@ -54,7 +53,7 @@ export function SubmissionThread({
               <div className="mb-0.5 flex items-center gap-2 text-xs">
                 <span className="font-semibold">{c.authorAd}</span>
                 {!c.authorIsOwner && (
-                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink dark:bg-accent-dark dark:text-accent">
+                  <span className="rounded border border-accent-ink/25 bg-accent-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink dark:border-accent/25 dark:bg-accent-dark dark:text-accent">
                     Kaptan
                   </span>
                 )}
@@ -66,23 +65,28 @@ export function SubmissionThread({
         </ul>
       )}
 
-      {error && <p className="mb-1 text-sm font-semibold text-red-600">{error}</p>}
-      <div className="flex gap-2">
-        <input
-          value={mesaj}
-          onChange={(e) => setMesaj(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
-          }}
-          placeholder="Mesaj yaz…"
-          className="flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
-        />
+      <FormError className="mb-1">{error}</FormError>
+      <div className="flex items-end gap-2">
+        <label className="flex-1">
+          <span className="mb-1 block text-xs font-semibold text-muted">Mesaj</span>
+          <input
+            value={mesaj}
+            onChange={(e) => setMesaj(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+            }}
+            placeholder="Yaz, Enter ile gönder…"
+            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          />
+        </label>
         <button
+          type="button"
           onClick={send}
           disabled={pending}
-          className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-white dark:text-navy"
+          aria-label="Mesajı gönder"
+          className="rounded-full bg-navy px-4 py-2 text-xs font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 dark:bg-white dark:text-navy"
         >
-          {pending ? "…" : "Gönder"}
+          {pending ? "Gönderiliyor…" : "Gönder"}
         </button>
       </div>
     </div>

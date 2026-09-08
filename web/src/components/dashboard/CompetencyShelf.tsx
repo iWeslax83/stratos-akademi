@@ -16,13 +16,12 @@ export function CompetencyShelf({
         <div className="text-xs font-semibold text-muted">
           Yetkinliklerin · {earned.length} / {tracks.length}
         </div>
-        <div className="mt-3.5 flex flex-wrap gap-2">
+        <ul className="mt-3.5 flex flex-wrap gap-2">
           {tracks.map((t) => {
             const has = earnedSet.has(t.slug);
             return (
-              <span
+              <li
                 key={t.slug}
-                title={t.ad}
                 className={clsx(
                   "grid h-10 w-10 place-items-center rounded-xl border text-lg",
                   has
@@ -30,11 +29,14 @@ export function CompetencyShelf({
                     : "border-[var(--line)] bg-black/[0.04] opacity-50 grayscale dark:bg-white/[0.04]",
                 )}
               >
-                {has ? t.ikon ?? "✓" : "–"}
-              </span>
+                <span aria-hidden="true">{has ? (t.ikon ?? "•") : "–"}</span>
+                <span className="sr-only">
+                  {t.ad}: {has ? "kazanıldı" : "kazanılmadı"}
+                </span>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
       {rank != null && (
         <div className="flex flex-col items-end">

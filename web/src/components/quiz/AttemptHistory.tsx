@@ -42,10 +42,11 @@ export function AttemptHistory({ attempts }: { attempts: AttemptRow[] }) {
               <span
                 className={
                   a.gecti
-                    ? "rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-ink dark:bg-accent-dark dark:text-accent"
-                    : "rounded-full bg-black/[0.06] px-2 py-0.5 text-[11px] font-bold text-[#46526b] dark:bg-white/[0.08] dark:text-[#9fb0c9]"
+                    ? "inline-flex items-center gap-1 text-[11px] font-bold text-accent-ink dark:text-accent"
+                    : "inline-flex items-center gap-1 text-[11px] font-bold text-[#46526b] dark:text-[#9fb0c9]"
                 }
               >
+                <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${a.gecti ? "bg-accent-ink dark:bg-accent" : "bg-[#8894a8]"}`} />
                 {a.gecti ? "Geçti" : "Kaldı"}
               </span>
             </span>
@@ -75,7 +76,7 @@ function Stat({
         {hint && (
           <span
             className={
-              hintUp ? "text-xs font-semibold text-accent-ink dark:text-accent" : "text-xs font-semibold text-red-600"
+              hintUp ? "text-xs font-semibold text-accent-ink dark:text-accent" : "text-xs font-semibold text-red-700 dark:text-red-300"
             }
           >
             {hint}

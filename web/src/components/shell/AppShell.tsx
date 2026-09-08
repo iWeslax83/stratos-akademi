@@ -24,7 +24,7 @@ export function AppShell({
       <div className="bg-dotgrid pointer-events-none fixed inset-0 -z-10" aria-hidden />
       <div className="mx-auto max-w-[1320px] px-4 pb-12 pt-6 sm:px-6">
         <Nav initial={initial} points={points} isAdmin={isAdmin} />
-        <main id="icerik" className="mt-6">
+        <main id="icerik" className="mt-6 scroll-mt-4">
           {children}
         </main>
       </div>

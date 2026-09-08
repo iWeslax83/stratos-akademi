@@ -45,7 +45,7 @@ export function TaraSimdiButton() {
         <span
           className={
             hata
-              ? "text-sm text-red-600 dark:text-red-400"
+              ? "text-sm text-red-700 dark:text-red-300"
               : "text-sm text-navy/70 dark:text-white/70"
           }
         >

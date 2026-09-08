@@ -2,9 +2,11 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
+import { FormError } from "@/components/ui/FormError";
+import { CheckIcon, XIcon } from "@/components/ui/icons";
 import { submitQuiz } from "@/app/actions/quiz";
 import { shuffleQuiz } from "@/lib/quiz/shuffle";
 import type { Quiz, SubmitResult } from "@/lib/quiz/types";
@@ -29,6 +31,9 @@ export function QuizRunner({
   const shown = useMemo(() => shuffleQuiz(quiz, seed), [quiz, seed]);
   const router = useRouter();
 
+  const answeredCount = quiz.questions.filter((q) => (selected[q.id]?.size ?? 0) > 0).length;
+  const allAnswered = answeredCount === quiz.questions.length;
+
   function toggle(qid: string, oid: string) {
     setSelected((prev) => {
       const set = new Set(prev[qid] ?? []);
@@ -39,6 +44,10 @@ export function QuizRunner({
   }
 
   function submit() {
+    if (!allAnswered) {
+      setError("Göndermeden önce tüm soruları yanıtla.");
+      return;
+    }
     const answers: Record<string, string[]> = {};
     for (const q of quiz.questions) answers[q.id] = Array.from(selected[q.id] ?? []);
     setError(null);
@@ -62,20 +71,19 @@ export function QuizRunner({
 
   return (
     <div className="space-y-6">
-      {error && (
-        <div className="rounded-core bg-red-50 p-4 text-sm font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
-          {error}
-        </div>
-      )}
+      <FormError box>{error}</FormError>
+
       {best && !result && (
         <p className="text-sm text-muted">
           En iyi puanın: <b className="text-navy dark:text-white">%{best.puan}</b>
-          {best.gecti && " · ✓ geçtin"}
+          {best.gecti && " · geçtin"}
         </p>
       )}
 
       {result && (
         <div
+          role="status"
+          aria-live="polite"
           className={clsx(
             "rounded-core p-4 font-display font-bold",
             result.gecti
@@ -91,6 +99,12 @@ export function QuizRunner({
         </div>
       )}
 
+      {!result && (
+        <p className="text-xs font-semibold text-muted">
+          {answeredCount}/{quiz.questions.length} soru yanıtlandı · bazı sorularda birden çok doğru olabilir
+        </p>
+      )}
+
       {shown.questions.map((q, i) => {
         const r = resByQuestion.get(q.id);
         const correctIds = result?.correctByQuestion[q.id] ?? [];
@@ -99,7 +113,12 @@ export function QuizRunner({
             <div className="mb-3 flex items-start gap-2 font-semibold text-navy dark:text-white">
               <span>{i + 1}.</span>
               <span>{q.metin}</span>
-              {r && <span className="ml-auto">{r.dogruMu ? "✓" : "✗"}</span>}
+              {r && (
+                <span className={clsx("ml-auto", r.dogruMu ? "text-green-600" : "text-red-700 dark:text-red-300")}>
+                  {r.dogruMu ? <CheckIcon size={18} /> : <XIcon size={18} />}
+                  <span className="sr-only">{r.dogruMu ? "Doğru" : "Yanlış"}</span>
+                </span>
+              )}
             </div>
             <div className="space-y-2">
               {q.options.map((o) => {
@@ -119,9 +138,10 @@ export function QuizRunner({
                       checked={checked}
                       disabled={!!result || isPending}
                       onChange={() => toggle(q.id, o.id)}
+                      className="h-4 w-4 accent-accent"
                     />
                     <span>{o.metin}</span>
-                    {result && isCorrect && <span className="ml-auto text-xs text-green-600">doğru</span>}
+                    {result && isCorrect && <span className="ml-auto text-xs font-semibold text-green-700 dark:text-green-400">doğru</span>}
                   </label>
                 );
               })}
@@ -137,7 +157,7 @@ export function QuizRunner({
 
       <div className="flex gap-3">
         {!result ? (
-          <Button variant="accent" onClick={submit} disabled={isPending}>
+          <Button variant="accent" onClick={submit} disabled={isPending || !allAnswered}>
             {isPending ? "Gönderiliyor…" : "Gönder"}
           </Button>
         ) : (
@@ -145,9 +165,9 @@ export function QuizRunner({
             Tekrar dene
           </Button>
         )}
-        <Link href="/mufredat">
-          <Button variant="ghost">Müfredata dön</Button>
-        </Link>
+        <LinkButton href="/mufredat" variant="ghost">
+          Müfredata dön
+        </LinkButton>
       </div>
     </div>
   );

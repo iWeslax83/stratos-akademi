@@ -53,9 +53,9 @@ export function TaramaTeshis({ runs }: { runs: ScanRun[] }) {
           {r.diag && (
             <p className="mt-2 font-mono text-xs text-navy/60 dark:text-white/60">{huniMetni(r.diag)}</p>
           )}
-          {r.hata && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{r.hata}</p>}
+          {r.hata && <p className="mt-2 text-xs text-red-700 dark:text-red-300">{r.hata}</p>}
           {r.diag?.hatalar.map((h) => (
-            <p key={h} className="mt-1 text-xs text-red-600 dark:text-red-400">{h}</p>
+            <p key={h} className="mt-1 text-xs text-red-700 dark:text-red-300">{h}</p>
           ))}
         </Card>
       ))}

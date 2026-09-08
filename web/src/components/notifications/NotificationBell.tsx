@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { IconButton } from "@/components/ui/IconButton";
 import { NotificationPanel } from "./NotificationPanel";
 
 // Nav'daki zil: paneli açar/kapatır, okunmamış sayısını rozetle gösterir.
@@ -15,16 +16,15 @@ export function NotificationBell({ unread }: { unread: number }) {
 
   return (
     <div className="relative">
-      <button
+      <IconButton
         ref={butonRef}
-        type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={unread > 0 ? `Bildirimler, ${unread} okunmamış` : "Bildirimler"}
         aria-expanded={open}
-        className="relative grid h-9 w-9 place-items-center rounded-full bg-black/5 text-navy hover:bg-black/10 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
+        aria-haspopup="dialog"
       >
         <svg
-          aria-hidden
+          aria-hidden="true"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -41,7 +41,7 @@ export function NotificationBell({ unread }: { unread: number }) {
             {unread > 9 ? "9+" : unread}
           </span>
         )}
-      </button>
+      </IconButton>
 
       {open && <NotificationPanel onClose={kapat} />}
     </div>

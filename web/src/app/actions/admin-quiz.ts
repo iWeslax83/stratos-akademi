@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 
 export type ActionResult = { ok: boolean; error?: string };
 
@@ -18,10 +19,17 @@ function errMsg(error: { code?: string; message?: string }): string {
   return "İşlem başarısız: " + (error.message ?? "bilinmeyen hata");
 }
 
+async function guard() {
+  const supabase = await createClient();
+  const gate = await requireAdmin(supabase);
+  return { supabase, gate };
+}
+
 // ---- QUIZ ----
 export async function createQuiz(moduleId: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase
       .from("quizzes")
       .insert({ module_id: moduleId, baslik: "Modül Quizi", gecme_esigi: 70, sira: 0 });
@@ -35,12 +43,13 @@ export async function createQuiz(moduleId: string): Promise<ActionResult> {
 
 export async function updateQuizMeta(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const baslik = str(fd, "baslik");
     if (!id) return { ok: false, error: "id eksik." };
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     const esik = Math.max(0, Math.min(100, intOr(fd, "gecme_esigi", 70)));
-    const supabase = await createClient();
     const { error } = await supabase.from("quizzes").update({ baslik, gecme_esigi: esik }).eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -49,7 +58,8 @@ export async function updateQuizMeta(fd: FormData): Promise<ActionResult> {
 
 export async function deleteQuiz(quizId: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("quizzes").delete().eq("id", quizId);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -59,7 +69,8 @@ export async function deleteQuiz(quizId: string): Promise<ActionResult> {
 // ---- QUESTION ----
 export async function createQuestion(quizId: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("questions").insert({ quiz_id: quizId, metin: "", sira: 0 });
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -68,11 +79,12 @@ export async function createQuestion(quizId: string): Promise<ActionResult> {
 
 export async function updateQuestion(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const metin = str(fd, "metin");
     if (!id) return { ok: false, error: "id eksik." };
     if (!metin) return { ok: false, error: "Soru metni zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase
       .from("questions")
       .update({ metin, sira: intOr(fd, "sira", 0) })
@@ -86,7 +98,8 @@ export async function updateQuestion(fd: FormData): Promise<ActionResult> {
 
 export async function deleteQuestion(id: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("questions").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -96,7 +109,8 @@ export async function deleteQuestion(id: string): Promise<ActionResult> {
 // ---- OPTION ----
 export async function createOption(questionId: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase
       .from("question_options")
       .insert({ question_id: questionId, metin: "", dogru: false, sira: 0 });
@@ -107,11 +121,12 @@ export async function createOption(questionId: string): Promise<ActionResult> {
 
 export async function updateOption(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const metin = str(fd, "metin");
     if (!id) return { ok: false, error: "id eksik." };
     if (!metin) return { ok: false, error: "Şık metni zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase
       .from("question_options")
       .update({ metin, sira: intOr(fd, "sira", 0) })
@@ -123,7 +138,8 @@ export async function updateOption(fd: FormData): Promise<ActionResult> {
 
 export async function toggleOption(id: string, dogru: boolean): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("question_options").update({ dogru }).eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -132,7 +148,8 @@ export async function toggleOption(id: string, dogru: boolean): Promise<ActionRe
 
 export async function deleteOption(id: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("question_options").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };

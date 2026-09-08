@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/ui/FormError";
 import { inviteMember } from "@/app/actions/admin-members";
 
 export function InviteForm() {
@@ -25,13 +26,16 @@ export function InviteForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-wrap items-end gap-3">
-      {error && <p className="w-full text-sm font-semibold text-red-600">{error}</p>}
+      <FormError className="w-full">{error}</FormError>
       <label className="block min-w-[220px] flex-1">
         <span className="mb-1 block text-xs font-semibold text-muted">E-posta</span>
         <input
           name="email"
           type="email"
           required
+          autoComplete="email"
+          inputMode="email"
+          spellCheck={false}
           placeholder="uye@okul.edu.tr"
           className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
         />
@@ -41,13 +45,13 @@ export function InviteForm() {
         <select
           name="role"
           defaultValue="uye"
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:text-white dark:[&>option]:text-white"
         >
           <option value="uye">Üye</option>
           <option value="admin">Admin</option>
         </select>
       </label>
-      <Button variant="accent" disabled={pending}>{pending ? "…" : "Davet et"}</Button>
+      <Button type="submit" variant="accent" disabled={pending}>{pending ? "Gönderiliyor…" : "Davet et"}</Button>
     </form>
   );
 }

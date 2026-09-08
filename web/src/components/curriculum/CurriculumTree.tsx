@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 import type { Curriculum, LessonStatus } from "@/lib/curriculum/types";
+import { CheckIcon, DotIcon, RingIcon } from "@/components/ui/icons";
 
-const ICON: Record<LessonStatus, string> = { done: "✓", current: "●", todo: "○" };
+const ICON: Record<LessonStatus, React.ReactNode> = {
+  done: <CheckIcon size={12} />,
+  current: <DotIcon size={9} />,
+  todo: <RingIcon size={9} />,
+};
 const STATUS_LABEL: Record<LessonStatus, string> = {
   done: "Tamamlandı",
   current: "Devam ediyor",
@@ -23,7 +28,7 @@ export function CurriculumTree({
       {curriculum.map((track) => (
         <div key={track.id}>
           <div className="mb-2 flex items-center gap-2 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-accent-ink dark:text-accent">
-            <span>{track.ikon}</span>
+            {track.ikon && <span aria-hidden="true">{track.ikon}</span>}
             <span>{track.ad}</span>
           </div>
           {track.modules.map((module) => (

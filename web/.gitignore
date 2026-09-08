@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# oh-my-claudecode oturum durumu (araç üretir, commit edilmez)
+.omc/
+src/.omc/

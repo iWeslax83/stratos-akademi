@@ -21,7 +21,7 @@ export function RoleSelect({
 
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const yeni = e.target.value as Role;
-    run(() => setMemberRole(email, yeni, userId, selfId));
+    run(() => setMemberRole(email, yeni, userId));
   }
 
   return (
@@ -30,7 +30,8 @@ export function RoleSelect({
         value={role}
         onChange={onChange}
         disabled={pending || isSelf}
-        className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white"
+        aria-label={`${email} rolü`}
+        className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white"
       >
         <option value="uye">Üye</option>
         <option value="admin">Admin</option>

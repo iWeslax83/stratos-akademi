@@ -37,13 +37,22 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05080F",
+  // Adres çubuğu rengi sayfa zeminiyle eşleşsin (açık: --bg, koyu: amblem zemini).
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef1f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#05080f" },
+  ],
 };
+
+// İlk boyamadan ÖNCE .dark sınıfını koy: kayıtlı tema ya da (yoksa) OS tercihi.
+// Aksi halde koyu tema kullanıcısı her yüklemede açık tema parlaması görür (FOUC).
+const themeInit = `(function(){try{var t=localStorage.getItem('stratos-theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" suppressHydrationWarning>
       <body className={`${sora.variable} ${jakarta.variable} font-sans`} suppressHydrationWarning>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <ThemeProvider>{children}</ThemeProvider>
         <ServiceWorker />
       </body>

@@ -16,7 +16,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-[1180px] flex-col items-center justify-center px-4 text-center sm:px-6">
+    <div className="mx-auto flex min-h-[60dvh] max-w-[1180px] flex-col items-center justify-center px-4 text-center sm:px-6">
       <p className="font-display text-6xl font-extrabold text-accent-ink dark:text-accent">Hata</p>
       <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
         Bir şeyler ters gitti

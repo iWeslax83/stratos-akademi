@@ -22,8 +22,10 @@ describe("CurriculumTree", () => {
     render(<CurriculumTree curriculum={curriculum} statuses={statuses} activeLessonId={null} />);
     expect(screen.getByText("Ortak Temel")).toBeInTheDocument();
     expect(screen.getByText("Drone Temelleri")).toBeInTheDocument();
-    expect(screen.getByTestId("status-a")).toHaveTextContent("✓");
-    expect(screen.getByTestId("status-b")).toHaveTextContent("●");
+    // Durum işareti SVG ikon (glyph değil); anlam sr-only metinde.
+    expect(screen.getByTestId("status-a").querySelector("svg")).toBeInTheDocument();
+    expect(screen.getByTestId("status-a")).toHaveTextContent("Tamamlandı");
+    expect(screen.getByTestId("status-b")).toHaveTextContent("Devam ediyor");
   });
 
   it("durumu ekran okuyucuya metinle bildirir", () => {

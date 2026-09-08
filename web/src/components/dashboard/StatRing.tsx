@@ -25,8 +25,8 @@ export function StatRing({ pct, label }: { pct: number; label: string }) {
         className="mt-3 h-2 w-full overflow-hidden rounded-full bg-black/10 dark:bg-white/10"
       >
         <div
-          className="h-full rounded-full bg-accent transition-[width] duration-1000 ease-out"
-          style={{ width: `${w}%` }}
+          className="h-full w-full origin-left bg-accent transition-transform duration-1000 ease-out"
+          style={{ transform: `scaleX(${Math.max(0, Math.min(100, w)) / 100})` }}
         />
       </div>
       <div className="mt-2 text-xs font-semibold text-muted">{label}</div>

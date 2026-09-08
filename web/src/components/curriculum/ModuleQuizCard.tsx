@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
+import { CheckIcon } from "@/components/ui/icons";
 
 export function ModuleQuizCard({
   quizId,
@@ -19,9 +20,15 @@ export function ModuleQuizCard({
           </span>
           <h3 className="mt-1 font-display text-lg font-bold text-navy dark:text-white">{baslik}</h3>
           {best && (
-            <p className="mt-0.5 text-sm text-muted">
+            <p className="mt-0.5 flex items-center gap-1 text-sm text-muted">
               En iyi: %{best.puan}
-              {best.gecti ? " · ✓ geçtin" : ""}
+              {best.gecti && (
+                <>
+                  <span aria-hidden>·</span>
+                  <CheckIcon size={14} className="text-green-600" />
+                  <span className="text-green-700 dark:text-green-400">geçtin</span>
+                </>
+              )}
             </p>
           )}
         </div>

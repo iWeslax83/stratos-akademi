@@ -29,6 +29,13 @@ Zaten uygulanmışları atla.
 > `0031_grant_service_role_videos.sql` bu grant'ları verir — atlanırsa otomatik video önerileri
 > hiç gelmez.
 
+> **`0038_progress_integrity.sql` kritik.** Bu migration `lesson_progress` ve
+> `user_competencies` tablolarına üyenin doğrudan yazmasını kapatır (REST API forge
+> yolu) ve yazmayı `service_role`'e verir. Sunucu (markLessonComplete / syncCompetencies)
+> artık bu tabloları service_role ile yazar. Migration uygulanmazsa ders "İzledim" ve
+> yetkinlik kaydı `permission denied` alır. `SUPABASE_SERVICE_ROLE_KEY` prod ortamında
+> tanımlı olmalı.
+
 Doğrulama — şu tabloların var olduğunu kontrol et:
 
 ```sql

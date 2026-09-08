@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 import { parseYouTubeId } from "@/lib/admin/youtube";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -26,13 +27,22 @@ function errMsg(error: { code?: string; message?: string }): string {
   return "İşlem başarısız: " + (error.message ?? "bilinmeyen hata");
 }
 
+// RLS admin politikaları zaten yazmayı kısıtlar; server action bir POST uç noktası
+// olduğundan (sayfa değil) her aksiyonda ayrıca is_admin() ile ikinci kapı konur.
+async function guard() {
+  const supabase = await createClient();
+  const gate = await requireAdmin(supabase);
+  return { supabase, gate };
+}
+
 // ---- TRACK ----
 export async function createTrack(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const ad = str(fd, "ad");
     const slug = str(fd, "slug");
     if (!ad || !slug) return { ok: false, error: "Ad ve slug zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase.from("tracks").insert({
       ad, slug,
       aciklama: str(fd, "aciklama") || null,
@@ -47,12 +57,13 @@ export async function createTrack(fd: FormData): Promise<ActionResult> {
 
 export async function updateTrack(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const ad = str(fd, "ad");
     const slug = str(fd, "slug");
     if (!id) return { ok: false, error: "id eksik." };
     if (!ad || !slug) return { ok: false, error: "Ad ve slug zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase.from("tracks").update({
       ad, slug,
       aciklama: str(fd, "aciklama") || null,
@@ -67,7 +78,8 @@ export async function updateTrack(fd: FormData): Promise<ActionResult> {
 
 export async function deleteTrack(id: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("tracks").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     revalidatePath("/admin/mufredat");
@@ -78,11 +90,12 @@ export async function deleteTrack(id: string): Promise<ActionResult> {
 // ---- MODULE ----
 export async function createModule(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const trackId = str(fd, "track_id");
     const ad = str(fd, "ad");
     if (!trackId) return { ok: false, error: "track_id eksik." };
     if (!ad) return { ok: false, error: "Ad zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase.from("modules").insert({
       track_id: trackId, ad,
       aciklama: str(fd, "aciklama") || null,
@@ -96,12 +109,13 @@ export async function createModule(fd: FormData): Promise<ActionResult> {
 
 export async function updateModule(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const trackId = str(fd, "track_id");
     const ad = str(fd, "ad");
     if (!id || !trackId) return { ok: false, error: "id/track_id eksik." };
     if (!ad) return { ok: false, error: "Ad zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase.from("modules").update({
       ad,
       aciklama: str(fd, "aciklama") || null,
@@ -115,7 +129,8 @@ export async function updateModule(fd: FormData): Promise<ActionResult> {
 
 export async function deleteModule(id: string, trackId: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("modules").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     revalidatePath(`/admin/mufredat/${trackId}`);
@@ -126,6 +141,8 @@ export async function deleteModule(id: string, trackId: string): Promise<ActionR
 // ---- LESSON ----
 export async function createLesson(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const moduleId = str(fd, "module_id");
     const trackId = str(fd, "track_id");
     const baslik = str(fd, "baslik");
@@ -133,7 +150,6 @@ export async function createLesson(fd: FormData): Promise<ActionResult> {
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     const vid = parseYouTubeId(str(fd, "youtube"));
     if (!vid) return { ok: false, error: "Geçersiz YouTube bağlantısı veya id." };
-    const supabase = await createClient();
     const { error } = await supabase.from("lessons").insert({
       module_id: moduleId, baslik, youtube_video_id: vid,
       aciklama: str(fd, "aciklama") || null,
@@ -148,6 +164,8 @@ export async function createLesson(fd: FormData): Promise<ActionResult> {
 
 export async function updateLesson(fd: FormData): Promise<ActionResult> {
   try {
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const moduleId = str(fd, "module_id");
     const trackId = str(fd, "track_id");
@@ -156,7 +174,6 @@ export async function updateLesson(fd: FormData): Promise<ActionResult> {
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     const vid = parseYouTubeId(str(fd, "youtube"));
     if (!vid) return { ok: false, error: "Geçersiz YouTube bağlantısı veya id." };
-    const supabase = await createClient();
     const { error } = await supabase.from("lessons").update({
       baslik, youtube_video_id: vid,
       aciklama: str(fd, "aciklama") || null,
@@ -171,7 +188,8 @@ export async function updateLesson(fd: FormData): Promise<ActionResult> {
 
 export async function deleteLesson(id: string, trackId: string, moduleId: string): Promise<ActionResult> {
   try {
-    const supabase = await createClient();
+    const { supabase, gate } = await guard();
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("lessons").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     revalidatePath(`/admin/mufredat/${trackId}/${moduleId}`);

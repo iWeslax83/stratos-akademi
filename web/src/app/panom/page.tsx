@@ -58,7 +58,7 @@ export default async function PanomPage() {
     approvedTaskPoints,
   });
 
-  const { yeni } = await syncCompetencies(user!.id, stats.earnedCompetencies);
+  const { yeni } = await syncCompetencies();
   const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
   const trackBySlug = new Map(stats.perTrack.map((t) => [t.slug, t.ad]));
   const yeniAdlar = yeni.map((s) => trackBySlug.get(s) ?? s);

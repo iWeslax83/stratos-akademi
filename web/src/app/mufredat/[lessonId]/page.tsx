@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { LessonSection } from "@/components/curriculum/LessonSection";
 import { ModuleQuizCard } from "@/components/curriculum/ModuleQuizCard";
 import { LessonQa } from "@/components/lessons/LessonQa";
+import { ArrowRightIcon } from "@/components/ui/icons";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { getBestScore } from "@/lib/quiz/queries";
 import { getLessonThread } from "@/lib/lessons/queries";
@@ -74,7 +75,10 @@ export default async function LessonPage({
           <span className="font-display font-bold text-navy dark:text-white">
             Pratik Görevler ({gorevSayisi})
           </span>
-          <span className="text-sm font-semibold text-accent-ink dark:text-accent">Görevlere git →</span>
+          <span className="flex items-center gap-1 text-sm font-semibold text-accent-ink dark:text-accent">
+            Görevlere git
+            <ArrowRightIcon size={14} />
+          </span>
         </Link>
       )}
 
