@@ -20,7 +20,7 @@ export function NameEditor({
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    run(() => renameMember(userId, value, selfId));
+    run(() => renameMember(userId, value));
   }
 
   return (
@@ -30,6 +30,8 @@ export function NameEditor({
         onChange={(e) => setValue(e.target.value)}
         disabled={pending || isSelf}
         placeholder="Ad Soyad"
+        aria-label="Üye adı"
+        autoComplete="off"
         className="w-36 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white"
       />
       <button

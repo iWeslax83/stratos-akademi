@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { actorId, requireAdmin } from "@/lib/auth/actor";
 import { taskReviewMessage, submissionCommentMessage } from "@/lib/notifications/message";
 import { taskReviewEmail } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email/send";
@@ -27,17 +28,19 @@ function errMsg(error: { code?: string; message?: string }): string {
 export async function submitTask(
   taskId: string,
   icerik: string,
-  userId: string,
   dosyaYolu: string | null,
 ): Promise<ActionResult> {
   try {
     const metin = (icerik ?? "").trim();
     if (!metin && !dosyaYolu) return { ok: false, error: "Link/metin veya dosya gerekli." };
     const supabase = await createClient();
+    const uid = await actorId(supabase);
+    if (!uid) return { ok: false, error: "Oturum yok." };
+    // user_id sunucudan; RLS WITH CHECK (auth.uid() = user_id) forge'u zaten engeller.
     const { data: mevcut } = await supabase
       .from("task_submissions")
       .select("dosya_yolu")
-      .eq("user_id", userId)
+      .eq("user_id", uid)
       .eq("task_id", taskId)
       .maybeSingle();
     const eskiDosya = (mevcut as { dosya_yolu: string | null } | null)?.dosya_yolu ?? null;
@@ -45,7 +48,7 @@ export async function submitTask(
       .from("task_submissions")
       .upsert(
         {
-          user_id: userId,
+          user_id: uid,
           task_id: taskId,
           icerik: metin,
           dosya_yolu: dosyaYolu,
@@ -75,11 +78,13 @@ export async function submitTask(
 // ---- ADMIN GÖREV TANIMI CRUD ----
 export async function createTask(fd: FormData): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const moduleId = str(fd, "module_id");
     const baslik = str(fd, "baslik");
     if (!moduleId) return { ok: false, error: "module_id eksik." };
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase.from("practical_tasks").insert({
       module_id: moduleId,
       baslik,
@@ -94,11 +99,13 @@ export async function createTask(fd: FormData): Promise<ActionResult> {
 
 export async function updateTask(fd: FormData): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const baslik = str(fd, "baslik");
     if (!id) return { ok: false, error: "id eksik." };
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase
       .from("practical_tasks")
       .update({ baslik, aciklama: str(fd, "aciklama") || null, sira: intOr(fd, "sira", 0), puan: intOr(fd, "puan", 30) })
@@ -111,6 +118,8 @@ export async function updateTask(fd: FormData): Promise<ActionResult> {
 export async function deleteTask(id: string): Promise<ActionResult> {
   try {
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("practical_tasks").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     return { ok: true };
@@ -122,12 +131,14 @@ export async function reviewSubmission(
   id: string,
   durum: "onay" | "red",
   geriBildirim: string,
-  adminId: string,
 ): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
+    const adminId = await actorId(supabase);
     const fb = (geriBildirim ?? "").trim();
     if (durum === "red" && !fb) return { ok: false, error: "Reddederken bir not gir." };
-    const supabase = await createClient();
     const { error } = await supabase
       .from("task_submissions")
       .update({
@@ -192,14 +203,15 @@ export async function reviewSubmission(
 export async function addSubmissionComment(
   submissionId: string,
   mesaj: string,
-  authorId: string,
 ): Promise<ActionResult> {
   try {
     const metin = cleanComment(mesaj);
     if (!metin) return { ok: false, error: "Boş yorum gönderilemez." };
     const supabase = await createClient();
+    const authorId = await actorId(supabase);
+    if (!authorId) return { ok: false, error: "Oturum yok." };
 
-    // RLS ekleme iznini doğrular (kendi gönderimi ya da admin).
+    // author_id sunucudan; RLS ekleme iznini doğrular (kendi gönderimi ya da admin).
     const { error } = await supabase
       .from("submission_comments")
       .insert({ submission_id: submissionId, author_id: authorId, mesaj: metin });

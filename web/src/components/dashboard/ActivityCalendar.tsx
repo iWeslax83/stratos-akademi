@@ -24,6 +24,7 @@ export function ActivityCalendar({
   today: Date;
 }) {
   const cal = buildActivityCalendar(activityDates, today, 12);
+  const ozet = `Son 12 haftada ${cal.aktifGun} aktif gün.`;
 
   return (
     <div>
@@ -33,7 +34,7 @@ export function ActivityCalendar({
       </div>
       <p className="mb-4 text-sm text-muted">Her kare bir gün; ders bitirdikçe ve quiz çözdükçe dolar.</p>
 
-      <div className="flex gap-2.5">
+      <div role="img" aria-label={ozet} className="flex gap-2.5">
         {/* Gün etiketleri */}
         <div className="flex flex-col gap-[3px] pt-[1px]">
           {GUN_ETIKET.map((g, i) => (

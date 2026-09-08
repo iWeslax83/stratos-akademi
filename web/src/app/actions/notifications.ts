@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 import { getNotifications, type Notification } from "@/lib/notifications/queries";
 import { passiveNudgeMessage } from "@/lib/notifications/message";
 
@@ -40,6 +41,8 @@ export async function markAllRead(): Promise<{ ok: boolean }> {
 export async function sendPassiveNudge(userId: string): Promise<{ ok: boolean; error?: string }> {
   try {
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     // Admin bağlamı → notifications insert politikası is_admin() geçer (announcement/event fan-out'uyla aynı kalıp).
     const { error } = await supabase
       .from("notifications")

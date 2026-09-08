@@ -81,7 +81,6 @@ export default async function UyeGorevlerPage({
               {user && submission && (
                 <SubmissionThread
                   submissionId={submission.id}
-                  authorId={user.id}
                   comments={threads.get(submission.id) ?? []}
                 />
               )}

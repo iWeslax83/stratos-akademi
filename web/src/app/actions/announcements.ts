@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 import { announcementNotifyMessage } from "@/lib/notifications/message";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -29,6 +30,8 @@ export async function createAnnouncement(fd: FormData): Promise<ActionResult> {
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     if (!icerik) return { ok: false, error: "İçerik zorunlu." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     // author_id DB'de default auth.uid() ile dolar.
     const { error } = await supabase.from("announcements").insert({ baslik, icerik });
     if (error) return { ok: false, error: errMsg(error) };
@@ -60,6 +63,8 @@ export async function updateAnnouncement(fd: FormData): Promise<ActionResult> {
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     if (!icerik) return { ok: false, error: "İçerik zorunlu." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("announcements").update({ baslik, icerik }).eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     bust();
@@ -70,6 +75,8 @@ export async function updateAnnouncement(fd: FormData): Promise<ActionResult> {
 export async function deleteAnnouncement(id: string): Promise<ActionResult> {
   try {
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("announcements").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     bust();

@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light;
   --bg: #eef1f6;
   --panel: #ffffff;
   --text: #0f1a30;
@@ -12,6 +13,7 @@
 
 .dark {
   /* Amblemin zemini (#05080F) koyu temanın taban rengi. */
+  color-scheme: dark;
   --bg: #05080f;
   --panel: #0e1826;
   --text: #e4ecf8;

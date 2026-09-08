@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/ui/FormError";
 import { createClient } from "@/lib/supabase/client";
 import { submitTask } from "@/app/actions/tasks";
 import { canEditSubmission, submissionStatusLabel, type SubmissionStatus } from "@/lib/tasks/status";
@@ -15,6 +16,7 @@ export function SubmissionForm({
   dosyaUrl,
 }: {
   taskId: string;
+  // Storage yolu prefix'i için (RLS zaten auth.uid()'ye zorlar); güvenlik kararı sunucuda.
   userId: string;
   submission: {
     icerik: string;
@@ -26,10 +28,12 @@ export function SubmissionForm({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [yukleniyor, setYukleniyor] = useState(false);
   const [pending, start] = useTransition();
   const router = useRouter();
   const durum = submission?.durum ?? null;
   const editable = canEditSubmission(durum);
+  const busy = pending || yukleniyor;
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,12 +47,14 @@ export function SubmissionForm({
         if (v) { setError(v); return; }
         const path = uploadPath(userId, taskId, file.name, Date.now());
         const sb = createClient();
+        setYukleniyor(true);
         const { error: upErr } = await sb.storage.from("gorev-dosyalari").upload(path, file, { upsert: false });
+        setYukleniyor(false);
         if (upErr) { setError("Dosya yüklenemedi: " + upErr.message); return; }
         dosyaYolu = path;
       }
       if (!icerik && !dosyaYolu) { setError("Link/metin veya dosya gerekli."); return; }
-      const r = await submitTask(taskId, icerik, userId, dosyaYolu);
+      const r = await submitTask(taskId, icerik, dosyaYolu);
       if (!r.ok) { setError(r.error ?? "Hata"); return; }
       router.refresh();
     });
@@ -63,7 +69,7 @@ export function SubmissionForm({
             durum === "onay"
               ? "text-green-700 dark:text-green-400"
               : durum === "red"
-                ? "text-red-600"
+                ? "text-red-700 dark:text-red-300"
                 : "text-muted"
           }
         >
@@ -82,29 +88,37 @@ export function SubmissionForm({
           href={dosyaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mb-2 inline-block text-sm font-semibold text-accent-ink dark:text-accent underline"
+          className="mb-2 inline-block text-sm font-semibold text-accent-ink underline dark:text-accent"
         >
-          Yüklenen dosya →
+          Yüklenen dosyayı aç
         </a>
       )}
 
       {editable ? (
         <form onSubmit={onSubmit} className="space-y-2">
-          {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
-          <textarea
-            name="icerik"
-            defaultValue={submission?.icerik ?? ""}
-            rows={3}
-            placeholder="Link (Drive/video) veya açıklama yaz…"
-            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
-          />
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp,application/pdf"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="block w-full text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-black/5 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navy dark:file:bg-white/10 dark:file:text-white"
-          />
-          <Button variant="accent" disabled={pending}>{pending ? "Gönderiliyor…" : "Gönder"}</Button>
+          <FormError>{error}</FormError>
+          <label className="block">
+            <span className="mb-1 block text-xs font-semibold text-muted">Gönderi (link veya açıklama)</span>
+            <textarea
+              name="icerik"
+              defaultValue={submission?.icerik ?? ""}
+              rows={3}
+              placeholder="Drive/video linki veya kısa açıklama…"
+              className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs font-semibold text-muted">Dosya (JPG, PNG, WEBP, PDF — en fazla 5 MB)</span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,application/pdf"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="block w-full text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-black/5 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navy dark:file:bg-white/10 dark:file:text-white"
+            />
+          </label>
+          <Button type="submit" variant="accent" disabled={busy}>
+            {yukleniyor ? "Dosya yükleniyor…" : pending ? "Gönderiliyor…" : "Gönder"}
+          </Button>
         </form>
       ) : (
         <p className="rounded-core border border-[var(--line)] p-3 text-sm text-muted">

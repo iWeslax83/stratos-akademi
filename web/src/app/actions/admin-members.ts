@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { actorId, requireAdmin } from "@/lib/auth/actor";
 import { normalizeEmail, isValidEmail, cleanAd, type Role } from "@/lib/admin/members";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -22,10 +23,12 @@ function errMsg(error: { code?: string; message?: string }): string {
 
 export async function inviteMember(fd: FormData): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const email = normalizeEmail(str(fd, "email"));
     const role = asRole(str(fd, "role"));
     if (!isValidEmail(email)) return { ok: false, error: "Geçerli bir e-posta gir." };
-    const supabase = await createClient();
     const { error } = await supabase.from("allowlist").insert({ email, role });
     if (error) {
       if (error.code === "23505") return { ok: false, error: "Bu e-posta zaten davetli." };
@@ -39,6 +42,8 @@ export async function inviteMember(fd: FormData): Promise<ActionResult> {
 export async function removeInvite(email: string): Promise<ActionResult> {
   try {
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("allowlist").delete().eq("email", email);
     if (error) return { ok: false, error: errMsg(error) };
     revalidatePath("/admin/uyeler");
@@ -50,14 +55,16 @@ export async function setMemberRole(
   email: string,
   role: Role,
   userId: string | null,
-  selfId: string,
 ): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
+    const selfId = await actorId(supabase);
     if (userId && userId === selfId) {
       return { ok: false, error: "Kendi yetkini değiştiremezsin." };
     }
     const r = asRole(role);
-    const supabase = await createClient();
 
     const { error: allowErr } = await supabase.from("allowlist").update({ role: r }).eq("email", email);
     if (allowErr) return { ok: false, error: errMsg(allowErr) };
@@ -72,17 +79,14 @@ export async function setMemberRole(
 }
 
 // Üyeyi tamamen kaldırır: auth.users silinir → FK cascade ile tüm verisi gider; allowlist da silinir.
-// Güvenlik: service_role kullanıldığından çağıranın admin olduğu is_admin() RPC ile (caller bağlamı) doğrulanır.
-export async function removeMember(
-  userId: string,
-  email: string,
-  selfId: string,
-): Promise<ActionResult> {
+// service_role kullanıldığından çağıranın admin olduğu is_admin() ile (caller bağlamı) doğrulanır.
+export async function removeMember(userId: string, email: string): Promise<ActionResult> {
   try {
-    if (userId === selfId) return { ok: false, error: "Kendini kaldıramazsın." };
     const supabase = await createClient();
-    const { data: amAdmin } = await supabase.rpc("is_admin");
-    if (!amAdmin) return { ok: false, error: "Bu işlem için yetkin yok." };
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
+    const selfId = await actorId(supabase);
+    if (userId === selfId) return { ok: false, error: "Kendini kaldıramazsın." };
 
     const svc = createServiceClient();
     const { error: delErr } = await svc.auth.admin.deleteUser(userId);
@@ -94,16 +98,15 @@ export async function removeMember(
   } catch (e) { console.error("removeMember:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
 
-export async function renameMember(
-  userId: string,
-  ad: string,
-  selfId: string,
-): Promise<ActionResult> {
+export async function renameMember(userId: string, ad: string): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
+    const selfId = await actorId(supabase);
     if (userId === selfId) return { ok: false, error: "Kendi adını değiştiremezsin." };
     const temiz = cleanAd(ad);
     if (!temiz) return { ok: false, error: "Ad 1-60 karakter olmalı." };
-    const supabase = await createClient();
     const { error } = await supabase.from("profiles").update({ ad: temiz }).eq("id", userId);
     if (error) return { ok: false, error: errMsg(error) };
     revalidatePath("/admin/uyeler");
@@ -117,11 +120,13 @@ export async function renameMember(
 export async function linkStratosiha(
   userId: string,
   stratosihaAd: string | null,
-  selfId: string,
 ): Promise<ActionResult> {
   try {
-    if (userId === selfId) return { ok: false, error: "Kendi eşleştirmeni değiştiremezsin." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
+    const selfId = await actorId(supabase);
+    if (userId === selfId) return { ok: false, error: "Kendi eşleştirmeni değiştiremezsin." };
     const { error } = await supabase
       .from("profiles")
       .update({ stratosiha_ad: stratosihaAd })

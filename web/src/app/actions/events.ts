@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 import { eventNotifyMessage } from "@/lib/notifications/message";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -24,11 +25,13 @@ function bust() {
 
 export async function createEvent(fd: FormData): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const baslik = str(fd, "baslik");
     const baslangic = str(fd, "baslangic");
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     if (!baslangic) return { ok: false, error: "Tarih/saat zorunlu." };
-    const supabase = await createClient();
     // author_id DB'de default auth.uid() ile dolar.
     const { error } = await supabase.from("events").insert({
       baslik,
@@ -58,13 +61,15 @@ export async function createEvent(fd: FormData): Promise<ActionResult> {
 
 export async function updateEvent(fd: FormData): Promise<ActionResult> {
   try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const id = str(fd, "id");
     const baslik = str(fd, "baslik");
     const baslangic = str(fd, "baslangic");
     if (!id) return { ok: false, error: "id eksik." };
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     if (!baslangic) return { ok: false, error: "Tarih/saat zorunlu." };
-    const supabase = await createClient();
     const { error } = await supabase
       .from("events")
       .update({ baslik, baslangic, aciklama: str(fd, "aciklama") || null, yer: str(fd, "yer") || null })
@@ -78,6 +83,8 @@ export async function updateEvent(fd: FormData): Promise<ActionResult> {
 export async function deleteEvent(id: string): Promise<ActionResult> {
   try {
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("events").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     bust();

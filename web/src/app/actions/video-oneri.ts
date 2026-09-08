@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 import { createProductionPorts } from "@/lib/videos/ports";
 import { runVideoScan } from "@/lib/videos/scan";
 import type { ScanSummary } from "@/lib/videos/types";
@@ -20,6 +21,8 @@ export async function kabulEt(id: string, moduleId: string): Promise<ActionResul
   try {
     if (!id || !moduleId) return { ok: false, error: "id/modül eksik." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { ok: false, error: "Oturum yok." };
 
@@ -62,6 +65,8 @@ export async function reddet(id: string): Promise<ActionResult> {
   try {
     if (!id) return { ok: false, error: "id eksik." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("video_suggestions")
@@ -77,6 +82,8 @@ export async function geriGetir(id: string): Promise<ActionResult> {
   try {
     if (!id) return { ok: false, error: "id eksik." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase
       .from("video_suggestions")
       .update({ durum: "pending", rejected_at: null, karar_veren: null, karar_at: null })

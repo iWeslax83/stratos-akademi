@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/ui/FormError";
 import { createEvent } from "@/app/actions/events";
 
 const inputCls =
@@ -29,20 +30,26 @@ export function EventForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
-      <input name="baslik" required placeholder="Başlık (ör. Sprint toplantısı)" className={inputCls} />
+      <FormError>{error}</FormError>
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold text-muted">Başlık *</span>
+        <input name="baslik" required autoComplete="off" placeholder="ör. Sprint toplantısı" className={inputCls} />
+      </label>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1 block text-xs font-semibold text-muted">Tarih / saat</span>
+          <span className="mb-1 block text-xs font-semibold text-muted">Tarih / saat *</span>
           <input name="baslangic" type="datetime-local" required className={inputCls} />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-semibold text-muted">Yer (opsiyonel)</span>
-          <input name="yer" placeholder="Atölye / online…" className={inputCls} />
+          <input name="yer" autoComplete="off" placeholder="Atölye / online…" className={inputCls} />
         </label>
       </div>
-      <textarea name="aciklama" rows={3} placeholder="Açıklama (opsiyonel)…" className={inputCls} />
-      <Button variant="accent" disabled={pending}>{pending ? "Ekleniyor…" : "Ekle"}</Button>
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold text-muted">Açıklama (opsiyonel)</span>
+        <textarea name="aciklama" rows={3} placeholder="Detaylar…" className={inputCls} />
+      </label>
+      <Button type="submit" variant="accent" disabled={pending}>{pending ? "Ekleniyor…" : "Ekle"}</Button>
     </form>
   );
 }

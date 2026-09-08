@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
+import { ArrowRightIcon, PlayIcon } from "@/components/ui/icons";
 import type { FlatLesson } from "@/lib/curriculum/types";
 
 export function ResumeCard({
@@ -20,9 +20,9 @@ export function ResumeCard({
           {allDone ? "Tüm dersleri tamamladın." : "Müfredat yakında eklenecek."}
         </p>
         {allDone && (
-          <Link href="/mufredat">
-            <Button variant="ghost">Müfredatı gör</Button>
-          </Link>
+          <LinkButton href="/mufredat" variant="ghost">
+            Müfredatı gör
+          </LinkButton>
         )}
       </div>
     );
@@ -34,8 +34,8 @@ export function ResumeCard({
         <span className="absolute left-3.5 top-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#cdd8ec]">
           Kaldığın yerden
         </span>
-        <span className="grid h-[54px] w-[54px] place-items-center rounded-full bg-accent text-xl text-navy shadow-[0_16px_36px_-12px_rgba(79,179,191,0.6)]">
-          ▶
+        <span className="grid h-[54px] w-[54px] place-items-center rounded-full bg-accent text-navy shadow-[0_16px_36px_-12px_rgba(79,179,191,0.6)]">
+          <PlayIcon size={22} />
         </span>
       </div>
       <div className="px-6 pb-6 pt-4">
@@ -52,11 +52,14 @@ export function ResumeCard({
           <span className="min-w-0 text-[13px] font-semibold text-muted">
             Modül %{modulePct} tamamlandı{kalanDk > 0 ? ` · ~${kalanDk} dk kaldı` : ""}
           </span>
-          <Link href={`/mufredat/${resume.lesson.id}`} className="shrink-0">
-            <Button variant="primary" icon="→">
-              Devam et
-            </Button>
-          </Link>
+          <LinkButton
+            href={`/mufredat/${resume.lesson.id}`}
+            variant="primary"
+            icon={<ArrowRightIcon size={16} />}
+            className="shrink-0"
+          >
+            Devam et
+          </LinkButton>
         </div>
       </div>
     </div>

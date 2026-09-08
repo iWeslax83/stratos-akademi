@@ -64,7 +64,7 @@ export default async function AdminUyelerPage() {
               <RoleSelect email={m.email} role={m.role} userId={m.id} selfId={selfId} />
               {m.id !== selfId && (
                 <DeleteButton
-                  onDelete={removeMember.bind(null, m.id, m.email, selfId)}
+                  onDelete={removeMember.bind(null, m.id, m.email)}
                   uyari={`${m.email} üyesini ve TÜM verilerini (ilerleme, quiz, görev) kalıcı silmek istediğine emin misin?`}
                 />
               )}

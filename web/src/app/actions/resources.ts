@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/actor";
 import { isValidHttpUrl } from "@/lib/resources/group";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -29,6 +30,8 @@ export async function createResource(fd: FormData): Promise<ActionResult> {
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     if (!isValidHttpUrl(url)) return { ok: false, error: "Geçerli bir http(s) bağlantısı gir." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     // author_id DB'de default auth.uid() ile dolar.
     const { error } = await supabase
       .from("resources")
@@ -49,6 +52,8 @@ export async function updateResource(fd: FormData): Promise<ActionResult> {
     if (!baslik) return { ok: false, error: "Başlık zorunlu." };
     if (!isValidHttpUrl(url)) return { ok: false, error: "Geçerli bir http(s) bağlantısı gir." };
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase
       .from("resources")
       .update({ baslik, url, kategori, aciklama: str(fd, "aciklama") || null })
@@ -62,6 +67,8 @@ export async function updateResource(fd: FormData): Promise<ActionResult> {
 export async function deleteResource(id: string): Promise<ActionResult> {
   try {
     const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase.from("resources").delete().eq("id", id);
     if (error) return { ok: false, error: errMsg(error) };
     bust();

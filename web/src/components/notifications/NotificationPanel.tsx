@@ -6,52 +6,44 @@ import { useRouter } from "next/navigation";
 import { listNotifications, markAllRead } from "@/app/actions/notifications";
 import type { Notification } from "@/lib/notifications/queries";
 import { NotificationItem } from "./NotificationItem";
+import { useDismissable } from "@/lib/ui/useDismissable";
 
 // Masaüstünde zilin altında dropdown, mobilde alttan çıkan sheet.
 export function NotificationPanel({ onClose }: { onClose: () => void }) {
   const router = useRouter();
   const [list, setList] = useState<Notification[] | null>(null);
+  const [hata, setHata] = useState(false);
   const [pending, start] = useTransition();
+  const panelRef = useDismissable<HTMLDivElement>(onClose, { trap: true, lockScroll: "mobile" });
 
   useEffect(() => {
     let iptal = false;
-    listNotifications().then((n) => {
-      if (!iptal) setList(n);
-    });
+    listNotifications()
+      .then((n) => {
+        if (!iptal) setList(n);
+      })
+      .catch(() => {
+        if (!iptal) setHata(true);
+      });
     return () => {
       iptal = true;
     };
   }, []);
 
-  // Escape ile kapan; mobil sheet açıkken arka plan kaymasın.
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", onKey);
-    // Mobil sheet (sm altı) açıkken arka plan kaymasın; masaüstü dropdown'da gerek yok.
-    const onceki = document.body.style.overflow;
-    if (window.innerWidth < 640) document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = onceki;
-    };
-  }, [onClose]);
-
   const unread = (list ?? []).filter((n) => !n.okundu).length;
 
   return (
     <>
-      <button
-        aria-hidden
-        tabIndex={-1}
+      <div
         onClick={onClose}
-        className="fixed inset-0 z-40 cursor-default bg-navy/40 sm:bg-transparent"
+        className="fixed inset-0 z-40 bg-navy/40 sm:bg-transparent"
       />
       <div
+        ref={panelRef}
         role="dialog"
+        aria-modal="true"
         aria-label="Bildirimler"
-        className="fixed inset-x-0 bottom-0 z-50 flex max-h-[75vh] flex-col rounded-t-core border border-[var(--line)] bg-[var(--panel)] shadow-[0_-20px_50px_-20px_rgba(16,28,55,0.5)] sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-auto sm:top-full sm:mt-2 sm:max-h-[70vh] sm:w-[360px] sm:rounded-core sm:shadow-[0_20px_50px_-20px_rgba(16,28,55,0.5)]"
+        className="fixed inset-x-0 bottom-0 z-50 flex max-h-[75vh] flex-col overscroll-contain rounded-t-core border border-[var(--line)] bg-[var(--panel)] shadow-[0_-20px_50px_-20px_rgba(16,28,55,0.5)] sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-auto sm:top-full sm:mt-2 sm:max-h-[70vh] sm:w-[360px] sm:rounded-core sm:shadow-[0_20px_50px_-20px_rgba(16,28,55,0.5)]"
       >
         <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-[var(--line)] sm:hidden" />
 
@@ -68,16 +60,20 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
                   router.refresh();
                 })
               }
-              className="shrink-0 text-xs font-semibold text-accent-ink hover:underline disabled:opacity-60 dark:text-accent"
+              className="shrink-0 rounded text-xs font-semibold text-accent-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60 dark:text-accent"
             >
-              {pending ? "…" : "Tümünü okundu işaretle"}
+              {pending ? "İşleniyor…" : "Tümünü okundu işaretle"}
             </button>
           )}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-4">
-          {list === null ? (
-            <div className="space-y-3 py-4" aria-label="Yükleniyor">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4">
+          {hata ? (
+            <p role="alert" className="py-6 text-sm font-semibold text-red-700 dark:text-red-300">
+              Bildirimler yüklenemedi. Paneli kapatıp tekrar aç.
+            </p>
+          ) : list === null ? (
+            <div className="space-y-3 py-4" aria-label="Yükleniyor" aria-busy="true">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="h-4 animate-pulse rounded bg-[var(--line)]" />
               ))}
@@ -102,9 +98,9 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
           <Link
             href="/bildirimler"
             onClick={onClose}
-            className="text-xs font-semibold text-accent-ink hover:underline dark:text-accent"
+            className="rounded text-xs font-semibold text-accent-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-accent"
           >
-            Tüm bildirimler →
+            Tüm bildirimler
           </Link>
         </div>
       </div>

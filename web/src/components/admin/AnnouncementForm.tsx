@@ -3,7 +3,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/ui/FormError";
 import { createAnnouncement } from "@/app/actions/announcements";
+
+const inputCls =
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white";
 
 // Yeni duyuru oluşturma formu (admin).
 export function AnnouncementForm() {
@@ -26,21 +30,16 @@ export function AnnouncementForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
-      <input
-        name="baslik"
-        required
-        placeholder="Başlık (ör. Salı sprint toplantısı)"
-        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
-      />
-      <textarea
-        name="icerik"
-        required
-        rows={4}
-        placeholder="Duyuru metni…"
-        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
-      />
-      <Button variant="accent" disabled={pending}>{pending ? "Yayınlanıyor…" : "Yayınla"}</Button>
+      <FormError>{error}</FormError>
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold text-muted">Başlık *</span>
+        <input name="baslik" required autoComplete="off" placeholder="ör. Salı sprint toplantısı" className={`${inputCls} font-semibold`} />
+      </label>
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold text-muted">Duyuru metni *</span>
+        <textarea name="icerik" required rows={4} placeholder="Detaylar…" className={inputCls} />
+      </label>
+      <Button type="submit" variant="accent" disabled={pending}>{pending ? "Yayınlanıyor…" : "Yayınla"}</Button>
     </form>
   );
 }

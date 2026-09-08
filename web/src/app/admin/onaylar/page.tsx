@@ -63,15 +63,14 @@ export default async function OnaylarPage() {
                   href={urlMap.get(s.dosya_yolu)!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mb-3 inline-block text-sm font-semibold text-accent-ink dark:text-accent underline"
+                  className="mb-3 inline-block text-sm font-semibold text-accent-ink underline dark:text-accent"
                 >
-                  Yüklenen dosya →
+                  Yüklenen dosyayı aç
                 </a>
               )}
-              <ReviewControls submissionId={s.id} adminId={user!.id} />
+              <ReviewControls submissionId={s.id} />
               <SubmissionThread
                 submissionId={s.id}
-                authorId={user!.id}
                 comments={threads.get(s.id) ?? []}
               />
             </Card>

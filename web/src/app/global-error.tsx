@@ -14,11 +14,11 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="tr">
+    <html lang="tr" style={{ colorScheme: "dark" }}>
       <body
         style={{
           margin: 0,
-          minHeight: "100vh",
+          minHeight: "100dvh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

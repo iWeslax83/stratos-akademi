@@ -5,29 +5,33 @@ import { reviewSubmission } from "@/app/actions/tasks";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 
-export function ReviewControls({ submissionId, adminId }: { submissionId: string; adminId: string }) {
+export function ReviewControls({ submissionId }: { submissionId: string }) {
   const [redMode, setRedMode] = useState(false);
   const [not, setNot] = useState("");
   const { pending, error, run } = useServerAction("Hata");
 
   function approve() {
-    run(() => reviewSubmission(submissionId, "onay", "", adminId));
+    run(() => reviewSubmission(submissionId, "onay", ""));
   }
   function reject() {
-    run(() => reviewSubmission(submissionId, "red", not, adminId));
+    run(() => reviewSubmission(submissionId, "red", not));
   }
 
   if (redMode) {
     return (
       <div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
-          <textarea
-            value={not}
-            onChange={(e) => setNot(e.target.value)}
-            rows={2}
-            placeholder="Reddetme nedeni…"
-            className="min-w-[200px] flex-1 rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
-          />
+          <label className="min-w-[200px] flex-1">
+            <span className="sr-only">Reddetme nedeni</span>
+            <textarea
+              value={not}
+              onChange={(e) => setNot(e.target.value)}
+              rows={2}
+              autoFocus
+              placeholder="Reddetme nedeni…"
+              className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+            />
+          </label>
           <div className="flex gap-2">
             <button onClick={reject} disabled={pending} className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
               Reddet

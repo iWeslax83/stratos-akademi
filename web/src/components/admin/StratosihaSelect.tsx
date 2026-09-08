@@ -20,7 +20,7 @@ export function StratosihaSelect({
 
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const v = e.target.value;
-    run(() => linkStratosiha(userId, v === "" ? null : v, selfId));
+    run(() => linkStratosiha(userId, v === "" ? null : v));
   }
 
   return (
@@ -29,7 +29,8 @@ export function StratosihaSelect({
         value={stratosihaAd ?? ""}
         onChange={onChange}
         disabled={pending || isSelf}
-        className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white"
+        aria-label="stratosiha.com foto eşleştirmesi"
+        className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white"
       >
         <option value="">Eşleşme yok</option>
         {names.map((n) => (

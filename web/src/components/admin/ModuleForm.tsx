@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
+import { FormError } from "@/components/ui/FormError";
 import { createModule, updateModule } from "@/app/actions/admin-curriculum";
 
 type Module = { id: string; ad: string; aciklama: string | null; sira: number };
@@ -22,6 +24,7 @@ function Field({
         type={type}
         defaultValue={defaultValue}
         required={required}
+        autoComplete="off"
         className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
       />
     </label>
@@ -50,22 +53,18 @@ export function ModuleForm({ trackId, editing }: { trackId: string; editing: Mod
     <form onSubmit={onSubmit} className="space-y-3">
       <input type="hidden" name="track_id" value={trackId} />
       {editing && <input type="hidden" name="id" value={editing.id} />}
-      {error && (
-        <div className="rounded-core bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
-          {error}
-        </div>
-      )}
+      <FormError box>{error}</FormError>
       <Field name="ad" label="Ad" defaultValue={editing?.ad} required />
       <Field name="aciklama" label="Açıklama" defaultValue={editing?.aciklama ?? ""} />
       <Field name="sira" label="Sıra" type="number" defaultValue={String(editing?.sira ?? 0)} />
       <div className="flex gap-3">
-        <Button variant="accent" disabled={pending}>
+        <Button type="submit" variant="accent" disabled={pending}>
           {pending ? "Kaydediliyor…" : editing ? "Güncelle" : "Ekle"}
         </Button>
         {editing && (
-          <a href={`/admin/mufredat/${trackId}`}>
-            <Button variant="ghost" type="button">İptal</Button>
-          </a>
+          <LinkButton href={`/admin/mufredat/${trackId}`} variant="ghost">
+            İptal
+          </LinkButton>
         )}
       </div>
     </form>

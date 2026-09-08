@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/ui/FormError";
 import { updateQuizMeta } from "@/app/actions/admin-quiz";
 
 export function QuizMetaForm({
@@ -34,6 +35,7 @@ export function QuizMetaForm({
           name="baslik"
           defaultValue={quiz.baslik}
           required
+          autoComplete="off"
           className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
@@ -42,14 +44,15 @@ export function QuizMetaForm({
         <input
           name="gecme_esigi"
           type="number"
+          inputMode="numeric"
           min={0}
           max={100}
           defaultValue={String(quiz.gecme_esigi)}
           className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
         />
       </label>
-      <Button variant="accent" disabled={pending}>{pending ? "…" : "Kaydet"}</Button>
-      {error && <p className="w-full text-sm font-semibold text-red-600">{error}</p>}
+      <Button type="submit" variant="accent" disabled={pending}>{pending ? "Kaydediliyor…" : "Kaydet"}</Button>
+      <FormError className="w-full">{error}</FormError>
     </form>
   );
 }

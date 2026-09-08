@@ -58,7 +58,7 @@ export default async function AdminQuizPage({
 
       {loadError ? (
         <Card className="mt-5 p-6">
-          <p className="text-sm font-semibold text-red-600">
+          <p className="text-sm font-semibold text-red-700 dark:text-red-300">
             Quiz yüklenemedi (servis anahtarı eksik olabilir).
           </p>
         </Card>

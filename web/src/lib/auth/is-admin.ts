@@ -6,6 +6,6 @@ export async function isAdminUser(
   userId: string | null | undefined,
 ): Promise<boolean> {
   if (!userId) return false;
-  const { data } = await supabase.from("profiles").select("role").eq("id", userId).single();
+  const { data } = await supabase.from("profiles").select("role").eq("id", userId).maybeSingle();
   return data?.role === "admin";
 }
