@@ -5,13 +5,18 @@ import { kaliteKapisi, siralamaSkoru } from "@/lib/videos/kalite";
 
 const VARSAYILAN_ESIKLER = { minViews: 10000, minDurationSn: 180, maxAgeYears: 4 };
 
+// Teşhis kaydı (jsonb) şişmesin: en fazla 5 reddedilen, metinler kırpılır.
+const RED_KAYIT_SINIRI = 5;
+const BASLIK_MAX = 120;
+const GEREKCE_MAX = 240;
+
 function bosDiag(): ScanDiag {
   return {
     modul_sayisi: 0, sorgu_sayisi: 0, arama_sonucu: 0, tekil_id: 0, detay_cekilen: 0,
     eleme: bosEleme(), filtreden_gecen: 0, siniflandirilan: 0,
     gemini_uygun: 0, gemini_uygunsuz: 0, gemini_hata: 0,
     kalite_eleme: { dusuk_skor: 0, modul_dolu: 0, ayni_kanal: 0 },
-    hatalar: [],
+    hatalar: [], reddedilenler: [], sorgu_ozeti: [],
   };
 }
 
@@ -40,8 +45,10 @@ export async function runVideoScan(ports: ScanPorts): Promise<ScanSummary> {
   }
 
   const idSet = new Set<string>();
+  const sorguIdleri: { sorgu: string; ids: string[] }[] = [];
   for (const q of queries) {
     const ids = await ports.searchVideoIds(q);
+    sorguIdleri.push({ sorgu: q, ids });
     diag.arama_sonucu += ids.length;
     ids.forEach((id) => idSet.add(id));
   }
@@ -54,6 +61,12 @@ export async function runVideoScan(ports: ScanPorts): Promise<ScanSummary> {
   const { gecen, eleme } = filtreleVeSay(details, { now: ports.now, ...esikler, existingIds: existing });
   diag.eleme = eleme;
   diag.filtreden_gecen = gecen.length;
+  const gecenIdler = new Set(gecen.map((v) => v.youtube_video_id));
+  diag.sorgu_ozeti = sorguIdleri.map(({ sorgu, ids }) => ({
+    sorgu,
+    bulunan: ids.length,
+    gecen: ids.filter((id) => gecenIdler.has(id)).length,
+  }));
 
   const filtered = gecen.slice(0, ports.maxCandidates);
   diag.siniflandirilan = filtered.length;
@@ -66,7 +79,18 @@ export async function runVideoScan(ports: ScanPorts): Promise<ScanSummary> {
   for (const v of filtered) {
     const c = await ports.classify(v, modules);
     if (!c) { diag.gemini_hata += 1; continue; }
-    if (!c.uygun || !c.module_id) { diag.gemini_uygunsuz += 1; continue; }
+    if (!c.uygun || !c.module_id) {
+      diag.gemini_uygunsuz += 1;
+      if (diag.reddedilenler && diag.reddedilenler.length < RED_KAYIT_SINIRI) {
+        diag.reddedilenler.push({
+          baslik: v.baslik.slice(0, BASLIK_MAX),
+          kanal: v.kanal ?? "",
+          skor: c.skor,
+          gerekce: (c.gerekce ?? "").slice(0, GEREKCE_MAX),
+        });
+      }
+      continue;
+    }
     diag.gemini_uygun += 1;
     const aday = {
       youtube_video_id: v.youtube_video_id,

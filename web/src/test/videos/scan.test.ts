@@ -161,3 +161,67 @@ describe("runVideoScan", () => {
     expect(insertPending.mock.calls[0][0].length).toBe(5);
   });
 });
+
+describe("runVideoScan: reddedilen adayların gerekçesi", () => {
+  it("Gemini'nin uygun bulmadığı adayın başlığını ve gerekçesini teşhise yazar", async () => {
+    const summary = await runVideoScan(ports({
+      searchVideoIds: async () => ["aaa"],
+      fetchVideoDetails: async () => [vd("aaa")],
+      classify: async () => ({ uygun: false, module_id: null, skor: 12, gerekce: "Konu modülle ilgisiz." }),
+    }));
+    expect(summary.diag.gemini_uygunsuz).toBe(1);
+    expect(summary.diag.reddedilenler).toEqual([
+      { baslik: "Drone dersi", kanal: "Kanal-aaa", skor: 12, gerekce: "Konu modülle ilgisiz." },
+    ]);
+  });
+
+  it("en fazla 5 reddedileni tutar", async () => {
+    const ids = ["a1", "a2", "a3", "a4", "a5", "a6", "a7"];
+    const summary = await runVideoScan(ports({
+      searchVideoIds: async () => ids,
+      fetchVideoDetails: async () => ids.map(vd),
+      classify: async () => ({ uygun: false, module_id: null, skor: 0, gerekce: "hayır" }),
+    }));
+    expect(summary.diag.gemini_uygunsuz).toBe(7);
+    expect(summary.diag.reddedilenler).toHaveLength(5);
+  });
+
+  it("uzun başlık ve gerekçeyi kırpar (teşhis kaydı şişmesin)", async () => {
+    const uzun = { ...vd("aaa"), baslik: "B".repeat(400) };
+    const summary = await runVideoScan(ports({
+      searchVideoIds: async () => ["aaa"],
+      fetchVideoDetails: async () => [uzun],
+      classify: async () => ({ uygun: false, module_id: null, skor: 1, gerekce: "G".repeat(900) }),
+    }));
+    const r = summary.diag.reddedilenler![0];
+    expect(r.baslik.length).toBeLessThanOrEqual(120);
+    expect(r.gerekce.length).toBeLessThanOrEqual(240);
+  });
+
+  it("uygun bulunanları ve Gemini hatasını reddedilenlere karıştırmaz", async () => {
+    const summary = await runVideoScan(ports({
+      searchVideoIds: async () => ["ok", "hata"],
+      fetchVideoDetails: async () => [vd("ok"), vd("hata")],
+      classify: async (v) => (v.youtube_video_id === "hata" ? null : { uygun: true, module_id: "m1", skor: 90, gerekce: "iyi" }),
+    }));
+    expect(summary.diag.reddedilenler).toEqual([]);
+  });
+});
+
+describe("runVideoScan: sorgu bazında verim", () => {
+  it("her sorgunun kaç video bulduğunu ve kaçının mekanik filtreden geçtiğini yazar", async () => {
+    const az = { ...vd("az"), izlenme: 5 };
+    const summary = await runVideoScan(ports({
+      getCurriculum: async () => ({
+        tracks: [{ id: "t1", ad: "Yazılım" }],
+        modules: [{ id: "m1", track_id: "t1", ad: "Web" }, { id: "m2", track_id: "t1", ad: "Mobil" }],
+      }),
+      searchVideoIds: async (q) => (q === "Yazılım Web" ? ["ok1", "az"] : ["ok2"]),
+      fetchVideoDetails: async () => [vd("ok1"), az, vd("ok2")],
+    }));
+    expect(summary.diag.sorgu_ozeti).toEqual([
+      { sorgu: "Yazılım Web", bulunan: 2, gecen: 1 },
+      { sorgu: "Yazılım Mobil", bulunan: 1, gecen: 1 },
+    ]);
+  });
+});

@@ -3,6 +3,7 @@ import { hataOzeti } from "@/lib/videos/google-error";
 
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos";
+const DEFAULT_ARAMA_SONUC = 25;
 const PLAYLIST_ITEMS_URL = "https://www.googleapis.com/youtube/v3/playlistItems";
 
 export function parseIsoDuration(iso: string): number {
@@ -24,7 +25,10 @@ export async function searchVideoIds(
   url.searchParams.set("part", "snippet");
   url.searchParams.set("type", "video");
   url.searchParams.set("order", "relevance");
-  url.searchParams.set("maxResults", String(deps.max ?? 10));
+  // search.list çağrı başına kota harcar (sonuç sayısından bağımsız), o yüzden geniş pencere bedava.
+  url.searchParams.set("maxResults", String(Math.max(1, Math.min(50, deps.max ?? DEFAULT_ARAMA_SONUC))));
+  // Gömülemeyen videoyu kaynağında ele: detay ve Gemini çağrısı boşa gitmesin.
+  url.searchParams.set("videoEmbeddable", "true");
   url.searchParams.set("q", query);
   url.searchParams.set("publishedAfter", deps.publishedAfter);
   url.searchParams.set("key", deps.apiKey);

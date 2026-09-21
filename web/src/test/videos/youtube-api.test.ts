@@ -86,3 +86,29 @@ describe("fetchPlaylistVideoIds", () => {
     expect(onError).toHaveBeenCalled();
   });
 });
+
+describe("searchVideoIds: arama parametreleri", () => {
+  const ok = (ids: string[]) => ({ ok: true, json: async () => ({ items: ids.map((id) => ({ id: { videoId: id } })) }) }) as Response;
+  const paramlar = (fetchImpl: ReturnType<typeof vi.fn>) => new URL(fetchImpl.mock.calls[0][0] as string).searchParams;
+
+  it("varsayılan olarak 25 sonuç ister (çağrı başı kota aynı, aday havuzu geniş)", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(ok(["a"]));
+    await searchVideoIds("drone", { apiKey: "K", publishedAfter: "2022-01-01T00:00:00Z", fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(paramlar(fetchImpl).get("maxResults")).toBe("25");
+  });
+  it("max verilirse onu kullanır", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(ok(["a"]));
+    await searchVideoIds("drone", { apiKey: "K", publishedAfter: "2022-01-01T00:00:00Z", max: 40, fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(paramlar(fetchImpl).get("maxResults")).toBe("40");
+  });
+  it("YouTube'un izin verdiği en fazla 50'yi aşmaz", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(ok(["a"]));
+    await searchVideoIds("drone", { apiKey: "K", publishedAfter: "2022-01-01T00:00:00Z", max: 500, fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(paramlar(fetchImpl).get("maxResults")).toBe("50");
+  });
+  it("gömülemeyen videoları kaynağında eler (videoEmbeddable=true)", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(ok(["a"]));
+    await searchVideoIds("drone", { apiKey: "K", publishedAfter: "2022-01-01T00:00:00Z", fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(paramlar(fetchImpl).get("videoEmbeddable")).toBe("true");
+  });
+});

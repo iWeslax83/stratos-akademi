@@ -23,6 +23,12 @@ function esiklerFromEnv(): Esikler {
   };
 }
 
+// Sorgu başına istenen sonuç sayısı (1..50). Tanımsız ya da geçersizse varsayılan (25).
+function aramaSonucuFromEnv(): number | undefined {
+  const n = Number(process.env.VIDEO_ARAMA_SONUC);
+  return Number.isFinite(n) && n >= 1 ? Math.min(50, Math.floor(n)) : undefined;
+}
+
 // db: taramanın tüm DB işlerini yapan istemci. İki geçerli seçenek var:
 //   • cron  → createServiceClient() (oturum yok; RLS bypass, ama service_role GRANT'leri şart, bkz. 0031)
 //   • "Şimdi Tara" → giriş yapmış admin'in kendi istemcisi (RLS admin politikaları zaten izin verir)
@@ -85,7 +91,7 @@ export function createProductionPorts(
       return ids;
     },
 
-    searchVideoIds: (q) => searchVideoIds(q, { apiKey: deps.youtubeKey, publishedAfter, onError }),
+    searchVideoIds: (q) => searchVideoIds(q, { apiKey: deps.youtubeKey, publishedAfter, onError, max: aramaSonucuFromEnv() }),
     fetchVideoDetails: (ids) => fetchVideoDetails(ids, { apiKey: deps.youtubeKey, onError }),
     classify: (v, modules) =>
       geminiClassify(v, modules, {

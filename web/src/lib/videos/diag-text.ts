@@ -46,6 +46,18 @@ export function huniMetni(d: ScanDiag): string {
   ].filter(Boolean).join(" · ");
 }
 
+// Gemini'nin reddettiği adaylar: "Başlık (Kanal), skor 30: gerekçe". Eski kayıtlarda boş liste.
+export function redSatirlari(d: ScanDiag): string[] {
+  return (d.reddedilenler ?? []).map(
+    (r) => `${r.baslik}${r.kanal ? ` (${r.kanal})` : ""}, skor ${r.skor}: ${r.gerekce || "gerekçe yok"}`,
+  );
+}
+
+// Sorgu başına verim: "Yazılım Web: 25 bulundu, 3 geçti". Eski kayıtlarda boş liste.
+export function sorguSatirlari(d: ScanDiag): string[] {
+  return (d.sorgu_ozeti ?? []).map((s) => `${s.sorgu}: ${s.bulunan} bulundu, ${s.gecen} geçti`);
+}
+
 // Öneri çıkmadıysa en olası tek sebebi söyler. Tahmin değil: huniye bakar.
 export function neOldu(d: ScanDiag): string | null {
   if (d.hatalar.length > 0) return `API hatası: ${d.hatalar[0]}`;

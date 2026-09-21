@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/Card";
-import { huniMetni, neOldu } from "@/lib/videos/diag-text";
+import { huniMetni, neOldu, redSatirlari, sorguSatirlari } from "@/lib/videos/diag-text";
 import type { ScanDiag } from "@/lib/videos/types";
 
 export type ScanRun = {
@@ -12,6 +12,36 @@ export type ScanRun = {
   hata: string | null;
   diag: ScanDiag | null;
 };
+
+function RedListesi({ diag }: { diag: ScanDiag | null }) {
+  const satirlar = diag ? redSatirlari(diag) : [];
+  if (satirlar.length === 0) return null;
+  return (
+    <div className="mt-2">
+      <p className="text-xs font-semibold text-fg">Gemini&apos;nin uygun bulmadıkları</p>
+      <ul className="mt-1 list-disc space-y-0.5 pl-4 text-xs text-fg-soft">
+        {satirlar.map((s) => (
+          <li key={s} className="break-words">{s}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SorguListesi({ diag }: { diag: ScanDiag | null }) {
+  const satirlar = diag ? sorguSatirlari(diag) : [];
+  if (satirlar.length === 0) return null;
+  return (
+    <details className="mt-2">
+      <summary className="cursor-pointer text-xs font-semibold text-fg">Sorgu bazında sonuç</summary>
+      <ul className="mt-1 list-disc space-y-0.5 pl-4 text-xs text-fg-soft">
+        {satirlar.map((s) => (
+          <li key={s} className="break-words">{s}</li>
+        ))}
+      </ul>
+    </details>
+  );
+}
 
 function tarih(iso: string): string {
   return new Date(iso).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" });
@@ -53,6 +83,8 @@ export function TaramaTeshis({ runs }: { runs: ScanRun[] }) {
           {r.diag && (
             <p className="mt-2 font-mono text-xs text-fg-soft">{huniMetni(r.diag)}</p>
           )}
+          <RedListesi diag={r.diag} />
+          <SorguListesi diag={r.diag} />
           {r.hata && <p className="mt-2 text-xs text-danger-fg">{r.hata}</p>}
           {r.diag?.hatalar.map((h) => (
             <p key={h} className="mt-1 text-xs text-danger-fg">{h}</p>

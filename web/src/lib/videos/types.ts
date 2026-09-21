@@ -60,6 +60,9 @@ export type RedNedeni =
   | "eski"
   | "dil";
 
+// Gemini'nin uygun bulmadığı adayın özeti: eşikleri ayarlarken "neden reddetti" görünsün.
+export type ReddedilenAday = { baslik: string; kanal: string; skor: number; gerekce: string };
+
 export type ScanDiag = {
   modul_sayisi: number;
   sorgu_sayisi: number;
@@ -75,6 +78,10 @@ export type ScanDiag = {
   // Gemini uygun buldu ama kalite kapısı eledi (düşük skor / modül dolu / aynı kanal).
   kalite_eleme: { dusuk_skor: number; modul_dolu: number; ayni_kanal: number };
   hatalar: string[]; // YouTube/Gemini HTTP + ağ hataları (kota vb.)
+  // En fazla 5 (RED_KAYIT_SINIRI). Eski kayıtlarda yok.
+  reddedilenler?: ReddedilenAday[];
+  // Sorgu başına: kaç video buldu, kaçı mekanik filtreden geçti. Eski kayıtlarda yok.
+  sorgu_ozeti?: { sorgu: string; bulunan: number; gecen: number }[];
 };
 
 export type ScanSummary = {

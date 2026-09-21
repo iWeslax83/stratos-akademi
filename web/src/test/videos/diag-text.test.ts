@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { elemeMetni, huniMetni, neOldu } from "@/lib/videos/diag-text";
+import { elemeMetni, huniMetni, neOldu, redSatirlari, sorguSatirlari } from "@/lib/videos/diag-text";
 import { bosEleme } from "@/lib/videos/filter";
 import type { ScanDiag } from "@/lib/videos/types";
 
@@ -69,5 +69,29 @@ describe("neOldu, kalite kapısı", () => {
       kalite_eleme: { dusuk_skor: 0, modul_dolu: 1, ayni_kanal: 0 },
     }));
     expect(s).toBeNull();
+  });
+});
+
+describe("redSatirlari", () => {
+  it("her reddedilen için başlık, kanal, skor ve gerekçeyi tek satırda yazar", () => {
+    const d = diag({ reddedilenler: [{ baslik: "Drone montajı", kanal: "Kanal A", skor: 30, gerekce: "Modülle ilgisiz." }] });
+    expect(redSatirlari(d)).toEqual(["Drone montajı (Kanal A), skor 30: Modülle ilgisiz."]);
+  });
+  it("gerekçe boşsa 'gerekçe yok' yazar, kanal yoksa parantez açmaz", () => {
+    const d = diag({ reddedilenler: [{ baslik: "X", kanal: "", skor: 0, gerekce: "" }] });
+    expect(redSatirlari(d)).toEqual(["X, skor 0: gerekçe yok"]);
+  });
+  it("eski kayıtlarda alan yoksa boş liste döner", () => {
+    expect(redSatirlari(diag())).toEqual([]);
+  });
+});
+
+describe("sorguSatirlari", () => {
+  it("her sorgu için bulunan ve geçen sayısını yazar", () => {
+    const d = diag({ sorgu_ozeti: [{ sorgu: "Yazılım Web", bulunan: 25, gecen: 3 }] });
+    expect(sorguSatirlari(d)).toEqual(["Yazılım Web: 25 bulundu, 3 geçti"]);
+  });
+  it("eski kayıtlarda alan yoksa boş liste", () => {
+    expect(sorguSatirlari(diag())).toEqual([]);
   });
 });
