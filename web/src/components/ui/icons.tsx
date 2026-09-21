@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 
-// Tek çizgi-stili SVG ikon seti (Unicode glyph "→ ≡ ✓ ✗ ●" yerine — font bağımsız,
+// Tek çizgi-stili SVG ikon seti (Unicode glyph "→ ≡ ✓ ✗ ●" yerine, font bağımsız,
 // tema/renk currentColor ile). Hepsi aria-hidden; anlam komşu metinde ya da sr-only'de.
 type IconProps = { className?: string; size?: number };
 
@@ -56,7 +56,7 @@ export function PlayIcon({ className, size = 16 }: IconProps) {
   );
 }
 
-// Dolu nokta — "devam ediyor" durumu için.
+// Dolu nokta, "devam ediyor" durumu için.
 export function DotIcon({ className, size = 10 }: IconProps) {
   return (
     <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 10 10" className={clsx("shrink-0", className)}>
@@ -65,11 +65,18 @@ export function DotIcon({ className, size = 10 }: IconProps) {
   );
 }
 
-// Boş halka — "yapılacak" durumu için.
+// Boş halka, "yapılacak" durumu için.
 export function RingIcon({ className, size = 10 }: IconProps) {
   return (
     <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 10 10" fill="none" className={clsx("shrink-0", className)}>
       <circle cx="5" cy="5" r="3.5" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
+}
+
+export function ChevronUpIcon(p: IconProps) {
+  return svg(<path d="m6 15 6-6 6 6" />, p);
+}
+export function ChevronDownIcon(p: IconProps) {
+  return svg(<path d="m6 9 6 6 6-6" />, p);
 }

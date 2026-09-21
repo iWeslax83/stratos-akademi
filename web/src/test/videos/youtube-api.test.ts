@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { parseIsoDuration, searchVideoIds, fetchVideoDetails } from "@/lib/videos/youtube-api";
+import { parseIsoDuration, searchVideoIds, fetchVideoDetails, fetchPlaylistVideoIds } from "@/lib/videos/youtube-api";
 
 describe("parseIsoDuration", () => {
   it("PT10M30S -> 630", () => expect(parseIsoDuration("PT10M30S")).toBe(630));
@@ -51,5 +51,38 @@ describe("fetchVideoDetails", () => {
     const out = await fetchVideoDetails([], { apiKey: "K", fetchImpl: fetchImpl as unknown as typeof fetch });
     expect(out).toEqual([]);
     expect(fetchImpl).not.toHaveBeenCalled();
+  });
+});
+
+describe("fetchPlaylistVideoIds", () => {
+  const page = (ids: string[], next?: string) =>
+    ({ ok: true, json: async () => ({ items: ids.map((id) => ({ contentDetails: { videoId: id } })), nextPageToken: next }) }) as Response;
+
+  it("playlist sırasıyla video id'lerini döner", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(page(["a", "b", "c"]));
+    const r = await fetchPlaylistVideoIds("PL1", { apiKey: "K", fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(r).toEqual({ ids: ["a", "b", "c"], truncated: false });
+    const url = new URL(fetchImpl.mock.calls[0][0] as string);
+    expect(url.searchParams.get("playlistId")).toBe("PL1");
+    expect(url.searchParams.get("part")).toBe("contentDetails");
+  });
+  it("sayfaları birleştirir", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(page(["a", "b"], "T2")).mockResolvedValueOnce(page(["c"]));
+    const r = await fetchPlaylistVideoIds("PL1", { apiKey: "K", fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(r).toEqual({ ids: ["a", "b", "c"], truncated: false });
+    expect(new URL(fetchImpl.mock.calls[1][0] as string).searchParams.get("pageToken")).toBe("T2");
+  });
+  it("üst sınıra ulaşınca durur ve truncated işaretler", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(page(["a", "b", "c"], "T2"));
+    const r = await fetchPlaylistVideoIds("PL1", { apiKey: "K", max: 3, fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(r).toEqual({ ids: ["a", "b", "c"], truncated: true });
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+  it("HTTP hatasında boş döner ve onError çağırır", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({ ok: false, status: 404, text: async () => "notFound" } as Response);
+    const onError = vi.fn();
+    const r = await fetchPlaylistVideoIds("PL1", { apiKey: "K", fetchImpl: fetchImpl as unknown as typeof fetch, onError });
+    expect(r).toEqual({ ids: [], truncated: false });
+    expect(onError).toHaveBeenCalled();
   });
 });

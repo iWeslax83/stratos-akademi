@@ -18,3 +18,27 @@ export function parseYouTubeId(input: string): string | null {
   }
   return null;
 }
+
+export type YouTubeInput =
+  | { tur: "video"; id: string; playlistId?: string }
+  | { tur: "playlist"; id: string };
+
+const LIST_RE = /[?&]list=([A-Za-z0-9_-]+)/;
+
+// YouTube Mix (RD...), izleme listesi (WL) ve beğenilenler (LL) API'den okunamaz.
+function usablePlaylist(id: string): boolean {
+  return !/^RD/.test(id) && id !== "WL" && id !== "LL";
+}
+
+// Yönetici girdisini video ya da playlist olarak sınıflar. v= ile list= birlikteyse
+// (playlist içinden açılmış video) video sayılır ve playlistId taşınır.
+export function parseYouTubeInput(input: string): YouTubeInput | null {
+  const s = (input ?? "").trim();
+  if (!s) return null;
+  const listId = LIST_RE.exec(s)?.[1];
+  const playlistId = listId && usablePlaylist(listId) ? listId : undefined;
+  const id = parseYouTubeId(s);
+  if (id) return playlistId ? { tur: "video", id, playlistId } : { tur: "video", id };
+  if (playlistId) return { tur: "playlist", id: playlistId };
+  return null;
+}
