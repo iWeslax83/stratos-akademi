@@ -7,7 +7,7 @@ export async function hataOzeti(res: Response): Promise<string> {
     };
     const reason = body.error?.errors?.[0]?.reason ?? body.error?.status;
     const msg = body.error?.message ?? "";
-    return [reason, msg].filter(Boolean).join(" — ").slice(0, 300) || "detay yok";
+    return [reason, msg].filter(Boolean).join(": ").slice(0, 300) || "detay yok";
   } catch {
     return "detay yok";
   }

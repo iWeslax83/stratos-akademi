@@ -27,8 +27,8 @@ export function FormError({
       ref={ref}
       role="alert"
       className={clsx(
-        "text-sm font-semibold text-red-700 dark:text-red-300",
-        box && "rounded-core bg-red-50 p-3 dark:bg-red-900/30",
+        "text-sm font-semibold text-danger-fg",
+        box && "rounded-core bg-danger-wash p-3",
         className,
       )}
     >

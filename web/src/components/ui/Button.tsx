@@ -8,11 +8,32 @@ const BASE =
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: "bg-navy text-white shadow-soft hover:shadow-soft-hover",
   accent: "bg-accent text-navy shadow-soft hover:shadow-soft-hover",
-  ghost: "bg-black/[0.06] text-navy dark:bg-white/10 dark:text-white",
+  ghost: "bg-tint text-fg",
 };
 
 export function buttonClasses(variant: ButtonVariant, hasIcon: boolean, className?: string): string {
   return clsx(BASE, hasIcon ? "pl-5 pr-3 py-3" : "px-5 py-3", VARIANTS[variant], className);
+}
+
+// Satır içi küçük düğmeler (admin listeleri, formlar). Hepsi aynı taban: hover, görünür
+// odak halkası ve disabled durumu tek yerde. Renk yalnız `tone` ile değişir.
+export type SmallTone = "ghost" | "soft" | "primary" | "accent" | "danger" | "dangerSolid" | "success";
+
+const SM_BASE =
+  "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--panel)] disabled:cursor-not-allowed disabled:opacity-50";
+
+const SM_TONES: Record<SmallTone, string> = {
+  ghost: "bg-tint text-fg hover:bg-tint-hover",
+  soft: "bg-accent-wash text-accent-fg hover:bg-accent-soft/70 dark:hover:bg-accent-dark/70",
+  primary: "bg-navy text-white hover:bg-navy/90 dark:bg-white dark:text-navy dark:hover:bg-white/90",
+  accent: "bg-accent text-navy hover:bg-accent/90",
+  danger: "bg-danger-wash text-danger-fg hover:bg-danger-wash-hover",
+  dangerSolid: "bg-red-600 text-white hover:bg-red-700",
+  success: "bg-green-700 text-white hover:bg-green-800",
+};
+
+export function smallButtonClasses(tone: SmallTone, className?: string): string {
+  return clsx(SM_BASE, SM_TONES[tone], className);
 }
 
 function Spinner() {
@@ -35,7 +56,7 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
 };
 
-// type varsayılanı "button" — bir form içindeyken kazara submit tetiklemesin.
+// type varsayılanı "button", bir form içindeyken kazara submit tetiklemesin.
 // Gerçek submit düğmesi type="submit" geçmeli.
 export function Button({
   children,

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { reviewSubmission } from "@/app/actions/tasks";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export function ReviewControls({ submissionId }: { submissionId: string }) {
   const [redMode, setRedMode] = useState(false);
@@ -29,14 +30,14 @@ export function ReviewControls({ submissionId }: { submissionId: string }) {
               rows={2}
               autoFocus
               placeholder="Reddetme nedeni…"
-              className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+              className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             />
           </label>
           <div className="flex gap-2">
-            <button onClick={reject} disabled={pending} className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+            <button onClick={reject} disabled={pending} className={smallButtonClasses("dangerSolid")}>
               Reddet
             </button>
-            <button onClick={() => setRedMode(false)} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+            <button onClick={() => setRedMode(false)} disabled={pending} className={smallButtonClasses("ghost")}>
               Vazgeç
             </button>
           </div>
@@ -49,10 +50,10 @@ export function ReviewControls({ submissionId }: { submissionId: string }) {
   return (
     <div>
       <div className="flex gap-2">
-        <button onClick={approve} disabled={pending} className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+        <button onClick={approve} disabled={pending} className={smallButtonClasses("success")}>
           Onayla
         </button>
-        <button onClick={() => setRedMode(true)} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+        <button onClick={() => setRedMode(true)} disabled={pending} className={smallButtonClasses("danger")}>
           Reddet
         </button>
       </div>

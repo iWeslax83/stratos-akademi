@@ -6,6 +6,7 @@ import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 import { OptionRow } from "./OptionRow";
 import { ActionButton } from "./ActionButton";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 type Q = {
   id: string;
@@ -35,9 +36,9 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
             name="metin"
             defaultValue={question.metin}
             placeholder="Soru metni"
-            className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-accent dark:text-white"
+            className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-sm font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
-          <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+          <button type="submit" disabled={pending} className={smallButtonClasses("ghost")}>
             Kaydet
           </button>
           <ConfirmButton
@@ -48,8 +49,8 @@ export function QuestionEditor({ question, index }: { question: Q; index: number
         <input
           name="aciklama"
           defaultValue={question.aciklama ?? ""}
-          placeholder="Açıklama (cevaptan sonra gösterilir — opsiyonel)"
-          className="w-full rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-xs text-muted outline-none focus:border-accent dark:text-white"
+          placeholder="Açıklama (cevaptan sonra gösterilir, opsiyonel)"
+          className="w-full rounded-lg border border-[var(--line)] bg-transparent px-3 py-2 text-xs text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-white"
         />
       </form>
       <ErrorText>{error}</ErrorText>

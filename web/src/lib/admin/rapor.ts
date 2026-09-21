@@ -26,7 +26,7 @@ export type AnalitikVerisi = {
   dalTamamlama: DalSatiri[];
 };
 
-// Analitik sayfası ve CSV dışa aktarımı aynı kaynaktan beslenir — yoksa zamanla birbirinden sapar.
+// Analitik sayfası ve CSV dışa aktarımı aynı kaynaktan beslenir, yoksa zamanla birbirinden sapar.
 // supabase: oturum istemcisi (müfredat/lider tablosu). svc: service_role (herkesin ilerlemesi).
 export async function analitikVerisi(
   supabase: SupabaseClient,

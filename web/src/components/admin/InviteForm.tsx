@@ -37,7 +37,7 @@ export function InviteForm() {
           inputMode="email"
           spellCheck={false}
           placeholder="uye@okul.edu.tr"
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none placeholder:text-muted/60 focus-visible:ring-2 focus-visible:ring-accent"
         />
       </label>
       <label className="block w-32">
@@ -45,7 +45,7 @@ export function InviteForm() {
         <select
           name="role"
           defaultValue="uye"
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:text-white dark:[&>option]:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white"
         >
           <option value="uye">Üye</option>
           <option value="admin">Admin</option>

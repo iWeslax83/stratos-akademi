@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
 import { getAnnouncements } from "@/lib/announcements/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
 
@@ -26,9 +25,9 @@ export default async function DuyurularPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <Reveal>
-        <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Duyurular</h1>
-      </Reveal>
+      <div>
+        <h1 className="mt-3 font-display text-3xl font-bold text-fg">Duyurular</h1>
+      </div>
 
       {duyurular.length === 0 ? (
         <Card className="mt-5 p-6">
@@ -38,9 +37,9 @@ export default async function DuyurularPage() {
         <div className="mt-5 space-y-4">
           {duyurular.map((d) => (
             <Card key={d.id} className="p-6">
-              <h2 className="font-display text-lg font-bold text-navy dark:text-white">{d.baslik}</h2>
+              <h2 className="font-display text-lg font-bold text-fg">{d.baslik}</h2>
               <div className="text-xs text-muted">{formatDate(d.created_at)}</div>
-              <p className="mt-2 whitespace-pre-line text-sm text-[#46526b] dark:text-[#9fb0c9]">{d.icerik}</p>
+              <p className="mt-2 whitespace-pre-line text-sm text-fg-soft">{d.icerik}</p>
             </Card>
           ))}
         </div>

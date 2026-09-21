@@ -27,7 +27,7 @@ export function gunOnce(iso: string | null, nowMs: number): number | null {
   return Math.floor((nowMs - t) / 86_400_000);
 }
 
-// Tarih listesinin en yenisi (ISO) — yoksa null.
+// Tarih listesinin en yenisi (ISO), yoksa null.
 export function sonAktivite(dates: (string | null)[]): string | null {
   let en: number | null = null;
   let enIso: string | null = null;

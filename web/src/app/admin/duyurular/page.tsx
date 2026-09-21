@@ -20,15 +20,15 @@ export default async function AdminDuyurularPage() {
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Duyurular</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Duyurular</h1>
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">Duyurular</h1>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">Yeni duyuru</h2>
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">Yeni duyuru</h2>
         <AnnouncementForm />
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-2 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-2 font-display text-lg font-bold text-fg">
           Yayınlananlar ({duyurular.length})
         </h2>
         {duyurular.length === 0 ? (

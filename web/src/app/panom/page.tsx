@@ -12,7 +12,6 @@ import { LeaderboardMini } from "@/components/dashboard/LeaderboardMini";
 import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { Toast } from "@/components/dashboard/Toast";
-import { Reveal } from "@/components/ui/Reveal";
 import { OnboardingCard } from "@/components/dashboard/OnboardingCard";
 import { isNewMember, welcomeHeading } from "@/lib/dashboard/onboarding";
 import { getApprovedTaskCount } from "@/lib/tasks/queries";
@@ -77,8 +76,8 @@ export default async function PanomPage() {
 
   return (
     <AppShell initial={initial} points={stats.points} isAdmin={isAdmin}>
-      <Reveal className="mb-5">
-        <h1 className="font-display text-3xl font-bold text-navy dark:text-white">
+      <div className="mb-5">
+        <h1 className="font-display text-3xl font-bold text-fg">
           {welcomeHeading(ad, isNew)}
         </h1>
         {isNew && (
@@ -86,50 +85,9 @@ export default async function PanomPage() {
             İlk dersinle başla; ilerlemen ve sıralaman burada görünecek.
           </p>
         )}
-      </Reveal>
+      </div>
 
-      <Reveal delay={80} className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-12">
-        {duyurular.length > 0 && (
-          <Card interactive outerClassName="lg:col-span-12" className="p-6">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-display text-lg font-bold text-navy dark:text-white">Duyurular</h2>
-              <Link href="/duyurular" className="text-xs font-semibold text-accent-ink dark:text-accent hover:opacity-80">
-                Tümü →
-              </Link>
-            </div>
-            <ul className="space-y-2">
-              {duyurular.map((d) => (
-                <li key={d.id} className="border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
-                  <Link href="/duyurular" className="block">
-                    <span className="text-sm font-semibold text-navy dark:text-white">{d.baslik}</span>
-                    <span className="ml-2 text-sm text-muted">{announcementExcerpt(d.icerik, 90)}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        )}
-
-        {etkinlikler.length > 0 && (
-          <Card interactive outerClassName="lg:col-span-12" className="p-6">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-display text-lg font-bold text-navy dark:text-white">Yaklaşan etkinlikler</h2>
-              <Link href="/etkinlikler" className="text-xs font-semibold text-accent-ink dark:text-accent hover:opacity-80">
-                Tümü →
-              </Link>
-            </div>
-            <ul className="space-y-2">
-              {etkinlikler.map((e) => (
-                <li key={e.id} className="flex items-baseline gap-3 border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
-                  <span className="shrink-0 text-xs font-bold text-accent-ink dark:text-accent">{etkinlikTarih(e.baslangic)}</span>
-                  <span className="text-sm font-semibold text-navy dark:text-white">{e.baslik}</span>
-                  {e.yer && <span className="text-xs text-muted">· {e.yer}</span>}
-                </li>
-              ))}
-            </ul>
-          </Card>
-        )}
-
+      <div className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-12">
         {isNew ? (
           <Card outerClassName="lg:col-span-12">
             <OnboardingCard
@@ -170,7 +128,47 @@ export default async function PanomPage() {
             </Card>
           </>
         )}
-      </Reveal>
+        {duyurular.length > 0 && (
+          <Card outerClassName="lg:col-span-6" className="h-full p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold text-fg">Duyurular</h2>
+              <Link href="/duyurular" className="text-xs font-semibold text-accent-fg hover:opacity-80">
+                Tümü →
+              </Link>
+            </div>
+            <ul className="space-y-2">
+              {duyurular.map((d) => (
+                <li key={d.id} className="border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
+                  <Link href="/duyurular" className="block">
+                    <span className="text-sm font-semibold text-fg">{d.baslik}</span>
+                    <span className="ml-2 text-sm text-muted">{announcementExcerpt(d.icerik, 90)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
+        {etkinlikler.length > 0 && (
+          <Card outerClassName="lg:col-span-6" className="h-full p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold text-fg">Yaklaşan etkinlikler</h2>
+              <Link href="/etkinlikler" className="text-xs font-semibold text-accent-fg hover:opacity-80">
+                Tümü →
+              </Link>
+            </div>
+            <ul className="space-y-2">
+              {etkinlikler.map((e) => (
+                <li key={e.id} className="flex items-baseline gap-3 border-b border-[var(--line)] pb-2 last:border-b-0 last:pb-0">
+                  <span className="shrink-0 text-xs font-bold text-accent-fg">{etkinlikTarih(e.baslangic)}</span>
+                  <span className="text-sm font-semibold text-fg">{e.baslik}</span>
+                  {e.yer && <span className="text-xs text-muted">· {e.yer}</span>}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+      </div>
       <Toast baslik="Yeni yetkinlik" adlar={yeniAdlar} />
     </AppShell>
   );

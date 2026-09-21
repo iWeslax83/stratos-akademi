@@ -30,7 +30,7 @@ export function StratosihaSelect({
         onChange={onChange}
         disabled={pending || isSelf}
         aria-label="stratosiha.com foto eşleştirmesi"
-        className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white"
+        className="rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60 [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white"
       >
         <option value="">Eşleşme yok</option>
         {names.map((n) => (

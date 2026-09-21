@@ -14,7 +14,7 @@ export type SiralamaOpts = {
   maxAgeYears: number;
 };
 
-// Skor, satır kurulurken hesaplanıp siralama_skoru'na yazılır — o yüzden girdi henüz
+// Skor, satır kurulurken hesaplanıp siralama_skoru'na yazılır, o yüzden girdi henüz
 // tam bir PendingRow değil.
 export type SiralamaGirdi = Pick<PendingRow, "uygunluk_skoru" | "izlenme" | "yayin_tarihi">;
 
@@ -60,7 +60,7 @@ export function siralamaSkoru(v: SiralamaGirdi, opts: SiralamaOpts): number {
 }
 
 // Gemini'nin uygun bulduğu adayları admin kuyruğuna girmeden önce süzer:
-// düşük güven, tek modüle yığılma ve tek kanaldan tekrar — hepsi kuyruğu çöple doldurur.
+// düşük güven, tek modüle yığılma ve tek kanaldan tekrar, hepsi kuyruğu çöple doldurur.
 export function kaliteKapisi(
   rows: PendingRow[],
   opts: KaliteOpts,

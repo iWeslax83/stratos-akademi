@@ -36,7 +36,7 @@ export function QuizMetaForm({
           defaultValue={quiz.baslik}
           required
           autoComplete="off"
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
       </label>
       <label className="block w-32">
@@ -48,7 +48,7 @@ export function QuizMetaForm({
           min={0}
           max={100}
           defaultValue={String(quiz.gecme_esigi)}
-          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
       </label>
       <Button type="submit" variant="accent" disabled={pending}>{pending ? "Kaydediliyor…" : "Kaydet"}</Button>

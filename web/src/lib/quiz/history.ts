@@ -1,5 +1,5 @@
 // Quiz deneme geçmişi: mevcut quiz_attempts satırlarından türetilir (migration yok).
-// Saf mantık — UI ve sorgu bunları kullanır.
+// Saf mantık, UI ve sorgu bunları kullanır.
 
 export type AttemptRow = {
   puan: number;

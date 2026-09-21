@@ -50,7 +50,7 @@ export default async function UyeGorevlerPage({
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
       <div className="mb-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted">{trackAd} · {modul.ad}</p>
-        <h1 className="mt-3 font-display text-2xl font-bold text-navy dark:text-white">
+        <h1 className="mt-3 font-display text-2xl font-bold text-fg">
           Pratik Görevler
         </h1>
       </div>
@@ -63,10 +63,10 @@ export default async function UyeGorevlerPage({
         <div className="space-y-4">
           {tasks.map(({ task, submission }) => (
             <Card key={task.id} className="p-5">
-              <h3 className="font-display text-lg font-bold text-navy dark:text-white">{task.baslik}</h3>
-              <div className="mt-1 text-xs font-semibold text-accent-ink dark:text-accent">{task.puan} puan</div>
+              <h3 className="font-display text-lg font-bold text-fg">{task.baslik}</h3>
+              <div className="mt-1 text-xs font-semibold text-accent-fg">{task.puan} puan</div>
               {task.aciklama && (
-                <p className="mt-1 whitespace-pre-line text-sm text-[#46526b] dark:text-[#9fb0c9]">
+                <p className="mt-1 whitespace-pre-line text-sm text-fg-soft">
                   {task.aciklama}
                 </p>
               )}

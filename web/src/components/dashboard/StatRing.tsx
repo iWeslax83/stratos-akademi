@@ -13,7 +13,7 @@ export function StatRing({ pct, label }: { pct: number; label: string }) {
 
   return (
     <div className="flex h-full flex-col justify-center p-5">
-      <div className="font-display text-3xl font-extrabold leading-none text-navy dark:text-white">
+      <div className="font-display text-3xl font-extrabold leading-none text-fg">
         <CountUp value={pct} prefix="%" />
       </div>
       <div
@@ -22,7 +22,7 @@ export function StatRing({ pct, label }: { pct: number; label: string }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={label}
-        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-black/10 dark:bg-white/10"
+        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-track"
       >
         <div
           className="h-full w-full origin-left bg-accent transition-transform duration-1000 ease-out"

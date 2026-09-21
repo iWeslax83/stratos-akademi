@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonClasses } from "@/components/ui/Button";
 
 // Yeni üye için "buradan başla" rehberi. Gerçek akışı anlatır: izle → çöz → gönder.
 export function OnboardingCard({
@@ -28,8 +29,8 @@ export function OnboardingCard({
 
   return (
     <div className="p-6">
-      <h2 className="font-display text-xl font-bold text-navy dark:text-white">Buradan başla</h2>
-      <p className="mt-1.5 max-w-[60ch] text-[15px] leading-6 text-[#46526b] dark:text-[#9fb0c9]">
+      <h2 className="font-display text-xl font-bold text-fg">Buradan başla</h2>
+      <p className="mt-1.5 max-w-[60ch] text-base leading-6 text-fg-soft">
         Stratos Akademi&apos;de akış basit: video izle, quiz çöz, pratik görevi gönder.
         İlerlemen burada, profilinde ve liderlik tablosunda görünür.
       </p>
@@ -41,7 +42,7 @@ export function OnboardingCard({
               {s.n}
             </span>
             <div>
-              <div className="font-semibold text-navy dark:text-white">{s.baslik}</div>
+              <div className="font-semibold text-fg">{s.baslik}</div>
               <div className="text-sm text-muted">{s.metin}</div>
             </div>
           </li>
@@ -51,7 +52,7 @@ export function OnboardingCard({
       {firstLessonId && (
         <Link
           href={`/mufredat/${firstLessonId}`}
-          className="mt-6 inline-block rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-navy hover:bg-accent-dark hover:text-white"
+          className={buttonClasses("accent", false, "mt-6")}
         >
           {firstLessonTitle ? `İlk dersine başla: ${firstLessonTitle}` : "İlk dersine başla"} →
         </Link>

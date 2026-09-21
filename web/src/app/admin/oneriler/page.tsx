@@ -53,7 +53,7 @@ export default async function OnerilerPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Öneriler</p>
-          <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
+          <h1 className="mt-3 font-display text-3xl font-bold text-fg">
             Video Önerileri ({pendingRows.length})
           </h1>
         </div>
@@ -62,7 +62,7 @@ export default async function OnerilerPage() {
 
       <div className="mt-6 flex flex-col gap-4">
         {pendingRows.length === 0 ? (
-          <Card><p className="text-navy/70 dark:text-white/70">Bekleyen öneri yok.</p></Card>
+          <Card><p className="text-fg-soft">Bekleyen öneri yok.</p></Card>
         ) : (
           pendingRows.map((r) => (
             <Card key={r.id}>
@@ -84,19 +84,19 @@ export default async function OnerilerPage() {
         )}
       </div>
 
-      <h2 className="mt-10 font-display text-xl font-bold text-navy dark:text-white">
+      <h2 className="mt-10 font-display text-xl font-bold text-fg">
         Tarama Geçmişi
       </h2>
       <div className="mt-4">
         <TaramaTeshis runs={(runs ?? []) as ScanRun[]} />
       </div>
 
-      <h2 className="mt-10 font-display text-xl font-bold text-navy dark:text-white">
+      <h2 className="mt-10 font-display text-xl font-bold text-fg">
         Çöp Kutusu ({trashRows.length})
       </h2>
       <div className="mt-4 flex flex-col gap-2">
         {trashRows.length === 0 ? (
-          <Card><p className="text-navy/70 dark:text-white/70">Çöp kutusu boş.</p></Card>
+          <Card><p className="text-fg-soft">Çöp kutusu boş.</p></Card>
         ) : (
           trashRows.map((r) => (
             <Card key={r.id}>

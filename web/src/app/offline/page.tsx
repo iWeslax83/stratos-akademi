@@ -8,7 +8,7 @@ export default function OfflinePage() {
     <main className="grid min-h-dvh place-items-center bg-[#16243F] px-6 text-center text-white">
       <div className="max-w-sm">
         <h1 className="font-display text-2xl font-bold">Çevrimdışısın</h1>
-        <p className="mt-3 text-[15px] leading-6 text-[#9fb0c9]">
+        <p className="mt-3 text-base leading-6 text-[#9fb0c9]">
           Şu an internet bağlantın yok gibi görünüyor. Bağlantı gelince kaldığın yerden
           devam edebilirsin.
         </p>

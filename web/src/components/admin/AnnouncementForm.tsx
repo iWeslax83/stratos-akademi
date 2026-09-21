@@ -7,7 +7,7 @@ import { FormError } from "@/components/ui/FormError";
 import { createAnnouncement } from "@/app/actions/announcements";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none placeholder:text-muted/60 focus-visible:ring-2 focus-visible:ring-accent";
 
 // Yeni duyuru oluşturma formu (admin).
 export function AnnouncementForm() {

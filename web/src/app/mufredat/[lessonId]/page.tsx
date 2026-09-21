@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
-import { Reveal } from "@/components/ui/Reveal";
 import { LessonSection } from "@/components/curriculum/LessonSection";
 import { ModuleQuizCard } from "@/components/curriculum/ModuleQuizCard";
 import { LessonQa } from "@/components/lessons/LessonQa";
@@ -43,14 +42,14 @@ export default async function LessonPage({
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>
-      <Reveal className="mb-4">
+      <div className="mb-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           {found.track.ad} · {found.module.ad}
         </p>
-        <h1 className="mt-2 font-display text-2xl font-bold text-navy dark:text-white">
+        <h1 className="mt-2 font-display text-2xl font-bold text-fg">
           {found.lesson.baslik}
         </h1>
-      </Reveal>
+      </div>
 
       <LessonSection
         lessonId={found.lesson.id}
@@ -60,7 +59,7 @@ export default async function LessonPage({
       />
 
       {found.lesson.aciklama && (
-        <p className="mt-6 max-w-[65ch] whitespace-pre-line text-[15px] leading-7 text-[#46526b] dark:text-[#9fb0c9]">
+        <p className="mt-6 max-w-[65ch] whitespace-pre-line text-base leading-7 text-fg-soft">
           {found.lesson.aciklama}
         </p>
       )}
@@ -72,10 +71,10 @@ export default async function LessonPage({
           href={`/mufredat/gorevler/${found.module.id}`}
           className="mt-4 flex items-center justify-between rounded-core border border-[var(--line)] bg-[var(--panel)] p-5"
         >
-          <span className="font-display font-bold text-navy dark:text-white">
+          <span className="font-display font-bold text-fg">
             Pratik Görevler ({gorevSayisi})
           </span>
-          <span className="flex items-center gap-1 text-sm font-semibold text-accent-ink dark:text-accent">
+          <span className="flex items-center gap-1 text-sm font-semibold text-accent-fg">
             Görevlere git
             <ArrowRightIcon size={14} />
           </span>

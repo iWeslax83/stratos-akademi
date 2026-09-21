@@ -67,9 +67,9 @@ export function SubmissionForm({
         <span
           className={
             durum === "onay"
-              ? "text-green-700 dark:text-green-400"
+              ? "text-success-fg"
               : durum === "red"
-                ? "text-red-700 dark:text-red-300"
+                ? "text-danger-fg"
                 : "text-muted"
           }
         >
@@ -78,7 +78,7 @@ export function SubmissionForm({
       </div>
 
       {submission?.geri_bildirim && (
-        <p className="mb-2 rounded-core bg-black/[0.04] p-3 text-sm text-navy dark:bg-white/[0.04] dark:text-white">
+        <p className="mb-2 rounded-core bg-black/[0.04] p-3 text-sm text-fg dark:bg-white/[0.04]">
           <span className="font-semibold">Geri bildirim:</span> {submission.geri_bildirim}
         </p>
       )}
@@ -88,7 +88,7 @@ export function SubmissionForm({
           href={dosyaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mb-2 inline-block text-sm font-semibold text-accent-ink underline dark:text-accent"
+          className="mb-2 inline-block text-sm font-semibold text-accent-fg underline"
         >
           Yüklenen dosyayı aç
         </a>
@@ -104,11 +104,11 @@ export function SubmissionForm({
               defaultValue={submission?.icerik ?? ""}
               rows={3}
               placeholder="Drive/video linki veya kısa açıklama…"
-              className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+              className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-xs font-semibold text-muted">Dosya (JPG, PNG, WEBP, PDF — en fazla 5 MB)</span>
+            <span className="mb-1 block text-xs font-semibold text-muted">Dosya (JPG, PNG, WEBP, PDF, en fazla 5 MB)</span>
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,application/pdf"

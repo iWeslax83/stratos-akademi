@@ -2,7 +2,7 @@ import { cache } from "react";
 
 // Fotoğraflar stratosiha.com'un içerik reposundan gelir: site admin panelinden
 // (/admin/takim) yüklenen foto site.json'a yazılıp repoya commit edilir.
-// JSON ve görseli aynı commit'ten okuyoruz — sitenin yeniden deploy olmasını
+// JSON ve görseli aynı commit'ten okuyoruz, sitenin yeniden deploy olmasını
 // beklemeden tutarlı kalsın diye.
 const RAW = "https://raw.githubusercontent.com/iWeslax83/stratos-website/main";
 const SITE_JSON = `${RAW}/src/content/site.json`;
@@ -67,7 +67,7 @@ async function fetchSiteJson(): Promise<unknown> {
 /** İstek başına tek fetch; getTeamPhotos ve getTeamNames aynı çağrıyı paylaşır. */
 const getSiteJson = cache(fetchSiteJson);
 
-/** Siteden haritayı çeker. Herhangi bir hatada boş harita — çağıran baş harfe düşer. */
+/** Siteden haritayı çeker. Herhangi bir hatada boş harita, çağıran baş harfe düşer. */
 export async function fetchTeamPhotos(): Promise<Map<string, string>> {
   return buildPhotoMap(await getSiteJson());
 }
@@ -83,7 +83,7 @@ export const getTeamNames = cache(async function fetchTeamNames(): Promise<strin
 /**
  * Bir üyenin fotoğrafı (yoksa null). `stratosihaAd` (admin'in manuel eşleştirdiği isim)
  * doluysa ÖNCE onunla bakılır; bulunamazsa ya da boşsa `ad` ile otomatik eşleştirmeye
- * düşülür (geriye dönük davranış — bugün doğru eşleşen kimsenin fotoğrafı kaybolmaz).
+ * düşülür (geriye dönük davranış, bugün doğru eşleşen kimsenin fotoğrafı kaybolmaz).
  */
 export function photoFor(
   map: Map<string, string>,

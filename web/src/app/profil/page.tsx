@@ -5,7 +5,6 @@ import { StatRing } from "@/components/dashboard/StatRing";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CompetencyShelf } from "@/components/dashboard/CompetencyShelf";
 import { ActivityCalendar } from "@/components/dashboard/ActivityCalendar";
-import { Reveal } from "@/components/ui/Reveal";
 import { Avatar } from "@/components/ui/Avatar";
 import { getTeamPhotos, photoFor } from "@/lib/team/photos";
 import { PointsBreakdown } from "@/components/dashboard/PointsBreakdown";
@@ -17,6 +16,7 @@ import { getLeaderboard } from "@/lib/dashboard/leaderboard";
 import { getApprovedTaskCount } from "@/lib/tasks/queries";
 import { earnedCertificates } from "@/lib/certificate/eligibility";
 import Link from "next/link";
+import { TrackIcon } from "@/components/ui/TrackIcon";
 
 export const dynamic = "force-dynamic";
 
@@ -57,20 +57,20 @@ export default async function ProfilPage() {
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin} points={stats.points}>
-      <Reveal>
+      <div>
         <div className="mb-6 flex items-center gap-4">
           <Avatar ad={ad} src={foto} size="lg" className="shadow-soft" />
           <div>
-            <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{ad}</h1>
+            <h1 className="font-display text-2xl font-bold text-fg">{ad}</h1>
             <p className="text-sm text-muted">
               {profile?.email}
               {isAdmin && " · Kaptan"}
             </p>
           </div>
         </div>
-      </Reveal>
+      </div>
 
-      <Reveal delay={80} className="grid grid-cols-2 gap-[18px] sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-[18px] sm:grid-cols-3">
         <Card>
           <StatRing pct={stats.overall.pct} label="İlerleme" />
         </Card>
@@ -80,7 +80,7 @@ export default async function ProfilPage() {
         <Card>
           <StatCard countTo={onayliGorev ?? 0} label="Onaylı görev" />
         </Card>
-      </Reveal>
+      </div>
 
       <Card className="mt-[18px]">
         <ActivityCalendar activityDates={activityDates} today={new Date()} />
@@ -96,16 +96,16 @@ export default async function ProfilPage() {
 
       {sertifikalar.length > 0 && (
         <Card className="mt-[18px] p-6">
-          <h2 className="mb-1 font-display text-lg font-bold text-navy dark:text-white">Sertifikalar</h2>
+          <h2 className="mb-1 font-display text-lg font-bold text-fg">Sertifikalar</h2>
           <p className="mb-3 text-sm text-muted">Tamamladığın dallar için katılım belgesi.</p>
           <div className="flex flex-wrap gap-2">
             {sertifikalar.map((s) => (
               <Link
                 key={s.slug}
                 href={`/sertifika/${s.slug}`}
-                className="inline-flex items-center gap-2 rounded-full border border-accent px-4 py-2 text-sm font-semibold text-navy hover:bg-accent-soft dark:text-white dark:hover:bg-accent-dark"
+                className="inline-flex items-center gap-2 rounded-full border border-accent px-4 py-2 text-sm font-semibold text-fg hover:bg-accent-soft dark:hover:bg-accent-dark"
               >
-                <span>{s.ikon}</span> {s.ad} belgesi →
+                <TrackIcon slug={s.slug} ikon={s.ikon} size={16} /> {s.ad} belgesi →
               </Link>
             ))}
           </div>

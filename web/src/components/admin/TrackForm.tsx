@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { FormError } from "@/components/ui/FormError";
 import { createTrack, updateTrack } from "@/app/actions/admin-curriculum";
+import { resolveTrackIcon, TRACK_IKONLAR } from "@/components/ui/TrackIcon";
 
 type Track = {
   id: string;
@@ -32,7 +33,7 @@ function Field({
         defaultValue={defaultValue}
         required={required}
         autoComplete="off"
-        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+        className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       />
     </label>
   );
@@ -63,7 +64,19 @@ export function TrackForm({ editing }: { editing: Track | null }) {
       <Field name="ad" label="Ad" defaultValue={editing?.ad} required />
       <Field name="slug" label="Slug" defaultValue={editing?.slug} required />
       <Field name="aciklama" label="Açıklama" defaultValue={editing?.aciklama ?? ""} />
-      <Field name="ikon" label="İkon (emoji)" defaultValue={editing?.ikon ?? ""} />
+      <label className="block">
+        <span className="mb-1 block text-xs font-semibold text-muted">İkon</span>
+        <select
+          name="ikon"
+          defaultValue={editing ? (resolveTrackIcon(editing.slug, editing.ikon) === "dot" ? "" : resolveTrackIcon(editing.slug, editing.ikon)) : ""}
+          className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white"
+        >
+          <option value="">İkon yok</option>
+          {TRACK_IKONLAR.map((i) => (
+            <option key={i.key} value={i.key}>{i.label}</option>
+          ))}
+        </select>
+      </label>
       <Field name="sira" label="Sıra" type="number" defaultValue={String(editing?.sira ?? 0)} />
       <div className="flex gap-3">
         <Button type="submit" variant="accent" disabled={pending}>

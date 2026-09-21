@@ -14,10 +14,10 @@ export function NavLink({ href, label }: { href: string; label: string }) {
       href={href}
       aria-current={active ? "page" : undefined}
       className={clsx(
-        "whitespace-nowrap rounded-full px-2.5 py-1.5 text-[13px] font-semibold transition-colors",
+        "whitespace-nowrap rounded-full px-2.5 py-1.5 text-2sm font-semibold transition-colors",
         active
-          ? "bg-accent-soft text-accent-ink dark:bg-accent-dark dark:text-accent"
-          : "text-muted hover:text-navy dark:hover:text-white",
+          ? "bg-accent-wash text-accent-fg"
+          : "text-muted hover:text-fg",
       )}
     >
       {label}

@@ -48,7 +48,7 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
         <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-[var(--line)] sm:hidden" />
 
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--line)] px-4 py-3">
-          <span className="font-display text-sm font-bold text-navy dark:text-white">Bildirimler</span>
+          <span className="font-display text-sm font-bold text-fg">Bildirimler</span>
           {unread > 0 && (
             <button
               type="button"
@@ -60,7 +60,7 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
                   router.refresh();
                 })
               }
-              className="shrink-0 rounded text-xs font-semibold text-accent-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60 dark:text-accent"
+              className="shrink-0 rounded text-xs font-semibold text-accent-fg hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60"
             >
               {pending ? "İşleniyor…" : "Tümünü okundu işaretle"}
             </button>
@@ -69,7 +69,7 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4">
           {hata ? (
-            <p role="alert" className="py-6 text-sm font-semibold text-red-700 dark:text-red-300">
+            <p role="alert" className="py-6 text-sm font-semibold text-danger-fg">
               Bildirimler yüklenemedi. Paneli kapatıp tekrar aç.
             </p>
           ) : list === null ? (
@@ -98,7 +98,7 @@ export function NotificationPanel({ onClose }: { onClose: () => void }) {
           <Link
             href="/bildirimler"
             onClick={onClose}
-            className="rounded text-xs font-semibold text-accent-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-accent"
+            className="rounded text-xs font-semibold text-accent-fg hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             Tüm bildirimler
           </Link>

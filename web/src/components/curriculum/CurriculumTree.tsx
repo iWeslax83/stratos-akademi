@@ -2,6 +2,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import type { Curriculum, LessonStatus } from "@/lib/curriculum/types";
 import { CheckIcon, DotIcon, RingIcon } from "@/components/ui/icons";
+import { TrackIcon } from "@/components/ui/TrackIcon";
 
 const ICON: Record<LessonStatus, React.ReactNode> = {
   done: <CheckIcon size={12} />,
@@ -27,8 +28,8 @@ export function CurriculumTree({
     <nav className="space-y-5">
       {curriculum.map((track) => (
         <div key={track.id}>
-          <div className="mb-2 flex items-center gap-2 px-1 text-[11px] font-bold uppercase tracking-[0.12em] text-accent-ink dark:text-accent">
-            {track.ikon && <span aria-hidden="true">{track.ikon}</span>}
+          <div className="mb-2 flex items-center gap-2 px-1 text-xs font-bold text-accent-fg">
+            <TrackIcon slug={track.slug} ikon={track.ikon} size={14} />
             <span>{track.ad}</span>
           </div>
           {track.modules.map((module) => (
@@ -43,20 +44,20 @@ export function CurriculumTree({
                       <Link
                         href={`/mufredat/${lesson.id}`}
                         className={clsx(
-                          "flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-semibold",
+                          "flex items-center gap-2.5 rounded-xl px-3 py-2 text-2sm font-semibold",
                           active
-                            ? "bg-accent-soft text-accent-ink dark:bg-accent-dark dark:text-accent"
+                            ? "bg-accent-wash text-accent-fg"
                             : status === "done"
-                              ? "text-navy dark:text-white"
+                              ? "text-fg"
                               : "text-muted hover:bg-black/5 dark:hover:bg-white/5",
                         )}
                       >
                         <span
                           data-testid={`status-${lesson.id}`}
                           className={clsx(
-                            "grid h-4 w-4 flex-none place-items-center text-[10px]",
+                            "grid h-4 w-4 flex-none place-items-center text-xs",
                             status === "done" && "text-green-600",
-                            status === "current" && "text-accent-ink dark:text-accent",
+                            status === "current" && "text-accent-fg",
                           )}
                         >
                           <span aria-hidden="true">{ICON[status]}</span>

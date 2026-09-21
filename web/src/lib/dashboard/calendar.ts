@@ -1,5 +1,5 @@
 // Aktivite takvimi: son N hafta için gün-gün aktivite ızgarası (GitHub katkı grafiği tarzı).
-// Mevcut activityDates'ten türetilir (ders tamamlama + quiz denemesi) — migration yok.
+// Mevcut activityDates'ten türetilir (ders tamamlama + quiz denemesi), migration yok.
 
 const TZ = "Europe/Istanbul";
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;

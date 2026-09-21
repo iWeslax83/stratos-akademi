@@ -51,10 +51,10 @@ describe.skipIf(!process.env.REAL_SCAN)("GERÇEK API probu (DB'siz)", () => {
 
     const s = await runVideoScan(ports);
     console.log("HUNİ:", huniMetni(s.diag));
-    console.log("NE OLDU:", neOldu(s.diag) ?? "başarılı — aday üretildi");
+    console.log("NE OLDU:", neOldu(s.diag) ?? "başarılı, aday üretildi");
     console.log("HATALAR:", s.diag.hatalar);
     for (const r of yazilan) {
-      console.log(`ADAY: [${r.uygunluk_skoru}] ${r.baslik} — ${r.kanal} — modül ${r.onerilen_module_id} — ${r.gerekce}`);
+      console.log(`ADAY: [${r.uygunluk_skoru}] ${r.baslik}, ${r.kanal}, modül ${r.onerilen_module_id}, ${r.gerekce}`);
     }
 
     expect(s.diag.hatalar).toEqual([]);

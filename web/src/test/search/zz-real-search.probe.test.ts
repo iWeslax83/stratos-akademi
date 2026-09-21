@@ -27,7 +27,7 @@ describe.skipIf(!process.env.REAL_SCAN)("gerçek arama", () => {
       expect(r.length).toBeGreaterThan(0);
     }
 
-    // Aksansız yazılan sorgu aksanlı içeriği bulmalı ("Uçuş Kontrol & Kurulum" modülü) —
+    // Aksansız yazılan sorgu aksanlı içeriği bulmalı ("Uçuş Kontrol & Kurulum" modülü):
     // Postgres ilike bunu bulamazdı, normalize edilmiş eşleştirme bulur.
     const aksansiz = await ara(svc, "ucus");
     console.log('"ucus" →', aksansiz.map((x) => `${x.tur}:${x.baslik}`).join(" | "));

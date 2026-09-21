@@ -3,6 +3,7 @@
 import { geriGetir } from "@/app/actions/video-oneri";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 type Props = { id: string; youtubeId: string; baslik: string; rejectedAt: string | null };
 
@@ -16,16 +17,16 @@ export function CopKutusuKarti(p: Props) {
           href={`https://www.youtube.com/watch?v=${p.youtubeId}`}
           target="_blank"
           rel="noreferrer"
-          className="font-medium text-navy underline-offset-2 hover:underline dark:text-white"
+          className="font-medium text-fg underline-offset-2 hover:underline"
         >
           {p.baslik}
         </a>
-        <p className="text-xs text-navy/60 dark:text-white/60">
+        <p className="text-xs text-fg-soft">
           {p.rejectedAt ? `Reddedildi: ${new Date(p.rejectedAt).toLocaleDateString("tr-TR")}` : ""}
         </p>
       </div>
       <span>
-        <button onClick={() => run(() => geriGetir(p.id))} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy disabled:opacity-50 dark:bg-white/10 dark:text-white">
+        <button onClick={() => run(() => geriGetir(p.id))} disabled={pending} className={smallButtonClasses("ghost")}>
           Geri getir
         </button>
         <ErrorText>{error}</ErrorText>

@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { TrackForm } from "@/components/admin/TrackForm";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteTrack } from "@/app/actions/admin-curriculum";
+import { TrackIcon } from "@/components/ui/TrackIcon";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +37,7 @@ export default async function AdminTracksPage({
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Müfredat</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Dallar</h1>
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">Dallar</h1>
 
       <Card className="mt-5 p-6">
         {list.length === 0 ? (
@@ -48,16 +50,16 @@ export default async function AdminTracksPage({
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 <span className="w-7 shrink-0 text-center text-xs font-bold text-muted">{t.sira}</span>
-                <span className="shrink-0 text-lg">{t.ikon ?? "•"}</span>
-                <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
+                <TrackIcon slug={t.slug} ikon={t.ikon} size={20} className="text-accent-fg" />
+                <span className="min-w-0 flex-1 break-words text-sm font-bold text-fg">
                   {t.ad} <span className="text-xs font-normal text-muted">/{t.slug}</span>
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-2 pl-10 sm:shrink-0 sm:pl-0">
-                <Link href={`/admin/mufredat/${t.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
+                <Link href={`/admin/mufredat/${t.id}`} className="text-xs font-semibold text-muted hover:text-fg">
                   Modüller →
                 </Link>
-                <Link href={`/admin/mufredat?edit=${t.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+                <Link href={`/admin/mufredat?edit=${t.id}`} className={smallButtonClasses("ghost")}>
                   Düzenle
                 </Link>
                 <DeleteButton
@@ -71,7 +73,7 @@ export default async function AdminTracksPage({
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">
           {editing ? "Dalı düzenle" : "Yeni dal"}
         </h2>
         <TrackForm key={editing?.id ?? "new"} editing={editing} />

@@ -1,4 +1,4 @@
-// Stratos amblemi — yükselen delta gövde, her kanatta üç bıçak.
+// Stratos amblemi, yükselen delta gövde, her kanatta üç bıçak.
 // Inline SVG: her boyutta net kalır. Kanatlar currentColor, delta akademi
 // vurgu rengi (amblemin turkuazı). Statik kopya: /brand/logo.svg
 

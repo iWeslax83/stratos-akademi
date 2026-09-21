@@ -58,7 +58,7 @@ export async function submitQuiz(
 
     // Attempt kaydı. GÜVENLİ YOL (0022 uygulandıysa): my_uid() RPC ile JWT'den doğrulanmış
     // user_id alınır ve attempt service_role ile eklenir (üye puanı doğrudan REST'e yazamaz).
-    // GERİ UYUMLU YOL (0022 öncesi: my_uid yok / service insert yetkisi yok): eski davranış —
+    // GERİ UYUMLU YOL (0022 öncesi: my_uid yok / service insert yetkisi yok): eski davranış:
     // authenticated client + `default auth.uid()`. Böylece migration uygulanana kadar quiz
     // gönderimi bozulmaz.
     const supabase = await createClient();

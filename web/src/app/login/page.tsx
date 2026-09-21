@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Reveal } from "@/components/ui/Reveal";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { ArrowRightIcon } from "@/components/ui/icons";
 
@@ -27,14 +26,14 @@ function LoginCard() {
   }
 
   return (
-    <Reveal className="w-full">
+    <div className="w-full">
       <Card className="w-full p-8 text-center">
         <div className="mb-5 flex justify-center">
           <span className="grid h-20 w-20 place-items-center rounded-bezel bg-navy shadow-soft dark:bg-white/10">
             <LogoMark size={34} className="text-white" deltaClassName="fill-accent" />
           </span>
         </div>
-        <h1 className="mt-4 font-display text-2xl font-bold text-navy dark:text-white">
+        <h1 className="mt-4 font-display text-2xl font-bold text-fg">
           Tekrar hoş geldin
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted">
@@ -43,7 +42,7 @@ function LoginCard() {
         {hata && (
           <p
             role="alert"
-            className="mt-4 rounded-core bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300"
+            className="mt-4 rounded-core bg-danger-wash p-3 text-sm font-semibold text-danger-fg"
           >
             {hata}
           </p>
@@ -54,13 +53,13 @@ function LoginCard() {
           </Button>
         </div>
       </Card>
-    </Reveal>
+    </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <main className="bg-dotgrid mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-4 sm:px-6">
+    <main className="mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-4 sm:px-6">
       <Suspense fallback={<div className="h-64 w-full animate-pulse rounded-bezel bg-black/5 dark:bg-white/5" />}>
         <LoginCard />
       </Suspense>

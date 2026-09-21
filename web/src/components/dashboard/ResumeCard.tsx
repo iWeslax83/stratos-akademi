@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { ArrowRightIcon, PlayIcon } from "@/components/ui/icons";
 import type { FlatLesson } from "@/lib/curriculum/types";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 
 export function ResumeCard({
   resume,
@@ -16,7 +18,7 @@ export function ResumeCard({
   if (!resume) {
     return (
       <div className="flex h-full items-center justify-between gap-4 p-6">
-        <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+        <p className="text-sm font-semibold text-success-fg">
           {allDone ? "Tüm dersleri tamamladın." : "Müfredat yakında eklenecek."}
         </p>
         {allDone && (
@@ -30,26 +32,37 @@ export function ResumeCard({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="relative m-[7px] grid aspect-[21/8] place-items-center overflow-hidden rounded-2xl bg-navy-deep">
-        <span className="absolute left-3.5 top-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#cdd8ec]">
+      <Link
+        href={`/mufredat/${resume.lesson.id}`}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="relative m-[7px] grid aspect-[21/8] place-items-center overflow-hidden rounded-2xl bg-navy-deep"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`https://i.ytimg.com/vi/${resume.lesson.youtube_video_id}/hqdefault.jpg`}
+          alt=""
+          width={480}
+          height={360}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <span className="absolute left-3 top-3 rounded-md bg-navy-deep/85 px-2 py-1 text-xs font-semibold text-white">
           Kaldığın yerden
         </span>
-        <span className="grid h-[54px] w-[54px] place-items-center rounded-full bg-accent text-navy shadow-[0_16px_36px_-12px_rgba(79,179,191,0.6)]">
+        <span className="relative grid h-[54px] w-[54px] place-items-center rounded-full bg-accent text-navy">
           <PlayIcon size={22} />
         </span>
-      </div>
+      </Link>
       <div className="px-6 pb-6 pt-4">
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent-ink dark:text-accent">
+        <span className="text-xs font-semibold text-accent-fg">
           {resume.track.ad} · {resume.module.ad}
         </span>
-        <h3 className="mb-3 mt-1 font-display text-xl font-bold text-navy dark:text-white">
+        <h3 className="mb-3 mt-1 font-display text-xl font-bold text-fg">
           {resume.lesson.baslik}
         </h3>
-        <div className="mb-2.5 h-2 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
-          <div className="h-full rounded-full bg-accent" style={{ width: `${modulePct}%` }} />
-        </div>
+        <ProgressBar pct={modulePct} label={`${resume.module.ad} ilerleme`} className="mb-2.5" />
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="min-w-0 text-[13px] font-semibold text-muted">
+          <span className="min-w-0 text-2sm font-semibold text-muted">
             Modül %{modulePct} tamamlandı{kalanDk > 0 ? ` · ~${kalanDk} dk kaldı` : ""}
           </span>
           <LinkButton

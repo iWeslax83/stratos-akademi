@@ -32,12 +32,12 @@ export function NameEditor({
         placeholder="Ad Soyad"
         aria-label="Üye adı"
         autoComplete="off"
-        className="w-36 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-navy outline-none focus:border-accent disabled:opacity-60 dark:text-white"
+        className="w-36 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60"
       />
       <button
         type="submit"
         disabled={pending || isSelf}
-        className="rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-sm font-semibold text-navy hover:border-accent disabled:opacity-60 dark:text-white"
+        className="rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-sm font-semibold text-fg hover:border-accent disabled:opacity-60"
       >
         Kaydet
       </button>

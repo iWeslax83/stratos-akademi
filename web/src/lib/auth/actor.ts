@@ -1,9 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-// Sunucu aksiyonlarında çağıranın kimliğini / yetkisini BELİRLER — istemciden gelen
+// Sunucu aksiyonlarında çağıranın kimliğini / yetkisini BELİRLER, istemciden gelen
 // userId/selfId/adminId parametrelerine ASLA güvenilmez (forge edilebilir).
 //
-// Kimlik: önce my_uid() RPC (JWT'den auth.uid(), oturum yenilemesi tetiklemez — bkz. 0022),
+// Kimlik: önce my_uid() RPC (JWT'den auth.uid(), oturum yenilemesi tetiklemez, bkz. 0022),
 // o yoksa getUser()'a düşer. Yetki: is_admin() RPC (0010; SECURITY DEFINER, RLS özyinelemesiz).
 
 export async function actorId(supabase: SupabaseClient): Promise<string | null> {

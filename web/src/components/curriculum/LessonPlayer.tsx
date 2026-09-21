@@ -45,7 +45,7 @@ export function LessonPlayer({
   onProgress,
 }: {
   videoId: string;
-  // (izlenen saniye, konum oranı 0..1) — sunucu doğrulaması için iletilir.
+  // (izlenen saniye, konum oranı 0..1), sunucu doğrulaması için iletilir.
   onComplete: (stats: WatchStats) => void;
   onManualEligible?: () => void;
   onProgress?: (stats: WatchStats) => void;
@@ -118,7 +118,7 @@ export function LessonPlayer({
         <div ref={containerRef} className="h-full w-full" />
       </div>
       {done && (
-        <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-green-700 dark:text-green-400">
+        <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-success-fg">
           <CheckIcon size={16} />
           Bu ders tamamlandı olarak işaretlendi
         </p>

@@ -21,7 +21,7 @@ export function StatCard({
       <div
         className={clsx(
           "font-display text-3xl font-extrabold leading-none",
-          accent ? "text-accent-ink dark:text-accent" : "text-navy dark:text-white",
+          accent ? "text-accent-fg" : "text-fg",
         )}
       >
         {countTo != null ? <CountUp value={countTo} /> : value}

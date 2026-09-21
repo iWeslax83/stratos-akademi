@@ -52,13 +52,13 @@ export default async function AdminQuizPage({
           { label: "Quiz" },
         ]}
       />
-      <h1 className="mt-1 font-display text-3xl font-bold text-navy dark:text-white">
+      <h1 className="mt-1 font-display text-3xl font-bold text-fg">
         {modul.ad} · Quiz
       </h1>
 
       {loadError ? (
         <Card className="mt-5 p-6">
-          <p className="text-sm font-semibold text-red-700 dark:text-red-300">
+          <p className="text-sm font-semibold text-danger-fg">
             Quiz yüklenemedi (servis anahtarı eksik olabilir).
           </p>
         </Card>

@@ -1,6 +1,6 @@
 import type { Quiz } from "./types";
 
-// Determinist PRNG (mulberry32) — aynı seed → aynı sıra (test edilebilir).
+// Determinist PRNG (mulberry32), aynı seed → aynı sıra (test edilebilir).
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return function () {

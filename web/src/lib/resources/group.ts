@@ -11,7 +11,7 @@ export type ResourceLite = {
 // Form/gruplama için sabit kategori listesi (gruplama sırasını da belirler).
 export const KATEGORILER = ["Datasheet", "CAD/Tasarım", "BOM/Malzeme", "Yazılım", "Genel"] as const;
 
-// Geçerli http(s) URL mi? (Başka protokoller — ftp, javascript: vb. — reddedilir.)
+// Geçerli http(s) URL mi? (Başka protokoller, ftp, javascript: vb., reddedilir.)
 export function isValidHttpUrl(url: string): boolean {
   try {
     const u = new URL(url.trim());

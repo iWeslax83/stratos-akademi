@@ -1,4 +1,4 @@
-// Sertifika uygunluğu — saf. Sertifika tamamen türetilmiş (DB yok): üye bir dalı
+// Sertifika uygunluğu, saf. Sertifika tamamen türetilmiş (DB yok): üye bir dalı
 // (yetkinlik) bitirdiyse o dal için belge verilir.
 
 export type CertTrack = { slug: string; ad: string; ikon: string | null };

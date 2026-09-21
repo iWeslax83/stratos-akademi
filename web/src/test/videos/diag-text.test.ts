@@ -54,7 +54,7 @@ describe("neOldu", () => {
   });
 });
 
-describe("neOldu — kalite kapısı", () => {
+describe("neOldu, kalite kapısı", () => {
   it("kapı adayların hepsini elediyse sebep gösterir", () => {
     const s = neOldu(diag({
       gemini_uygun: 2,

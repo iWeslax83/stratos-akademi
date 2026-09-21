@@ -37,10 +37,10 @@ export async function Nav({
     <nav className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel)] px-3 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)] sm:gap-3 sm:px-4">
       <Link
         href="/panom"
-        className="flex shrink-0 items-center gap-2 font-display text-base font-extrabold text-navy dark:text-white"
+        className="flex shrink-0 items-center gap-2 font-display text-base font-extrabold text-fg"
       >
         {/* Dar telefonlarda amblem küçülür; h-* sınıfı svg'nin size attr'ını ezer. */}
-        <LogoMark size={32} className="h-6 w-auto text-navy dark:text-white sm:h-8" /> STRATOS
+        <LogoMark size={32} className="h-6 w-auto text-fg sm:h-8" /> STRATOS
         {/* Alt başlık yalnızca menü linkleri + çiplerle birlikte sığdığı genişlikte. */}
         <span className="hidden text-sm font-semibold text-muted min-[520px]:max-lg:inline xl:inline">
           akademi

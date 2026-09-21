@@ -4,6 +4,7 @@ import { useState } from "react";
 import { kabulEt, reddet } from "@/app/actions/video-oneri";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 type ModuleOpt = { id: string; ad: string; trackAd: string };
 type Props = {
@@ -44,29 +45,29 @@ export function OneriKarti(p: Props) {
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-lg font-semibold text-navy dark:text-white">{p.baslik}</h3>
+          <h3 className="font-display text-lg font-semibold text-fg">{p.baslik}</h3>
           {p.siralamaSkoru === null ? null : (
             <span
               title="Sıralama skoru: uygunluk %75, izlenme %15, tazelik %10"
-              className="shrink-0 rounded-full bg-navy px-2.5 py-1 text-xs font-semibold text-white dark:bg-accent dark:text-navy"
+              className="shrink-0 rounded-md border border-navy/25 px-2.5 py-1 text-xs font-bold tabular-nums text-navy dark:border-accent/40 dark:text-accent"
             >
               {Math.round(p.siralamaSkoru)}
             </span>
           )}
         </div>
-        <p className="text-sm text-navy/70 dark:text-white/70">
-          {p.kanal ?? "—"} · {(p.izlenme ?? 0).toLocaleString("tr-TR")} izlenme
+        <p className="text-sm text-fg-soft">
+          {p.kanal ?? "Kanal yok"} · {(p.izlenme ?? 0).toLocaleString("tr-TR")} izlenme
           {p.yayinTarihi ? ` · ${new Date(p.yayinTarihi).toLocaleDateString("tr-TR")}` : ""}
         </p>
-        <p className="text-sm text-navy dark:text-white">
+        <p className="text-sm text-fg">
           <span className="font-semibold">Uygunluk {p.skor ?? 0}/100.</span> {p.gerekce ?? ""}
         </p>
-        <label className="text-sm text-navy/70 dark:text-white/70">
+        <label className="text-sm text-fg-soft">
           Modül:
           <select
             value={moduleId}
             onChange={(e) => setModuleId(e.target.value)}
-            className="ml-2 rounded-lg border border-[var(--line)] bg-transparent px-2 py-1 text-sm text-navy dark:text-white"
+            className="ml-2 rounded-lg border border-[var(--line)] bg-transparent px-2 py-1 text-sm text-fg"
           >
             {p.modules.map((m) => (
               <option key={m.id} value={m.id}>{m.trackAd} · {m.ad}</option>
@@ -74,10 +75,10 @@ export function OneriKarti(p: Props) {
           </select>
         </label>
         <div className="mt-1 flex gap-2">
-          <button onClick={accept} disabled={pending || !moduleId} className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+          <button onClick={accept} disabled={pending || !moduleId} className={smallButtonClasses("success")}>
             Kabul et
           </button>
-          <button onClick={decline} disabled={pending} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+          <button onClick={decline} disabled={pending} className={smallButtonClasses("danger")}>
             Reddet
           </button>
         </div>

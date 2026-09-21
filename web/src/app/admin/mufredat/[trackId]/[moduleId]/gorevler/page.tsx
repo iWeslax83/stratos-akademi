@@ -6,6 +6,7 @@ import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { TaskForm } from "@/components/admin/TaskForm";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteTask } from "@/app/actions/tasks";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function AdminGorevlerPage({
           { label: "Pratik Görevler" },
         ]}
       />
-      <h1 className="mt-1 font-display text-3xl font-bold text-navy dark:text-white">
+      <h1 className="mt-1 font-display text-3xl font-bold text-fg">
         {modul.ad} · Pratik Görevler
       </h1>
 
@@ -64,12 +65,12 @@ export default async function AdminGorevlerPage({
           list.map((t) => (
             <div key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
               <span className="w-7 text-center text-xs font-bold text-muted">{t.sira}</span>
-              <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
+              <span className="min-w-0 flex-1 break-words text-sm font-bold text-fg">
                 {t.baslik} <span className="text-xs font-normal text-muted">· {t.puan} puan</span>
               </span>
               <a
                 href={`/admin/mufredat/${trackId}/${moduleId}/gorevler?edit=${t.id}`}
-                className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white"
+                className={smallButtonClasses("ghost")}
               >
                 Düzenle
               </a>
@@ -83,7 +84,7 @@ export default async function AdminGorevlerPage({
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">
           {editing ? "Görevi düzenle" : "Yeni görev"}
         </h2>
         <TaskForm key={editing?.id ?? "new"} trackId={trackId} moduleId={moduleId} editing={editing} />

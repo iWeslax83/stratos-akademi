@@ -6,9 +6,10 @@ import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 import { KATEGORILER } from "@/lib/resources/group";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
 export function ResourceItem({
   id,
@@ -48,10 +49,10 @@ export function ResourceItem({
         </div>
         <textarea name="aciklama" rows={2} defaultValue={aciklama ?? ""} className={inputCls} />
         <div className="flex gap-2">
-          <button disabled={pending} className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-white dark:text-navy">
+          <button disabled={pending} className={smallButtonClasses("primary")}>
             {pending ? "…" : "Kaydet"}
           </button>
-          <button type="button" onClick={() => setEdit(false)} disabled={pending} className="rounded-full bg-black/5 px-4 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+          <button type="button" onClick={() => setEdit(false)} disabled={pending} className={smallButtonClasses("ghost")}>
             Vazgeç
           </button>
         </div>
@@ -63,14 +64,14 @@ export function ResourceItem({
     <div className="border-b border-[var(--line)] py-3 last:border-b-0">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <a href={url} target="_blank" rel="noopener noreferrer" className="break-words font-semibold text-navy underline decoration-accent underline-offset-2 hover:text-accent-ink dark:hover:text-accent dark:text-white">
+          <a href={url} target="_blank" rel="noopener noreferrer" className="break-words font-semibold text-fg underline decoration-accent underline-offset-2 hover:text-accent-fg">
             {baslik}
           </a>
           {aciklama && <p className="mt-0.5 text-sm text-muted">{aciklama}</p>}
           <div className="mt-0.5 truncate text-xs text-muted">{url}</div>
         </div>
         <div className="flex shrink-0 gap-2">
-          <button onClick={() => setEdit(true)} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy disabled:opacity-50 dark:bg-white/10 dark:text-white">
+          <button onClick={() => setEdit(true)} disabled={pending} className={smallButtonClasses("ghost")}>
             Düzenle
           </button>
           <ConfirmButton

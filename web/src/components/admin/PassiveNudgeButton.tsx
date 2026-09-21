@@ -19,7 +19,7 @@ export function PassiveNudgeButton({ userId }: { userId: string }) {
         type="button"
         onClick={onClick}
         disabled={pending || sent}
-        className="rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-xs font-semibold text-navy hover:border-accent disabled:opacity-60 dark:text-white"
+        className="rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-xs font-semibold text-fg hover:border-accent disabled:opacity-60"
       >
         {sent ? "Gönderildi" : pending ? "Gönderiliyor…" : "Dürtme gönder"}
       </button>

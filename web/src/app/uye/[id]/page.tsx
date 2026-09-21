@@ -38,7 +38,7 @@ export default async function UyeProfilPage({ params }: { params: Promise<{ id: 
       <div className="mb-6 mt-3 flex items-center gap-4">
         <Avatar ad={m.gorunenAd} src={photoFor(photos, m.tamAd, m.stratosihaAd)} size="lg" />
         <div>
-          <h1 className="font-display text-2xl font-bold text-navy dark:text-white">{m.gorunenAd}</h1>
+          <h1 className="font-display text-2xl font-bold text-fg">{m.gorunenAd}</h1>
           <p className="text-sm text-muted">Liderlikte #{m.sira}</p>
         </div>
       </div>

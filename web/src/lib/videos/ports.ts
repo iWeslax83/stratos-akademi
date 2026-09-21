@@ -24,7 +24,7 @@ function esiklerFromEnv(): Esikler {
 }
 
 // db: taramanın tüm DB işlerini yapan istemci. İki geçerli seçenek var:
-//   • cron  → createServiceClient() (oturum yok; RLS bypass, ama service_role GRANT'leri şart — bkz. 0031)
+//   • cron  → createServiceClient() (oturum yok; RLS bypass, ama service_role GRANT'leri şart, bkz. 0031)
 //   • "Şimdi Tara" → giriş yapmış admin'in kendi istemcisi (RLS admin politikaları zaten izin verir)
 // Admin istemcisiyle koşmak, service_role grant'leri eksikse bile manuel taramanın çalışmasını sağlar.
 export function createProductionPorts(
@@ -37,7 +37,7 @@ export function createProductionPorts(
     now.getTime() - esikler.maxAgeYears * 365.25 * 24 * 3600 * 1000,
   ).toISOString();
 
-  // YouTube/Gemini çağrılarında biriken hatalar — tarama kaydına ve admin teşhis paneline gider.
+  // YouTube/Gemini çağrılarında biriken hatalar, tarama kaydına ve admin teşhis paneline gider.
   const hatalar: string[] = [];
   const onError = (m: string) => {
     if (hatalar.length < 20 && !hatalar.includes(m)) hatalar.push(m);

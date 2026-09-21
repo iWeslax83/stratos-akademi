@@ -19,9 +19,9 @@ function MenuBody({ isAdmin, onClose }: { isAdmin: boolean; onClose: () => void 
     const active = pathname === href || pathname.startsWith(`${href}/`);
     return clsx(
       "block rounded-lg px-3 py-2 text-sm font-semibold",
-      admin ? "text-accent-ink dark:text-accent" : "text-navy dark:text-white",
+      admin ? "text-accent-fg" : "text-fg",
       active
-        ? "bg-accent-soft dark:bg-accent-dark"
+        ? "bg-accent-wash"
         : "hover:bg-black/5 dark:hover:bg-white/10",
     );
   };
