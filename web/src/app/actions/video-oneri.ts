@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth/actor";
 import { createProductionPorts } from "@/lib/videos/ports";
 import { runVideoScan } from "@/lib/videos/scan";
+import { addVideosToModule } from "@/lib/lessons/server";
 import type { ScanSummary } from "@/lib/videos/types";
 
 export type ActionResult = { ok: boolean; error?: string };
@@ -28,32 +29,23 @@ export async function kabulEt(id: string, moduleId: string): Promise<ActionResul
 
     const { data: sug, error: selErr } = await supabase
       .from("video_suggestions")
-      .select("youtube_video_id, baslik, aciklama, sure_sn")
+      .select("youtube_video_id, baslik")
       .eq("id", id)
       .single();
     if (selErr || !sug) return { ok: false, error: "Öneri bulunamadı." };
 
-    // Modülün son sıra + 1'i.
-    const { data: last } = await supabase
-      .from("lessons").select("sira").eq("module_id", moduleId)
-      .order("sira", { ascending: false }).limit(1).maybeSingle();
-    const sira = ((last?.sira as number | undefined) ?? -1) + 1;
+    const apiKey = process.env.YOUTUBE_API_KEY;
+    if (!apiKey) return { ok: false, error: "YOUTUBE_API_KEY tanımlı değil." };
 
-    const { error: insErr } = await supabase.from("lessons").insert({
-      module_id: moduleId,
-      baslik: sug.baslik,
-      youtube_video_id: sug.youtube_video_id,
-      aciklama: sug.aciklama ?? null,
-      sure_sn: sug.sure_sn ?? null,
-      sira,
+    // Ekleme kuralları (süre, engeller, sıra, öneri onayı) manuel eklemeyle ortak çekirdekte.
+    const r = await addVideosToModule(supabase, {
+      moduleId,
+      videoIds: [sug.youtube_video_id],
+      basliklar: { [sug.youtube_video_id]: sug.baslik },
+      userId: user.id,
+      apiKey,
     });
-    if (insErr) return { ok: false, error: errMsg(insErr) };
-
-    const { error: updErr } = await supabase
-      .from("video_suggestions")
-      .update({ durum: "approved", karar_veren: user.id, karar_at: new Date().toISOString() })
-      .eq("id", id);
-    if (updErr) return { ok: false, error: errMsg(updErr) };
+    if (!r.ok) return { ok: false, error: r.atlanan?.[0]?.neden ?? r.error ?? "Eklenemedi." };
 
     revalidatePath("/admin/oneriler");
     revalidatePath("/mufredat");
@@ -94,7 +86,7 @@ export async function geriGetir(id: string): Promise<ActionResult> {
   } catch (e) { console.error("geriGetir:", e); return { ok: false, error: "Beklenmeyen hata." }; }
 }
 
-// "Şimdi Tara" — admin doğrulanır, sonra tarama admin'in kendi oturumuyla koşar.
+// "Şimdi Tara", admin doğrulanır, sonra tarama admin'in kendi oturumuyla koşar.
 export async function taraSimdi(): Promise<ActionResult & { summary?: ScanSummary }> {
   try {
     const supabase = await createClient();
@@ -112,7 +104,7 @@ export async function taraSimdi(): Promise<ActionResult & { summary?: ScanSummar
       return {
         ok: false,
         error: `Sunucuda şu ortam değişkeni tanımlı değil: ${eksik.join(", ")}. `
-          + "Tarama hiç başlatılamıyor — anahtarları web/.env.local (ve Vercel proje ayarları) içine ekle.",
+          + "Tarama hiç başlatılamıyor. Anahtarları web/.env.local (ve Vercel proje ayarları) içine ekle.",
       };
     }
 

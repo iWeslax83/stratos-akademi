@@ -24,15 +24,15 @@ export default async function AdminEtkinliklerPage() {
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Etkinlikler</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Etkinlikler</h1>
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">Etkinlikler</h1>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">Yeni etkinlik</h2>
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">Yeni etkinlik</h2>
         <EventForm />
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-2 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-2 font-display text-lg font-bold text-fg">
           Yaklaşan ({upcoming.length})
         </h2>
         {upcoming.length === 0 ? (
@@ -46,7 +46,7 @@ export default async function AdminEtkinliklerPage() {
 
       {past.length > 0 && (
         <Card className="mt-5 p-6">
-          <h2 className="mb-2 font-display text-lg font-bold text-navy dark:text-white">Geçmiş ({past.length})</h2>
+          <h2 className="mb-2 font-display text-lg font-bold text-fg">Geçmiş ({past.length})</h2>
           {past.map((e) => (
             <EventItem key={e.id} id={e.id} baslik={e.baslik} aciklama={e.aciklama} baslangic={e.baslangic} yer={e.yer} gecmis />
           ))}

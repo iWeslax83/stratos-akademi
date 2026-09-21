@@ -75,7 +75,7 @@ export function QuizRunner({
 
       {best && !result && (
         <p className="text-sm text-muted">
-          En iyi puanın: <b className="text-navy dark:text-white">%{best.puan}</b>
+          En iyi puanın: <b className="text-fg">%{best.puan}</b>
           {best.gecti && " · geçtin"}
         </p>
       )}
@@ -88,10 +88,10 @@ export function QuizRunner({
             "rounded-core p-4 font-display font-bold",
             result.gecti
               ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
-              : "bg-accent-soft text-accent-ink dark:bg-accent-dark dark:text-accent",
+              : "bg-accent-wash text-accent-fg",
           )}
         >
-          Puanın: %{result.puan} —{" "}
+          Puanın: %{result.puan}.{" "}
           {result.gecti ? "Geçtin!" : `Geçer not %${quiz.gecme_esigi}, tekrar deneyebilirsin.`}
           <p className="mt-1 text-xs font-normal opacity-80">
             Liderlik puanına ilk denemen sayılır; tekrar denemeler öğrenmek için serbest.
@@ -110,11 +110,11 @@ export function QuizRunner({
         const correctIds = result?.correctByQuestion[q.id] ?? [];
         return (
           <div key={q.id} className="rounded-core border border-[var(--line)] p-4">
-            <div className="mb-3 flex items-start gap-2 font-semibold text-navy dark:text-white">
+            <div className="mb-3 flex items-start gap-2 font-semibold text-fg">
               <span>{i + 1}.</span>
               <span>{q.metin}</span>
               {r && (
-                <span className={clsx("ml-auto", r.dogruMu ? "text-green-600" : "text-red-700 dark:text-red-300")}>
+                <span className={clsx("ml-auto", r.dogruMu ? "text-green-600" : "text-danger-fg")}>
                   {r.dogruMu ? <CheckIcon size={18} /> : <XIcon size={18} />}
                   <span className="sr-only">{r.dogruMu ? "Doğru" : "Yanlış"}</span>
                 </span>
@@ -141,13 +141,13 @@ export function QuizRunner({
                       className="h-4 w-4 accent-accent"
                     />
                     <span>{o.metin}</span>
-                    {result && isCorrect && <span className="ml-auto text-xs font-semibold text-green-700 dark:text-green-400">doğru</span>}
+                    {result && isCorrect && <span className="ml-auto text-xs font-semibold text-success-fg">doğru</span>}
                   </label>
                 );
               })}
             </div>
             {result?.aciklamaByQuestion?.[q.id] && (
-              <p className="mt-3 rounded-xl bg-accent-soft p-3 text-sm text-accent-ink dark:bg-accent-dark dark:text-accent">
+              <p className="mt-3 rounded-xl bg-accent-wash p-3 text-sm text-accent-fg">
                 {result.aciklamaByQuestion[q.id]}
               </p>
             )}

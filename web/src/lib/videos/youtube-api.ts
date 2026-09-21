@@ -3,6 +3,7 @@ import { hataOzeti } from "@/lib/videos/google-error";
 
 const SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos";
+const PLAYLIST_ITEMS_URL = "https://www.googleapis.com/youtube/v3/playlistItems";
 
 export function parseIsoDuration(iso: string): number {
   const m = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(iso ?? "");
@@ -96,4 +97,48 @@ export async function fetchVideoDetails(
     }
   }
   return out;
+}
+
+// Playlist'in video id'lerini playlist sırasıyla döner. En fazla `max` id; fazlası varsa
+// truncated=true. Herhangi bir hatada boş döner ve onError çağrılır.
+export async function fetchPlaylistVideoIds(
+  playlistId: string,
+  deps: { apiKey: string; max?: number; fetchImpl?: typeof fetch; onError?: (m: string) => void },
+): Promise<{ ids: string[]; truncated: boolean }> {
+  const max = deps.max ?? 100;
+  const f = deps.fetchImpl ?? fetch;
+  const ids: string[] = [];
+  let pageToken: string | undefined;
+  try {
+    do {
+      const url = new URL(PLAYLIST_ITEMS_URL);
+      url.searchParams.set("part", "contentDetails");
+      url.searchParams.set("maxResults", "50");
+      url.searchParams.set("playlistId", playlistId);
+      url.searchParams.set("key", deps.apiKey);
+      if (pageToken) url.searchParams.set("pageToken", pageToken);
+      const res = await f(url.toString());
+      if (!res.ok) {
+        console.error("fetchPlaylistVideoIds HTTP", res.status);
+        deps.onError?.(`YouTube playlistItems HTTP ${res.status}: ${await hataOzeti(res)}`);
+        return { ids: [], truncated: false };
+      }
+      const data = (await res.json()) as {
+        items?: { contentDetails?: { videoId?: string } }[];
+        nextPageToken?: string;
+      };
+      for (const it of data.items ?? []) {
+        const id = it.contentDetails?.videoId;
+        if (id) ids.push(id);
+      }
+      pageToken = data.nextPageToken;
+      if (ids.length > max) return { ids: ids.slice(0, max), truncated: true };
+      if (ids.length === max) return { ids, truncated: pageToken !== undefined };
+    } while (pageToken);
+  } catch (e) {
+    console.error("fetchPlaylistVideoIds:", e);
+    deps.onError?.(`YouTube playlistItems ağ hatası: ${String(e)}`);
+    return { ids: [], truncated: false };
+  }
+  return { ids, truncated: false };
 }

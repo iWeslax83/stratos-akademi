@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { ara } from "@/lib/search/queries";
 import { gecerliSorgu, type SonucTuru } from "@/lib/search/rank";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { buttonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,7 @@ export default async function AraPage({
 
   return (
     <AppShell initial={initial} isAdmin={isAdmin}>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Ara</h1>
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">Ara</h1>
 
       <form action="/ara" className="mt-5 flex gap-2">
         <input
@@ -44,9 +45,9 @@ export default async function AraPage({
           defaultValue={q ?? ""}
           placeholder="Ders, duyuru, etkinlik, kaynak…"
           aria-label="Arama terimi"
-          className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-transparent px-4 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          className="min-w-0 flex-1 rounded-full border border-[var(--line)] bg-transparent px-4 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
-        <button className="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-navy">
+        <button className={buttonClasses("accent", false, "shrink-0")}>
           Ara
         </button>
       </form>
@@ -64,11 +65,11 @@ export default async function AraPage({
             {sonuclar.map((s, i) => (
               <Card key={`${s.tur}-${i}`} className="p-4">
                 <Link href={s.href} className="flex items-baseline gap-3">
-                  <span className="shrink-0 rounded-full bg-black/5 px-2 py-0.5 text-xs font-semibold text-muted dark:bg-white/10">
+                  <span className="shrink-0 rounded-md border border-[var(--line)] px-2 py-0.5 text-xs font-semibold text-muted">
                     {ETIKET[s.tur]}
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-bold text-navy dark:text-white">
+                    <span className="block truncate text-sm font-bold text-fg">
                       {s.baslik}
                     </span>
                     {s.altBaslik && (

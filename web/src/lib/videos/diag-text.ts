@@ -32,7 +32,7 @@ export function kaliteMetni(d: ScanDiag): string {
   return parts.length ? `kalite kapısı: ${parts.join(", ")}` : "";
 }
 
-// Taramanın hunisini tek satırda anlatır — "öneri neden gelmedi" sorusunun cevabı.
+// Taramanın hunisini tek satırda anlatır, "öneri neden gelmedi" sorusunun cevabı.
 export function huniMetni(d: ScanDiag): string {
   const elenen = Object.values(d.eleme).reduce((a, b) => a + b, 0);
   const el = elemeMetni(d.eleme);
@@ -49,7 +49,7 @@ export function huniMetni(d: ScanDiag): string {
 // Öneri çıkmadıysa en olası tek sebebi söyler. Tahmin değil: huniye bakar.
 export function neOldu(d: ScanDiag): string | null {
   if (d.hatalar.length > 0) return `API hatası: ${d.hatalar[0]}`;
-  if (d.modul_sayisi === 0) return "Müfredatta hiç modül yok — arama sorgusu üretilemiyor.";
+  if (d.modul_sayisi === 0) return "Müfredatta hiç modül yok, arama sorgusu üretilemiyor.";
   if (d.sorgu_sayisi === 0) return "Hiç arama sorgusu üretilemedi (modüllerin track'i yok).";
   if (d.tekil_id === 0) return "YouTube araması hiç sonuç döndürmedi.";
   if (d.detay_cekilen === 0) return "Video detayları çekilemedi.";

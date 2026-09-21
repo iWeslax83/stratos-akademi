@@ -2,7 +2,7 @@ import Link from "next/link";
 import { buttonClasses, type ButtonVariant } from "./Button";
 
 // Görsel olarak Button, semantik olarak bağlantı. `<Link><Button/></Link>` (a>button
-// iç içe — geçersiz) yerine kullanılır.
+// iç içe, geçersiz) yerine kullanılır.
 export function LinkButton({
   href,
   children,

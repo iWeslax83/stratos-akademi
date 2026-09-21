@@ -15,7 +15,7 @@ export function AttemptHistory({ attempts }: { attempts: AttemptRow[] }) {
 
   return (
     <section className="mt-8">
-      <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">
+      <h2 className="mb-3 font-display text-lg font-bold text-fg">
         Deneme Geçmişi
       </h2>
 
@@ -36,17 +36,17 @@ export function AttemptHistory({ attempts }: { attempts: AttemptRow[] }) {
             key={`${a.created_at}-${i}`}
             className="flex items-center justify-between rounded-core border border-[var(--line)] bg-[var(--panel)] px-4 py-2.5 text-sm"
           >
-            <span className="text-[#46526b] dark:text-[#9fb0c9]">{formatDate(a.created_at)}</span>
+            <span className="text-fg-soft">{formatDate(a.created_at)}</span>
             <span className="flex items-center gap-3">
-              <span className="font-display font-bold text-navy dark:text-white">{a.puan}</span>
+              <span className="font-display font-bold text-fg">{a.puan}</span>
               <span
                 className={
                   a.gecti
-                    ? "inline-flex items-center gap-1 text-[11px] font-bold text-accent-ink dark:text-accent"
-                    : "inline-flex items-center gap-1 text-[11px] font-bold text-[#46526b] dark:text-[#9fb0c9]"
+                    ? "inline-flex items-center gap-1 text-xs font-bold text-accent-fg"
+                    : "inline-flex items-center gap-1 text-xs font-bold text-fg-soft"
                 }
               >
-                <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${a.gecti ? "bg-accent-ink dark:bg-accent" : "bg-[#8894a8]"}`} />
+                <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${a.gecti ? "bg-accent-fg" : "bg-muted"}`} />
                 {a.gecti ? "Geçti" : "Kaldı"}
               </span>
             </span>
@@ -72,11 +72,11 @@ function Stat({
     <div className="rounded-core border border-[var(--line)] bg-[var(--panel)] px-4 py-3">
       <div className="text-xs text-muted">{label}</div>
       <div className="mt-1 flex items-baseline gap-1.5">
-        <span className="font-display text-xl font-bold text-navy dark:text-white">{value}</span>
+        <span className="font-display text-xl font-bold text-fg">{value}</span>
         {hint && (
           <span
             className={
-              hintUp ? "text-xs font-semibold text-accent-ink dark:text-accent" : "text-xs font-semibold text-red-700 dark:text-red-300"
+              hintUp ? "text-xs font-semibold text-accent-fg" : "text-xs font-semibold text-danger-fg"
             }
           >
             {hint}

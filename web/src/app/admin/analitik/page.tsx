@@ -5,6 +5,10 @@ import { Card } from "@/components/ui/Card";
 import { analitikVerisi } from "@/lib/admin/rapor";
 import { RaporIndir } from "@/components/admin/RaporIndir";
 import { PassiveNudgeButton } from "@/components/admin/PassiveNudgeButton";
+import { TrackIcon } from "@/components/ui/TrackIcon";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { UyeKatilimTablosu } from "@/components/admin/UyeKatilimTablosu";
+import { StatStrip } from "@/components/admin/StatStrip";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +44,7 @@ export default async function AnalitikPage() {
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Analitik</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">İçerik Analitiği</h1>
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">İçerik Analitiği</h1>
       <p className="mt-1.5 text-muted">
         {uyeSayisi} üye · {aktifSayisi} aktif (son 7 gün)
       </p>
@@ -48,25 +52,20 @@ export default async function AnalitikPage() {
         <RaporIndir />
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-5">
-        {kpis.map((k) => (
-          <Card key={k.label} className="p-4 text-center">
-            <div className="font-display text-2xl font-extrabold text-navy dark:text-white">{k.value}</div>
-            <div className="mt-0.5 text-xs font-semibold text-muted">{k.label}</div>
-          </Card>
-        ))}
+      <div className="mt-5">
+        <StatStrip items={kpis} />
       </div>
 
       {pasifler.length > 0 && (
         <Card className="mt-5 border-accent p-6">
-          <h2 className="mb-1 font-display text-lg font-bold text-navy dark:text-white">
+          <h2 className="mb-1 font-display text-lg font-bold text-fg">
             Pasif üyeler ({pasifler.length})
           </h2>
-          <p className="mb-3 text-sm text-muted">14+ gündür pasif ya da hiç aktivitesi olmayanlar — bir dürtme iyi gelebilir.</p>
+          <p className="mb-3 text-sm text-muted">14+ gündür pasif ya da hiç aktivitesi olmayanlar. Bir dürtme iyi gelebilir.</p>
           <div className="flex flex-col gap-2">
             {pasifler.map((u) => (
               <div key={u.id} className="flex items-center justify-between gap-3">
-                <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-accent-ink/25 bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:border-accent/25 dark:bg-accent-dark dark:text-accent">
+                <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-accent-ink/25 bg-accent-wash px-3 py-1.5 text-xs font-semibold text-accent-fg dark:border-accent/25">
                   <span className="truncate">{u.ad}</span>
                   <span className="shrink-0">· {u.gun === null ? "hiç" : `${u.gun} gün`}</span>
                 </span>
@@ -78,7 +77,7 @@ export default async function AnalitikPage() {
       )}
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">Dal bazlı tamamlama</h2>
+        <h2 className="mb-3 font-display text-lg font-bold text-fg">Dal bazlı tamamlama</h2>
         {dalTamamlama.length === 0 ? (
           <p className="text-sm text-muted">Dal yok.</p>
         ) : (
@@ -86,14 +85,13 @@ export default async function AnalitikPage() {
             {dalTamamlama.map((d, i) => (
               <div key={i}>
                 <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="font-semibold text-navy dark:text-white">
-                    {d.ikon} {d.ad}
+                  <span className="inline-flex items-center gap-2 font-semibold text-fg">
+                    <TrackIcon ikon={d.ikon} size={16} className="text-accent-fg" />
+                    {d.ad}
                   </span>
-                  <span className="text-xs font-bold text-muted">%{d.pct} · {d.lessonCount} ders</span>
+                  <span className="text-xs font-bold tabular-nums text-muted">%{d.pct} · {d.lessonCount} ders</span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
-                  <div className="h-full rounded-full bg-accent" style={{ width: `${d.pct}%` }} />
-                </div>
+                <ProgressBar pct={d.pct} label={`${d.ad} tamamlama`} />
               </div>
             ))}
           </div>
@@ -101,31 +99,13 @@ export default async function AnalitikPage() {
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">Üye katılımı</h2>
-        {uyeler.length === 0 ? (
-          <p className="text-sm text-muted">Üye yok.</p>
-        ) : (
-          uyeler.map((u, i) => (
-            <div key={i} className="flex items-center gap-3 border-b border-[var(--line)] py-2.5 last:border-b-0">
-              <span className="flex-1 text-sm font-bold text-navy dark:text-white">{u.ad}</span>
-              <span className="text-xs text-muted">{u.ders} ders · {u.puan} puan</span>
-              <span
-                className={
-                  u.aktif
-                    ? "w-24 text-right text-xs font-semibold text-green-700 dark:text-green-400"
-                    : "w-24 text-right text-xs font-semibold text-muted"
-                }
-              >
-                {u.gun === null ? "hiç" : u.gun === 0 ? "bugün" : `${u.gun} gün önce`}
-              </span>
-            </div>
-          ))
-        )}
+        <h2 className="mb-3 font-display text-lg font-bold text-fg">Üye katılımı</h2>
+        <UyeKatilimTablosu uyeler={uyeler} />
       </Card>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
         <Card className="p-6">
-          <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">
+          <h2 className="mb-3 font-display text-lg font-bold text-fg">
             En az tamamlanan dersler
           </h2>
           {dersler.length === 0 ? (
@@ -134,10 +114,10 @@ export default async function AnalitikPage() {
             dersler.map((d, i) => (
               <div key={i} className="flex items-center gap-3 border-b border-[var(--line)] py-2.5 last:border-b-0">
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-semibold text-navy dark:text-white">{d.baslik}</div>
+                  <div className="truncate text-sm font-semibold text-fg">{d.baslik}</div>
                   <div className="truncate text-xs text-muted">{d.yer}</div>
                 </div>
-                <span className="text-xs font-bold text-navy dark:text-white">
+                <span className="text-xs font-bold tabular-nums text-fg">
                   {d.tamam}/{uyeSayisi}
                 </span>
               </div>
@@ -146,7 +126,7 @@ export default async function AnalitikPage() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">
+          <h2 className="mb-3 font-display text-lg font-bold text-fg">
             Quiz performansı (zorlanılan üstte)
           </h2>
           {quizler.length === 0 ? (
@@ -155,10 +135,11 @@ export default async function AnalitikPage() {
             quizler.map((q, i) => (
               <div key={i} className="flex items-center gap-3 border-b border-[var(--line)] py-2.5 last:border-b-0">
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-semibold text-navy dark:text-white">{q.baslik}</div>
+                  <div className="truncate text-sm font-semibold text-fg">{q.baslik}</div>
                   <div className="truncate text-xs text-muted">{q.yer}</div>
+                  <ProgressBar pct={q.ortBest} label={`${q.baslik} ortalama en iyi puan`} heightClass="h-1.5" className="mt-1.5" />
                 </div>
-                <span className="text-xs font-bold text-navy dark:text-white">
+                <span className="text-xs font-bold tabular-nums text-fg">
                   ort %{q.ortBest} · {q.gecen}/{q.deneyen} geçti
                 </span>
               </div>

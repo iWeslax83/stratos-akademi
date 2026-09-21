@@ -18,7 +18,7 @@ function errMsg(error: { code?: string; message?: string }): string {
 // service_role ile ve izleme doğrulanarak yapılır. İstemci gerçekten OYNATILARAK izlenen
 // süreyi bildirir (accumulateWatched ileri atlamayı saymaz). Tam kanıt değil (aksiyon
 // doğrudan da çağrılabilir) ama dümdüz REST forge yolunu kapatır ve süreye göre makul
-// olmayan değerleri eler. positionRatio bilgi amaçlı iletilir, kapı değildir — manuel
+// olmayan değerleri eler. positionRatio bilgi amaçlı iletilir, kapı değildir, manuel
 // "İzledim" düğmesi videoyu sonuna kadar izlemeyi gerektirmez, %20'yi yeterli sayar.
 export async function markLessonComplete(
   lessonId: string,

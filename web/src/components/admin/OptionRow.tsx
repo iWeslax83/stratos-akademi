@@ -3,6 +3,7 @@
 import { updateOption, toggleOption, deleteOption } from "@/app/actions/admin-quiz";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export function OptionRow({
   option,
@@ -39,12 +40,12 @@ export function OptionRow({
           name="metin"
           defaultValue={option.metin}
           placeholder="Şık metni"
-          className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-navy outline-none focus:border-accent dark:text-white"
+          className="min-w-0 flex-1 rounded-lg border border-[var(--line)] bg-transparent px-2.5 py-1.5 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
-        <button type="submit" disabled={pending} className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+        <button type="submit" disabled={pending} className={smallButtonClasses("ghost")}>
           Kaydet
         </button>
-        <button type="button" onClick={del} disabled={pending} className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+        <button type="button" onClick={del} disabled={pending} className={smallButtonClasses("danger")}>
           Sil
         </button>
       </form>

@@ -43,10 +43,10 @@ export function NotificationItem({
   const inner = (
     <>
       {!okundu && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden />}
-      <span className={`min-w-0 flex-1 break-words text-sm ${okundu ? "text-muted" : "text-navy dark:text-white"}`}>
+      <span className={`min-w-0 flex-1 break-words text-sm ${okundu ? "text-muted" : "text-fg"}`}>
         {mesaj}
       </span>
-      {link && <ArrowRightIcon size={14} className="mt-0.5 shrink-0 text-accent-ink dark:text-accent" />}
+      {link && <ArrowRightIcon size={14} className="mt-0.5 shrink-0 text-accent-fg" />}
     </>
   );
 

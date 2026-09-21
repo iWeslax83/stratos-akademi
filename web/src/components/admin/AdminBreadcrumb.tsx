@@ -7,11 +7,11 @@ export function AdminBreadcrumb({ items }: { items: { label: string; href?: stri
         <span key={i} className="flex items-center gap-1.5">
           {i > 0 && <span>/</span>}
           {it.href ? (
-            <Link href={it.href} className="hover:text-navy dark:hover:text-white">
+            <Link href={it.href} className="hover:text-fg">
               {it.label}
             </Link>
           ) : (
-            <span className="text-navy dark:text-white">{it.label}</span>
+            <span className="text-fg">{it.label}</span>
           )}
         </span>
       ))}

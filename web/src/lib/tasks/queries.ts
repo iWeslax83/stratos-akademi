@@ -59,7 +59,7 @@ export type PendingSubmission = {
 };
 
 // Verilen gönderimler için yorum dizilerini toplu çeker (üye sayfası + onay kuyruğu).
-// `submissions`: her gönderimin id'si ve sahibi (üye user_id) — sahiplik etiketi için.
+// `submissions`: her gönderimin id'si ve sahibi (üye user_id), sahiplik etiketi için.
 export async function getSubmissionThreads(
   supabase: SupabaseClient,
   submissions: { id: string; ownerId: string }[],

@@ -23,5 +23,5 @@ export function eventNotifyMessage(baslik: string): string {
 
 // Admin pasif üyeyi elle dürttüğünde giden sabit bildirim.
 export function passiveNudgeMessage(): string {
-  return "Bir süredir akademiye uğramadın — kaldığın yerden devam edebilirsin.";
+  return "Bir süredir akademiye uğramadın. Kaldığın yerden devam edebilirsin.";
 }

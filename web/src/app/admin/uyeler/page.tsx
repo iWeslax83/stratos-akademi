@@ -41,12 +41,12 @@ export default async function AdminUyelerPage() {
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Üyeler</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">
         Üyeler ve Davetler
       </h1>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-3 font-display text-lg font-bold text-fg">
           Üyeler ({members.length})
         </h2>
         {members.length === 0 ? (
@@ -54,10 +54,10 @@ export default async function AdminUyelerPage() {
         ) : (
           members.map((m) => (
             <div key={m.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
-              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-navy dark:text-white">
+              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-fg">
                 {m.ad ?? m.email}{" "}
                 <span className="text-xs font-normal text-muted">{m.email}</span>
-                {m.id === selfId && <span className="ml-2 text-xs font-bold text-accent-ink dark:text-accent">(sen)</span>}
+                {m.id === selfId && <span className="ml-2 text-xs font-bold text-accent-fg">(sen)</span>}
               </span>
               <NameEditor userId={m.id} ad={m.ad} selfId={selfId} />
               <StratosihaSelect userId={m.id} stratosihaAd={m.stratosiha_ad} names={teamNames} selfId={selfId} />
@@ -74,7 +74,7 @@ export default async function AdminUyelerPage() {
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-3 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-3 font-display text-lg font-bold text-fg">
           Bekleyen davetler ({pending.length})
         </h2>
         {pending.length === 0 ? (
@@ -82,7 +82,7 @@ export default async function AdminUyelerPage() {
         ) : (
           pending.map((a) => (
             <div key={a.email} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
-              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-navy dark:text-white">{a.email}</span>
+              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-fg">{a.email}</span>
               <RoleSelect email={a.email} role={a.role} userId={null} selfId={selfId} />
               <DeleteButton
                 onDelete={removeInvite.bind(null, a.email)}
@@ -94,7 +94,7 @@ export default async function AdminUyelerPage() {
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">Davet et</h2>
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">Davet et</h2>
         <InviteForm />
       </Card>
     </AppShell>

@@ -32,7 +32,7 @@ export default async function OnaylarPage() {
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Onaylar</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">
         Onay Kuyruğu ({pending.length})
       </h1>
 
@@ -44,14 +44,14 @@ export default async function OnaylarPage() {
         <div className="mt-5 space-y-4">
           {pending.map((s) => (
             <Card key={s.id} className="p-5">
-              <div className="mb-1 text-xs font-semibold text-accent-ink dark:text-accent">
+              <div className="mb-1 text-xs font-semibold text-accent-fg">
                 {s.trackAd} · {s.modulAd}
               </div>
-              <div className="font-display font-bold text-navy dark:text-white">{s.taskBaslik}</div>
+              <div className="font-display font-bold text-fg">{s.taskBaslik}</div>
               <div className="mb-2 text-xs text-muted">{s.uyeEmail}</div>
-              <div className="mb-3 rounded-core border border-[var(--line)] p-3 text-sm text-navy dark:text-white">
+              <div className="mb-3 rounded-core border border-[var(--line)] p-3 text-sm text-fg">
                 {/^https?:\/\//.test(s.icerik) ? (
-                  <a href={s.icerik} target="_blank" rel="noopener noreferrer" className="break-all font-semibold text-accent-ink dark:text-accent underline">
+                  <a href={s.icerik} target="_blank" rel="noopener noreferrer" className="break-all font-semibold text-accent-fg underline">
                     {s.icerik}
                   </a>
                 ) : (
@@ -63,7 +63,7 @@ export default async function OnaylarPage() {
                   href={urlMap.get(s.dosya_yolu)!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mb-3 inline-block text-sm font-semibold text-accent-ink underline dark:text-accent"
+                  className="mb-3 inline-block text-sm font-semibold text-accent-fg underline"
                 >
                   Yüklenen dosyayı aç
                 </a>

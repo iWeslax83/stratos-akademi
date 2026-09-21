@@ -7,7 +7,7 @@ import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 
 // Kazanılan dal yetkinliklerini kalıcılaştırır (uye/[id] profil rozetleri + "yeni kazandın"
 // bildirimi için). GÜVENLİK (0038): user_competencies artık authenticated'a kapalı; hangi
-// dalların kazanıldığı İSTEMCİDEN ALINMAZ — sunucu lesson_progress'ten yeniden hesaplar.
+// dalların kazanıldığı İSTEMCİDEN ALINMAZ, sunucu lesson_progress'ten yeniden hesaplar.
 // Okumalar çağıranın kendi client'ıyla (RLS: kendi ilerlemesi/yetkinliği), yazma service_role
 // ile (0038 öncesi authenticated'a düşer). Yalnız YENİ eklenenleri döner.
 export async function syncCompetencies(): Promise<{ yeni: string[] }> {

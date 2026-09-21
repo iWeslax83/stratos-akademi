@@ -13,7 +13,7 @@ describe("taskReviewMessage", () => {
 describe("passiveNudgeMessage", () => {
   it("sabit hatırlatma metni döner", () => {
     expect(passiveNudgeMessage()).toBe(
-      "Bir süredir akademiye uğramadın — kaldığın yerden devam edebilirsin.",
+      "Bir süredir akademiye uğramadın. Kaldığın yerden devam edebilirsin.",
     );
   });
 });

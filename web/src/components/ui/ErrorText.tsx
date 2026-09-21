@@ -3,7 +3,7 @@
 export function ErrorText({ children }: { children?: string | null }) {
   if (!children) return null;
   return (
-    <p role="alert" className="mt-1.5 text-xs font-semibold text-red-700 dark:text-red-300">
+    <p role="alert" className="mt-1.5 text-xs font-semibold text-danger-fg">
       {children}
     </p>
   );

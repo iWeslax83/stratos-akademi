@@ -1,11 +1,16 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { LessonForm } from "@/components/admin/LessonForm";
+import { VideoEkle } from "@/components/admin/VideoEkle";
+import { SiraButonlari } from "@/components/admin/SiraButonlari";
+import { formatSure } from "@/lib/lessons/format";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteLesson } from "@/app/actions/admin-curriculum";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +42,8 @@ export default async function AdminLessonsPage({
     .from("lessons")
     .select("id, baslik, youtube_video_id, aciklama, sure_sn, sira")
     .eq("module_id", moduleId)
-    .order("sira");
+    .order("sira")
+    .order("id");
   const list = lessons ?? [];
   const editing = edit ? list.find((l) => l.id === edit) ?? null : null;
 
@@ -50,57 +56,51 @@ export default async function AdminLessonsPage({
           { label: modul.ad },
         ]}
       />
-      <h1 className="mt-1 font-display text-3xl font-bold text-navy dark:text-white">
+      <h1 className="mt-1 font-display text-3xl font-bold text-fg">
         {modul.ad} · Dersler
       </h1>
 
-      <Card className="mt-5 p-5">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-navy dark:text-white">Modül Quizi</span>
-          <a
-            href={`/admin/mufredat/${trackId}/${moduleId}/quiz`}
-            className="rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent"
-          >
-            Quiz&apos;i düzenle →
-          </a>
-        </div>
-      </Card>
-
-      <Card className="mt-5 p-5">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-navy dark:text-white">Pratik Görevler</span>
-          <a
-            href={`/admin/mufredat/${trackId}/${moduleId}/gorevler`}
-            className="rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-ink dark:bg-accent-dark dark:text-accent"
-          >
-            Görevleri düzenle →
-          </a>
-        </div>
+      <Card className="mt-5 px-5">
+        <ul>
+          <li className="flex items-center justify-between border-b border-[var(--line)] py-4">
+            <span className="text-sm font-semibold text-fg">Modül Quizi</span>
+            <Link href={`/admin/mufredat/${trackId}/${moduleId}/quiz`} className={smallButtonClasses("soft")}>
+              Quiz&apos;i düzenle →
+            </Link>
+          </li>
+          <li className="flex items-center justify-between py-4">
+            <span className="text-sm font-semibold text-fg">Pratik Görevler</span>
+            <Link href={`/admin/mufredat/${trackId}/${moduleId}/gorevler`} className={smallButtonClasses("soft")}>
+              Görevleri düzenle →
+            </Link>
+          </li>
+        </ul>
       </Card>
 
       <Card className="mt-5 p-6">
         {list.length === 0 ? (
           <p className="text-sm text-muted">Henüz ders yok.</p>
         ) : (
-          list.map((l) => (
+          list.map((l, i) => (
             <div
               key={l.id}
               className="flex flex-col gap-2 border-b border-[var(--line)] py-3 last:border-b-0 sm:flex-row sm:items-center sm:gap-x-3"
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
-                <span className="w-7 shrink-0 text-center text-xs font-bold text-muted">{l.sira}</span>
-                <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">
+                <span className="w-7 shrink-0 text-center text-xs font-bold tabular-nums text-muted">{i + 1}</span>
+                <span className="min-w-0 flex-1 break-words text-sm font-bold text-fg">
                   {l.baslik}{" "}
-                  <span className="text-xs font-normal text-muted">({l.youtube_video_id})</span>
+                  <span className="text-xs font-normal tabular-nums text-muted">{formatSure(l.sure_sn)} · {l.youtube_video_id}</span>
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-2 pl-10 sm:shrink-0 sm:pl-0">
-                <a
+                <SiraButonlari id={l.id} trackId={trackId} baslik={l.baslik} ilk={i === 0} son={i === list.length - 1} />
+                <Link
                   href={`/admin/mufredat/${trackId}/${moduleId}?edit=${l.id}`}
-                  className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white"
+                  className={smallButtonClasses("ghost")}
                 >
                   Düzenle
-                </a>
+                </Link>
                 <DeleteButton
                   onDelete={deleteLesson.bind(null, l.id, trackId, moduleId)}
                   uyari={`"${l.baslik}" dersini silmek istediğine emin misin?`}
@@ -112,10 +112,14 @@ export default async function AdminLessonsPage({
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">
-          {editing ? "Dersi düzenle" : "Yeni ders"}
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">
+          {editing ? "Dersi düzenle" : "Video ekle"}
         </h2>
-        <LessonForm key={editing?.id ?? "new"} trackId={trackId} moduleId={moduleId} editing={editing} />
+        {editing ? (
+          <LessonForm key={editing.id} trackId={trackId} moduleId={moduleId} editing={editing} />
+        ) : (
+          <VideoEkle moduleId={moduleId} />
+        )}
       </Card>
     </AppShell>
   );

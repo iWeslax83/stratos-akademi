@@ -7,6 +7,7 @@ import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { ModuleForm } from "@/components/admin/ModuleForm";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteModule } from "@/app/actions/admin-curriculum";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,7 @@ export default async function AdminModulesPage({
       <AdminBreadcrumb
         items={[{ label: "Müfredat", href: "/admin/mufredat" }, { label: track.ad }]}
       />
-      <h1 className="mt-1 font-display text-3xl font-bold text-navy dark:text-white">
+      <h1 className="mt-1 font-display text-3xl font-bold text-fg">
         {track.ad} · Modüller
       </h1>
 
@@ -61,13 +62,13 @@ export default async function AdminModulesPage({
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 <span className="w-7 shrink-0 text-center text-xs font-bold text-muted">{m.sira}</span>
-                <span className="min-w-0 flex-1 break-words text-sm font-bold text-navy dark:text-white">{m.ad}</span>
+                <span className="min-w-0 flex-1 break-words text-sm font-bold text-fg">{m.ad}</span>
               </div>
               <div className="flex flex-wrap items-center gap-2 pl-10 sm:shrink-0 sm:pl-0">
-                <Link href={`/admin/mufredat/${trackId}/${m.id}`} className="text-xs font-semibold text-muted hover:text-navy dark:hover:text-white">
+                <Link href={`/admin/mufredat/${trackId}/${m.id}`} className="text-xs font-semibold text-muted hover:text-fg">
                   Dersler →
                 </Link>
-                <Link href={`/admin/mufredat/${trackId}?edit=${m.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+                <Link href={`/admin/mufredat/${trackId}?edit=${m.id}`} className={smallButtonClasses("ghost")}>
                   Düzenle
                 </Link>
                 <DeleteButton
@@ -81,7 +82,7 @@ export default async function AdminModulesPage({
       </Card>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">
           {editing ? "Modülü düzenle" : "Yeni modül"}
         </h2>
         <ModuleForm key={editing?.id ?? "new"} trackId={trackId} editing={editing} />

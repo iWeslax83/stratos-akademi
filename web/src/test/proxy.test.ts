@@ -8,7 +8,7 @@ describe("isPublicPath", () => {
     expect(isPublicPath("/offline")).toBe(true);
   });
 
-  it("cron uç noktası açık — kendi Bearer doğrulamasını yapar", () => {
+  it("cron uç noktası açık, kendi Bearer doğrulamasını yapar", () => {
     // Aksi halde GitHub Actions cron'u /login'e yönlendirilir ve tarama hiç koşmaz.
     expect(isPublicPath("/api/cron/video-tara")).toBe(true);
   });

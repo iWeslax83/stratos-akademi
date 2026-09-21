@@ -8,7 +8,7 @@ import { createResource } from "@/app/actions/resources";
 import { KATEGORILER } from "@/lib/resources/group";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none placeholder:text-muted/60 focus:border-accent dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none placeholder:text-muted/60 focus-visible:ring-2 focus-visible:ring-accent";
 // Native <select>: color-scheme (globals.css) açılır listeyi temaya uydurur; option'lara
 // da açık bir zemin ver ki eski tarayıcılarda beyaz-üstü-beyaz olmasın.
 const selectCls = inputCls + " [&>option]:bg-[var(--panel)] [&>option]:text-navy dark:[&>option]:text-white";

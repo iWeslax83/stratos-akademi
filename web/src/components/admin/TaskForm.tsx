@@ -9,7 +9,7 @@ import { createTask, updateTask } from "@/app/actions/tasks";
 type Task = { id: string; baslik: string; aciklama: string | null; sira: number; puan: number };
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
 export function TaskForm({
   trackId,

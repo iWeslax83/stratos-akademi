@@ -22,10 +22,10 @@ export default async function AdminKaynaklarPage() {
   return (
     <AppShell initial={initial} isAdmin>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">Yönetim · Kaynaklar</p>
-      <h1 className="mt-3 font-display text-3xl font-bold text-navy dark:text-white">Kaynak kütüphanesi</h1>
+      <h1 className="mt-3 font-display text-3xl font-bold text-fg">Kaynak kütüphanesi</h1>
 
       <Card className="mt-5 p-6">
-        <h2 className="mb-4 font-display text-lg font-bold text-navy dark:text-white">Yeni kaynak</h2>
+        <h2 className="mb-4 font-display text-lg font-bold text-fg">Yeni kaynak</h2>
         <ResourceForm />
       </Card>
 
@@ -36,7 +36,7 @@ export default async function AdminKaynaklarPage() {
       ) : (
         gruplar.map((g) => (
           <Card key={g.kategori} className="mt-5 p-6">
-            <h2 className="mb-2 font-display text-lg font-bold text-navy dark:text-white">
+            <h2 className="mb-2 font-display text-lg font-bold text-fg">
               {g.kategori} ({g.items.length})
             </h2>
             {g.items.map((r) => (

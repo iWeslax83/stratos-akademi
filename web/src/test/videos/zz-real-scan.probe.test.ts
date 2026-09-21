@@ -1,4 +1,4 @@
-// GERÇEK tarama probu — YouTube/Gemini/Supabase'e canlı çıkar. Normal test koşusunda ATLANIR.
+// GERÇEK tarama probu, YouTube/Gemini/Supabase'e canlı çıkar. Normal test koşusunda ATLANIR.
 // Çalıştırmak için:  REAL_SCAN=1 npx vitest run src/test/videos/zz-real-scan.probe.test.ts
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
@@ -35,7 +35,7 @@ describe.skipIf(!process.env.REAL_SCAN)("GERÇEK tarama probu", () => {
     const summary = await runVideoScan(ports);
     console.log("HUNİ:", huniMetni(summary.diag));
     console.log("SONUÇ:", JSON.stringify({ ...summary, diag: undefined }));
-    console.log("NE OLDU:", neOldu(summary.diag) ?? "başarılı — öneri üretildi");
+    console.log("NE OLDU:", neOldu(summary.diag) ?? "başarılı, öneri üretildi");
     console.log("HATALAR:", summary.diag.hatalar);
 
     expect(summary.diag.modul_sayisi).toBeGreaterThan(0);

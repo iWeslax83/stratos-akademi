@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormError } from "@/components/ui/FormError";
 import { addSubmissionComment } from "@/app/actions/tasks";
 import type { ThreadItem } from "@/lib/tasks/comment";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -48,12 +49,12 @@ export function SubmissionThread({
           {comments.map((c) => (
             <li
               key={c.id}
-              className="rounded-core bg-black/[0.04] p-3 text-sm text-navy dark:bg-white/[0.04] dark:text-white"
+              className="rounded-core bg-black/[0.04] p-3 text-sm text-fg dark:bg-white/[0.04]"
             >
               <div className="mb-0.5 flex items-center gap-2 text-xs">
                 <span className="font-semibold">{c.authorAd}</span>
                 {!c.authorIsOwner && (
-                  <span className="rounded border border-accent-ink/25 bg-accent-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink dark:border-accent/25 dark:bg-accent-dark dark:text-accent">
+                  <span className="rounded border border-accent-ink/25 bg-accent-wash px-2 py-0.5 text-xs font-bold text-accent-fg dark:border-accent/25">
                     Kaptan
                   </span>
                 )}
@@ -76,7 +77,7 @@ export function SubmissionThread({
               if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
             }}
             placeholder="Yaz, Enter ile gönder…"
-            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white"
+            className="w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
         </label>
         <button
@@ -84,7 +85,7 @@ export function SubmissionThread({
           onClick={send}
           disabled={pending}
           aria-label="Mesajı gönder"
-          className="rounded-full bg-navy px-4 py-2 text-xs font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 dark:bg-white dark:text-navy"
+          className={smallButtonClasses("primary")}
         >
           {pending ? "Gönderiliyor…" : "Gönder"}
         </button>

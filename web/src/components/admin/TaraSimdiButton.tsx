@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { taraSimdi } from "@/app/actions/video-oneri";
 import { neOldu } from "@/lib/videos/diag-text";
+import { buttonClasses } from "@/components/ui/Button";
 
 export function TaraSimdiButton() {
   const [pending, start] = useTransition();
@@ -37,7 +38,7 @@ export function TaraSimdiButton() {
       <button
         onClick={tara}
         disabled={pending}
-        className="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-navy disabled:opacity-50"
+        className={buttonClasses("accent", false, "shrink-0")}
       >
         {pending ? "Taranıyor…" : "Şimdi Tara"}
       </button>
@@ -45,8 +46,8 @@ export function TaraSimdiButton() {
         <span
           className={
             hata
-              ? "text-sm text-red-700 dark:text-red-300"
-              : "text-sm text-navy/70 dark:text-white/70"
+              ? "text-sm text-danger-fg"
+              : "text-sm text-fg-soft"
           }
         >
           {msg}

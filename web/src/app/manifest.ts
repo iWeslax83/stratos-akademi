@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-// PWA manifest — "ana ekrana ekle" + bağımsız (standalone) açılış.
+// PWA manifest, "ana ekrana ekle" + bağımsız (standalone) açılış.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Stratos Akademi",

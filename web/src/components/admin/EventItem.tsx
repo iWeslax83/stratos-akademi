@@ -5,9 +5,10 @@ import { updateEvent, deleteEvent } from "@/app/actions/events";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 const inputCls =
-  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-navy outline-none focus:border-accent dark:text-white";
+  "w-full rounded-xl border border-[var(--line)] bg-transparent px-3 py-2 text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
@@ -65,10 +66,10 @@ export function EventItem({
         </div>
         <textarea name="aciklama" rows={3} defaultValue={aciklama ?? ""} className={inputCls} />
         <div className="flex gap-2">
-          <button disabled={pending} className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-white dark:text-navy">
+          <button disabled={pending} className={smallButtonClasses("primary")}>
             {pending ? "…" : "Kaydet"}
           </button>
-          <button type="button" onClick={() => setEdit(false)} disabled={pending} className="rounded-full bg-black/5 px-4 py-1.5 text-xs font-semibold text-navy dark:bg-white/10 dark:text-white">
+          <button type="button" onClick={() => setEdit(false)} disabled={pending} className={smallButtonClasses("ghost")}>
             Vazgeç
           </button>
         </div>
@@ -80,17 +81,17 @@ export function EventItem({
     <div className="border-b border-[var(--line)] py-4 last:border-b-0">
       <div className="flex items-start gap-3">
         <div className={gecmis ? "min-w-0 flex-1 opacity-60" : "min-w-0 flex-1"}>
-          <div className="break-words font-display font-bold text-navy dark:text-white">{baslik}</div>
-          <div className="text-xs font-semibold text-accent-ink dark:text-accent">
+          <div className="break-words font-display font-bold text-fg">{baslik}</div>
+          <div className="text-xs font-semibold text-accent-fg">
             {formatDateTime(baslangic)}
             {yer && <span className="text-muted"> · {yer}</span>}
           </div>
           {aciklama && (
-            <p className="mt-1 whitespace-pre-line text-sm text-[#46526b] dark:text-[#9fb0c9]">{aciklama}</p>
+            <p className="mt-1 whitespace-pre-line text-sm text-fg-soft">{aciklama}</p>
           )}
         </div>
         <div className="flex shrink-0 gap-2">
-          <button onClick={() => setEdit(true)} disabled={pending} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-navy disabled:opacity-50 dark:bg-white/10 dark:text-white">
+          <button onClick={() => setEdit(true)} disabled={pending} className={smallButtonClasses("ghost")}>
             Düzenle
           </button>
           <ConfirmButton

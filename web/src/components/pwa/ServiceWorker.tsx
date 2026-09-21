@@ -9,7 +9,7 @@ export function ServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
     const onLoad = () => {
       navigator.serviceWorker.register("/sw.js").catch(() => {
-        /* sessizce geç — SW olmadan da uygulama çalışır */
+        /* sessizce geç, SW olmadan da uygulama çalışır */
       });
     };
     window.addEventListener("load", onLoad);

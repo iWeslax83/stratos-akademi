@@ -7,8 +7,23 @@
   --bg: #eef1f6;
   --panel: #ffffff;
   --text: #0f1a30;
-  --muted: #64708a;
+  --muted: #56627c; /* açık zeminde 5.4:1 (eski #64708a 4.39:1 idi) */
+  --muted-rgb: 86 98 124;
   --line: rgba(15, 26, 48, 0.08);
+
+  /* Anlamsal renkler: bileşenler tema bilmez, yalnız bu adları kullanır. */
+  --fg: #0e1a2e; /* başlık ve ana metin */
+  --fg-soft: #46526b; /* ikinci düzey metin */
+  --tint: rgba(0, 0, 0, 0.05); /* ikincil düğme / yüzey tonu */
+  --tint-hover: rgba(0, 0, 0, 0.1);
+  --track: rgba(0, 0, 0, 0.1); /* ilerleme çubuğu zemini */
+  --accent-fg: #0b5a64; /* aksan renkli metin */
+  --accent-wash: #dcf0f2; /* aksan renkli hafif zemin */
+  --danger-fg: #b91c1c;
+  --danger-wash: #fef2f2;
+  --danger-wash-hover: #fee2e2;
+  --success-fg: #15803d;
+  --warn-fg: #b45309;
 }
 
 .dark {
@@ -18,7 +33,21 @@
   --panel: #0e1826;
   --text: #e4ecf8;
   --muted: #8294b0;
+  --muted-rgb: 130 148 176;
   --line: rgba(255, 255, 255, 0.07);
+
+  --fg: #ffffff;
+  --fg-soft: #9fb0c9;
+  --tint: rgba(255, 255, 255, 0.1);
+  --tint-hover: rgba(255, 255, 255, 0.2);
+  --track: rgba(255, 255, 255, 0.1);
+  --accent-fg: #4fb3bf;
+  --accent-wash: #0c2f35;
+  --danger-fg: #fca5a5;
+  --danger-wash: rgba(127, 29, 29, 0.3);
+  --danger-wash-hover: rgba(127, 29, 29, 0.5);
+  --success-fg: #4ade80;
+  --warn-fg: #fbbf24;
 }
 
 html {
@@ -50,7 +79,6 @@ p {
 :focus-visible {
   outline: 2px solid theme("colors.accent.DEFAULT");
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 /* ---- Derinlik: yumuşak, navy-tonlu gölgeler (gradyan/glass DEĞİL, düz yüzey + gölge) ---- */
@@ -75,43 +103,10 @@ p {
     0 20px 50px -20px rgba(0, 0, 0, 0.8);
 }
 
-/* ---- Nokta ızgara dokusu (derinlik için ince zemin; tek renk, gradyan değil) ---- */
-.bg-dotgrid {
-  background-image: radial-gradient(rgba(16, 28, 55, 0.05) 1px, transparent 1px);
-  background-size: 22px 22px;
-}
-.dark .bg-dotgrid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-}
-
-/* ---- Hareket: giriş animasyonları (prefers-reduced-motion'a saygılı) ---- */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Reveal: başlangıçta gizli, görünür olunca animasyonla gelir. */
-.reveal {
-  opacity: 0;
-}
-.reveal.is-visible {
-  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
+/* ---- Hareket: kullanıcı azaltılmış hareket istediyse geçişleri kapat ---- */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .reveal,
-  .reveal.is-visible {
-    opacity: 1;
-    animation: none;
   }
   * {
     animation-duration: 0.001ms !important;

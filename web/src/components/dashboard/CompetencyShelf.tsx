@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import { TrackIcon } from "@/components/ui/TrackIcon";
 
 export function CompetencyShelf({
   tracks,
@@ -23,13 +24,13 @@ export function CompetencyShelf({
               <li
                 key={t.slug}
                 className={clsx(
-                  "grid h-10 w-10 place-items-center rounded-xl border text-lg",
+                  "grid h-10 w-10 place-items-center rounded-xl border text-accent-fg",
                   has
-                    ? "border-[#efdfa8] bg-accent-soft dark:border-accent-dark dark:bg-accent-dark"
+                    ? "border-accent/40 bg-accent-wash dark:border-accent-dark"
                     : "border-[var(--line)] bg-black/[0.04] opacity-50 grayscale dark:bg-white/[0.04]",
                 )}
               >
-                <span aria-hidden="true">{has ? (t.ikon ?? "•") : "–"}</span>
+                <TrackIcon slug={t.slug} ikon={t.ikon} size={20} />
                 <span className="sr-only">
                   {t.ad}: {has ? "kazanıldı" : "kazanılmadı"}
                 </span>
@@ -40,7 +41,7 @@ export function CompetencyShelf({
       </div>
       {rank != null && (
         <div className="flex flex-col items-end">
-          <div className="font-display text-3xl font-extrabold text-navy dark:text-white">#{rank}</div>
+          <div className="font-display text-3xl font-extrabold text-fg">#{rank}</div>
           <div className="text-xs font-semibold text-muted">Sıralaman</div>
         </div>
       )}
