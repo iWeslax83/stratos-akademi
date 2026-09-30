@@ -25,6 +25,8 @@ export function Avatar({
       <Image
         src={src}
         alt={ad}
+        // Oturumlu proxy yolu: next/image optimizer çerezsiz fetch edebilir, tarayıcı doğrudan yüklesin.
+        unoptimized={src.startsWith("/api/")}
         width={PX[size]}
         height={PX[size]}
         className={clsx(BOX[size], "shrink-0 rounded-[30%] object-cover", className)}
