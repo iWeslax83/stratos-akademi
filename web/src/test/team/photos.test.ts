@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { normalizeName, buildPhotoMap, fetchTeamPhotos, photoFor, teamMemberNames } from "@/lib/team/photos";
+import {
+  normalizeName,
+  buildPhotoMap,
+  fetchTeamPhotos,
+  photoFor,
+  teamMemberNames,
+  resetSiteJsonBackoff,
+} from "@/lib/team/photos";
 
 const SITE = {
   team: {
@@ -14,6 +21,8 @@ const SITE = {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+  resetSiteJsonBackoff();
   vi.restoreAllMocks();
 });
 
@@ -92,6 +101,34 @@ describe("fetchTeamPhotos", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn(async () => new Response("{bozuk", { status: 200 })));
     expect((await fetchTeamPhotos()).size).toBe(0);
+  });
+});
+
+describe("fetchTeamPhotos (özel repo, GITHUB_TOKEN)", () => {
+  it("token varsa GitHub API'ye Bearer ile gider", async () => {
+    vi.stubEnv("GITHUB_TOKEN", "tok123");
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify(SITE), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    await fetchTeamPhotos();
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toContain("api.github.com/repos/iWeslax83/stratos-website/contents/src/content/site.json");
+    expect((init.headers as Record<string, string>).Authorization).toBe("Bearer tok123");
+  });
+
+  it("token varsa foto URL'si oturumlu proxy yoluna döner", async () => {
+    vi.stubEnv("GITHUB_TOKEN", "tok123");
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify(SITE), { status: 200 })));
+    const map = await fetchTeamPhotos();
+    expect(map.get(normalizeName("Arda Akalın"))).toBe("/api/team-foto?p=images%2Fteam%2Farda.jpg");
+  });
+
+  it("hatadan sonra kısa süre tekrar istek atmaz (negatif cache)", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const fetchMock = vi.fn(async () => new Response("nope", { status: 404 }));
+    vi.stubGlobal("fetch", fetchMock);
+    await fetchTeamPhotos();
+    await fetchTeamPhotos();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
 

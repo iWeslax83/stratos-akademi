@@ -4,9 +4,26 @@ import { cache } from "react";
 // (/admin/takim) yüklenen foto site.json'a yazılıp repoya commit edilir.
 // JSON ve görseli aynı commit'ten okuyoruz, sitenin yeniden deploy olmasını
 // beklemeden tutarlı kalsın diye.
-const RAW = "https://raw.githubusercontent.com/iWeslax83/stratos-website/main";
+const REPO = "iWeslax83/stratos-website";
+const RAW = `https://raw.githubusercontent.com/${REPO}/main`;
 const SITE_JSON = `${RAW}/src/content/site.json`;
+const API_SITE_JSON = `https://api.github.com/repos/${REPO}/contents/src/content/site.json`;
 const REVALIDATE_SN = 3600;
+// Hata sonrası bu süre boyunca GitHub'a tekrar gidilmez: Next başarısız fetch'i cache'lemez,
+// aksi halde her sayfa yüklemesi (Nav) yanıt beklemeden önce kırık bir isteğe takılır.
+const BACKOFF_MS = 60_000;
+
+let failedUntil = 0;
+
+/** Testler için: hata beklemesini sıfırlar. */
+export function resetSiteJsonBackoff() {
+  failedUntil = 0;
+}
+
+/** Repo özelse okuma yetkili token gerekir; yoksa eski (public raw) davranış. */
+function githubToken(): string | undefined {
+  return process.env.GITHUB_TOKEN || undefined;
+}
 
 type Named = { name?: unknown; photo?: unknown };
 
@@ -33,7 +50,12 @@ function teamEntries(site: unknown): Named[] {
 function add(map: Map<string, string>, entry: Named) {
   const { name, photo } = entry ?? {};
   if (typeof name !== "string" || typeof photo !== "string" || !photo) return;
-  map.set(normalizeName(name), `${RAW}/public${photo.startsWith("/") ? photo : `/${photo}`}`);
+  const path = photo.startsWith("/") ? photo.slice(1) : photo;
+  // Özel repoda raw URL tarayıcıdan 404 verir: oturumlu proxy (/api/team-foto) üzerinden servis et.
+  const url = githubToken()
+    ? `/api/team-foto?p=${encodeURIComponent(path)}`
+    : `${RAW}/public/${path}`;
+  map.set(normalizeName(name), url);
 }
 
 /** site.json içeriğinden `normalize edilmiş isim → mutlak foto URL` haritası kurar. */
@@ -51,15 +73,24 @@ export function teamMemberNames(site: unknown): string[] {
 }
 
 async function fetchSiteJson(): Promise<unknown> {
+  if (Date.now() < failedUntil) return null;
   try {
-    const res = await fetch(SITE_JSON, { next: { revalidate: REVALIDATE_SN } });
+    const token = githubToken();
+    const res = await fetch(token ? API_SITE_JSON : SITE_JSON, {
+      next: { revalidate: REVALIDATE_SN },
+      ...(token && {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github.raw+json" },
+      }),
+    });
     if (!res.ok) {
       console.error("fetchSiteJson: site.json alınamadı", res.status);
+      failedUntil = Date.now() + BACKOFF_MS;
       return null;
     }
     return await res.json();
   } catch (e) {
     console.error("fetchSiteJson:", e);
+    failedUntil = Date.now() + BACKOFF_MS;
     return null;
   }
 }
