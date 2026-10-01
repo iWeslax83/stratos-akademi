@@ -21,7 +21,7 @@ function Row({ row, me }: { row: LeaderRow; me: boolean }) {
       <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-navy text-xs font-bold text-white dark:bg-accent dark:text-navy">
         {row.gorunenAd.charAt(0)}
       </span>
-      <Link href={`/uye/${row.userId}`} className="min-w-0 flex-1 truncate text-2sm font-bold text-fg hover:text-accent-fg">
+      <Link href={`/uye/${row.userId}`} prefetch={false} className="min-w-0 flex-1 truncate text-2sm font-bold text-fg hover:text-accent-fg">
         {row.gorunenAd}
       </Link>
       <span className="shrink-0 font-display text-2sm font-bold tabular-nums text-accent-fg">

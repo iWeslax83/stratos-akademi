@@ -43,6 +43,9 @@ export function CurriculumTree({
                     <li key={lesson.id}>
                       <Link
                         href={`/mufredat/${lesson.id}`}
+                        // Ders sayfası force-dynamic ve ~10 sorgu yapar; listedeki tüm dersler
+                        // görünür olunca otomatik prefetch onlarca eşzamanlı render başlatıyordu.
+                        prefetch={false}
                         className={clsx(
                           "flex items-center gap-2.5 rounded-xl px-3 py-2 text-2sm font-semibold",
                           active
