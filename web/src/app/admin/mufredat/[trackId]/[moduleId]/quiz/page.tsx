@@ -9,6 +9,7 @@ import { ActionButton } from "@/components/admin/ActionButton";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { getQuizForAdmin, type AdminQuiz } from "@/lib/admin/quiz-queries";
 import { createQuiz, createQuestion, deleteQuiz } from "@/app/actions/admin-quiz";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +20,7 @@ export default async function AdminQuizPage({
 }) {
   const { trackId, moduleId } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: profile } = await supabase
     .from("profiles")
     .select("ad, email")

@@ -4,14 +4,13 @@ import { Card } from "@/components/ui/Card";
 import { getResources } from "@/lib/resources/queries";
 import { groupByCategory, KATEGORILER } from "@/lib/resources/group";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function KaynaklarPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: me } = await supabase.from("profiles").select("ad, email").eq("id", user!.id).single();
   const initial = (me?.ad ?? me?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = await isAdminUser(supabase, user?.id);

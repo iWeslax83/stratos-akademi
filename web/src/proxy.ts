@@ -34,10 +34,11 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // createServerClient ile getUser arasına kod KOYMA (Supabase uyarısı).
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // createServerClient ile getClaims arasına kod KOYMA (Supabase uyarısı).
+  // getClaims imzayı asimetrik anahtarla yerel doğrular (ağ turu yok) ve süresi dolmuş
+  // token'ı yeniler; getUser() ise her istekte Auth sunucusuna gidiyordu.
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const user = claimsData?.claims?.sub ? claimsData.claims : null;
 
   const path = request.nextUrl.pathname;
 

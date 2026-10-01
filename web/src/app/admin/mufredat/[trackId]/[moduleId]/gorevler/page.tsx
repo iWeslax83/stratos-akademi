@@ -7,6 +7,7 @@ import { TaskForm } from "@/components/admin/TaskForm";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteTask } from "@/app/actions/tasks";
 import { smallButtonClasses } from "@/components/ui/Button";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -22,9 +23,7 @@ export default async function AdminGorevlerPage({
   const { trackId, moduleId } = await params;
   const { edit } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: profile } = await supabase
     .from("profiles")
     .select("ad, email")

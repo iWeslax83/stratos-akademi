@@ -9,14 +9,13 @@ import { StratosihaSelect } from "@/components/admin/StratosihaSelect";
 import { getTeamNames } from "@/lib/team/photos";
 import { removeInvite, removeMember } from "@/app/actions/admin-members";
 import { pendingInvites, type AllowlistRow, type MemberRow } from "@/lib/admin/members";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminUyelerPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: me } = await supabase
     .from("profiles")
     .select("ad, email")

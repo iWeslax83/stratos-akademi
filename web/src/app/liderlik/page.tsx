@@ -7,6 +7,7 @@ import { getLeaderboard, getLeaderboardRanged } from "@/lib/dashboard/leaderboar
 import { parseAralik, rangeStartISO, aralikLabel, type Aralik } from "@/lib/dashboard/range";
 import { Avatar } from "@/components/ui/Avatar";
 import { getTeamPhotos, photoFor } from "@/lib/team/photos";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -25,9 +26,7 @@ export default async function LiderlikPage({
   const aralik = parseAralik(araStr);
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   // Profil ve sıralama bağımsız → eşzamanlı.
   const [{ data: profile }, rows, photos] = await Promise.all([
     supabase.from("profiles").select("ad, email, role").eq("id", user!.id).single(),
@@ -91,6 +90,7 @@ export default async function LiderlikPage({
               <Avatar ad={r.gorunenAd} src={photoFor(photos, r.tamAd, r.stratosihaAd)} />
               <Link
                 href={`/uye/${r.userId}`}
+                prefetch={false}
                 className="min-w-0 flex-1 truncate text-sm font-bold text-fg hover:text-accent-fg"
               >
                 {r.gorunenAd}

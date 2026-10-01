@@ -17,14 +17,13 @@ import { getApprovedTaskCount } from "@/lib/tasks/queries";
 import { earnedCertificates } from "@/lib/certificate/eligibility";
 import Link from "next/link";
 import { TrackIcon } from "@/components/ui/TrackIcon";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProfilPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   // Bağımsız sorgular eşzamanlı (sayfa gecikmesini azaltır).
   const [{ data: profile }, curriculum, dash, onayliGorev, leaderboard, photos] = await Promise.all([
     supabase.from("profiles").select("ad, email, role, stratosiha_ad").eq("id", user!.id).single(),

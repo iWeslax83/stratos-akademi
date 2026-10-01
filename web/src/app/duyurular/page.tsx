@@ -3,6 +3,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { getAnnouncements } from "@/lib/announcements/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +15,7 @@ function formatDate(iso: string): string {
 
 export default async function DuyurularPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: me } = await supabase.from("profiles").select("ad, email").eq("id", user!.id).single();
   const initial = (me?.ad ?? me?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = await isAdminUser(supabase, user?.id);

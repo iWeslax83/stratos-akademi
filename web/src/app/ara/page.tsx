@@ -6,6 +6,7 @@ import { ara } from "@/lib/search/queries";
 import { gecerliSorgu, type SonucTuru } from "@/lib/search/rank";
 import { isAdminUser } from "@/lib/auth/is-admin";
 import { buttonClasses } from "@/components/ui/Button";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -25,9 +26,7 @@ export default async function AraPage({
 }) {
   const { q } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const isAdmin = await isAdminUser(supabase, user?.id);
   const initial = (user?.email ?? "E").charAt(0).toUpperCase();
 

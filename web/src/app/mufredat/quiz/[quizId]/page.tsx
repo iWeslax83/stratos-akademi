@@ -5,15 +5,14 @@ import { QuizRunner } from "@/components/quiz/QuizRunner";
 import { AttemptHistory } from "@/components/quiz/AttemptHistory";
 import { getQuiz, getBestScore, getAttemptHistory } from "@/lib/quiz/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function QuizPage({ params }: { params: Promise<{ quizId: string }> }) {
   const { quizId } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   const quiz = await getQuiz(supabase, quizId);
   if (!quiz) notFound();

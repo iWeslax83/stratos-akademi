@@ -11,6 +11,7 @@ import { getBestScore } from "@/lib/quiz/queries";
 import { getLessonThread } from "@/lib/lessons/queries";
 import { flatten, findNext } from "@/lib/curriculum/progress";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -21,24 +22,27 @@ export default async function LessonPage({
 }) {
   const { lessonId } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
-  const curriculum = await getCurriculum(supabase);
+  // Bağımsız sorgular eşzamanlı; yalnız quiz/görev sayısı dersin modülüne bağlı.
+  const [curriculum, completed, isAdmin, qaThread] = await Promise.all([
+    getCurriculum(supabase),
+    user ? getCompletedLessonIds(supabase, user.id) : Promise.resolve(new Set<string>()),
+    isAdminUser(supabase, user?.id),
+    getLessonThread(supabase, lessonId),
+  ]);
   const found = flatten(curriculum).find((f) => f.lesson.id === lessonId);
   if (!found) notFound();
 
-  const completed = user ? await getCompletedLessonIds(supabase, user.id) : new Set<string>();
   const next = findNext(curriculum, lessonId);
   const quiz = found.module.quiz;
-  const quizBest = quiz && user ? await getBestScore(supabase, user.id, quiz.id) : null;
-  const { count: gorevSayisi } = await supabase
-    .from("practical_tasks")
-    .select("id", { count: "exact", head: true })
-    .eq("module_id", found.module.id);
-  const isAdmin = await isAdminUser(supabase, user?.id);
-  const qaThread = await getLessonThread(supabase, lessonId);
+  const [quizBest, { count: gorevSayisi }] = await Promise.all([
+    quiz && user ? getBestScore(supabase, user.id, quiz.id) : Promise.resolve(null),
+    supabase
+      .from("practical_tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("module_id", found.module.id),
+  ]);
 
   return (
     <AppShell initial={(user?.email ?? "E").charAt(0).toUpperCase()} isAdmin={isAdmin}>

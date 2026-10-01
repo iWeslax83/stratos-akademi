@@ -11,6 +11,7 @@ import { MEMBER_LINKS } from "@/lib/nav/links";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { Avatar } from "@/components/ui/Avatar";
 import { getTeamPhotos, photoFor } from "@/lib/team/photos";
+import { getSessionUser } from "@/lib/auth/session";
 
 export async function Nav({
   initial = "E",
@@ -22,16 +23,19 @@ export async function Nav({
   isAdmin?: boolean;
 }) {
   const supabase = await createClient();
-  const unread = await unreadCount(supabase);
   // Avatarı Nav kendi çözer: her sayfaya avatar prop'u geçirmek yerine
   // kullanıcının adını burada okuyup site fotoğraflarıyla eşleştiriyoruz.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const [{ data: me }, photos] = await Promise.all([
-    supabase.from("profiles").select("ad, stratosiha_ad").eq("id", user!.id).single(),
+  // Dört iş birbirinden bağımsız: art arda değil eşzamanlı (Nav her sayfada çalışır).
+  const [unread, user, photos] = await Promise.all([
+    unreadCount(supabase),
+    getSessionUser(),
     getTeamPhotos(),
   ]);
+  const { data: me } = await supabase
+    .from("profiles")
+    .select("ad, stratosiha_ad")
+    .eq("id", user!.id)
+    .single();
   const foto = photoFor(photos, me?.ad, me?.stratosiha_ad);
   return (
     <nav className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel)] px-3 py-3 shadow-[0_12px_30px_-18px_rgba(16,28,55,0.35)] sm:gap-3 sm:px-4">
