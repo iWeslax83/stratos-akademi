@@ -5,14 +5,13 @@ import { ResourceForm } from "@/components/admin/ResourceForm";
 import { ResourceItem } from "@/components/admin/ResourceItem";
 import { getResources } from "@/lib/resources/queries";
 import { groupByCategory, KATEGORILER } from "@/lib/resources/group";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminKaynaklarPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: me } = await supabase.from("profiles").select("ad, email").eq("id", user!.id).single();
   const initial = (me?.ad ?? me?.email ?? "E").charAt(0).toUpperCase();
 

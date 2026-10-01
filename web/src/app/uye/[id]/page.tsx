@@ -9,15 +9,14 @@ import { getMemberProfile } from "@/lib/dashboard/member";
 import { isAdminUser } from "@/lib/auth/is-admin";
 import { Avatar } from "@/components/ui/Avatar";
 import { getTeamPhotos, photoFor } from "@/lib/team/photos";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function UyeProfilPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   // Bağımsız sorgular eşzamanlı.
   const [{ data: viewer }, isAdmin, m, curriculum, photos] = await Promise.all([
     supabase.from("profiles").select("ad, email").eq("id", user!.id).single(),

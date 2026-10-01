@@ -5,14 +5,13 @@ import { CurriculumBrowser } from "@/components/curriculum/CurriculumBrowser";
 import { getCurriculum, getCompletedLessonIds } from "@/lib/curriculum/queries";
 import { computeStatuses, overallProgress } from "@/lib/curriculum/progress";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function MufredatPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   const curriculum = await getCurriculum(supabase);
   const completed = user ? await getCompletedLessonIds(supabase, user.id) : new Set<string>();

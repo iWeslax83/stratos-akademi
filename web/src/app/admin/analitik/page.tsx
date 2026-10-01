@@ -9,14 +9,13 @@ import { TrackIcon } from "@/components/ui/TrackIcon";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { UyeKatilimTablosu } from "@/components/admin/UyeKatilimTablosu";
 import { StatStrip } from "@/components/admin/StatStrip";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function AnalitikPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: viewer } = await supabase
     .from("profiles")
     .select("ad, email")

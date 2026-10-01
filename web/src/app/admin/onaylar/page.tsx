@@ -5,14 +5,13 @@ import { ReviewControls } from "@/components/tasks/ReviewControls";
 import { SubmissionThread } from "@/components/tasks/SubmissionThread";
 import { getPendingSubmissions, getSubmissionThreads } from "@/lib/tasks/queries";
 import { signedUrlMap } from "@/lib/tasks/signed";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function OnaylarPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: profile } = await supabase
     .from("profiles")
     .select("ad, email")

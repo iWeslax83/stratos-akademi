@@ -5,12 +5,13 @@ import { OneriKarti } from "@/components/admin/OneriKarti";
 import { CopKutusuKarti } from "@/components/admin/CopKutusuKarti";
 import { TaraSimdiButton } from "@/components/admin/TaraSimdiButton";
 import { TaramaTeshis, type ScanRun } from "@/components/admin/TaramaTeshis";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function OnerilerPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: profile } = await supabase
     .from("profiles").select("ad, email").eq("id", user!.id).single();
   const initial = (profile?.ad ?? profile?.email ?? "E").charAt(0).toUpperCase();

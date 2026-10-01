@@ -8,6 +8,7 @@ import { getModuleTasks, getSubmissionThreads } from "@/lib/tasks/queries";
 import type { ThreadItem } from "@/lib/tasks/comment";
 import { signedUrlMap } from "@/lib/tasks/signed";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,7 @@ export default async function UyeGorevlerPage({
 }) {
   const { moduleId } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   const { data: modul } = await supabase
     .from("modules")

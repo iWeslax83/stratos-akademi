@@ -11,6 +11,7 @@ import { formatSure } from "@/lib/lessons/format";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deleteLesson } from "@/app/actions/admin-curriculum";
 import { smallButtonClasses } from "@/components/ui/Button";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +25,7 @@ export default async function AdminLessonsPage({
   const { trackId, moduleId } = await params;
   const { edit } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: profile } = await supabase
     .from("profiles")
     .select("ad, email")

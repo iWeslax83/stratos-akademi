@@ -5,14 +5,13 @@ import { MarkReadButton } from "@/components/notifications/MarkReadButton";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { getNotifications } from "@/lib/notifications/queries";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function BildirimlerPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: profile } = await supabase
     .from("profiles")
     .select("ad, email")

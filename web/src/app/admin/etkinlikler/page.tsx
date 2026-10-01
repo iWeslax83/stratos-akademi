@@ -5,14 +5,13 @@ import { EventForm } from "@/components/admin/EventForm";
 import { EventItem } from "@/components/admin/EventItem";
 import { getEvents } from "@/lib/events/queries";
 import { partitionEvents } from "@/lib/events/format";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminEtkinliklerPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: me } = await supabase.from("profiles").select("ad, email").eq("id", user!.id).single();
   const initial = (me?.ad ?? me?.email ?? "E").charAt(0).toUpperCase();
 

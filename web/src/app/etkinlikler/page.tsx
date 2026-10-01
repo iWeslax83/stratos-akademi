@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { getEvents } from "@/lib/events/queries";
 import { partitionEvents, type EventLite } from "@/lib/events/format";
 import { isAdminUser } from "@/lib/auth/is-admin";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -37,9 +38,7 @@ function EventCard({ e, gecmis }: { e: EventLite; gecmis?: boolean }) {
 
 export default async function EtkinliklerPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   const { data: me } = await supabase.from("profiles").select("ad, email").eq("id", user!.id).single();
   const initial = (me?.ad ?? me?.email ?? "E").charAt(0).toUpperCase();
   const isAdmin = await isAdminUser(supabase, user?.id);

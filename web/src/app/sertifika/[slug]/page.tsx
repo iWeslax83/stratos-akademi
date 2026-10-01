@@ -8,6 +8,7 @@ import { certificateFor } from "@/lib/certificate/eligibility";
 import { PrintButton } from "@/components/certificate/PrintButton";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { TrackIcon } from "@/components/ui/TrackIcon";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,7 @@ function bugun(): string {
 export default async function SertifikaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   const [{ data: profile }, curriculum, dash] = await Promise.all([
     supabase.from("profiles").select("ad, email").eq("id", user!.id).single(),
