@@ -15,11 +15,12 @@ import { Toast } from "@/components/dashboard/Toast";
 import { OnboardingCard } from "@/components/dashboard/OnboardingCard";
 import { isNewMember, welcomeHeading } from "@/lib/dashboard/onboarding";
 import { getApprovedTaskCount } from "@/lib/tasks/queries";
-import { syncCompetencies } from "@/app/actions/competencies";
+import { persistCompetencies } from "@/lib/dashboard/sync-competencies";
 import { getAnnouncements } from "@/lib/announcements/queries";
 import { announcementExcerpt } from "@/lib/announcements/format";
 import { getUpcomingEvents } from "@/lib/events/queries";
 import Link from "next/link";
+import { getSessionUser } from "@/lib/auth/session";
 
 function etkinlikTarih(iso: string): string {
   const d = new Date(iso);
@@ -31,9 +32,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PanomPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   // Bağımsız sorgular eşzamanlı (dashboard gecikmesini azaltır).
   const [{ data: profile }, curriculum, dash, leaderboard, onayliGorev, duyurular, etkinlikler] = await Promise.all([
@@ -57,7 +56,8 @@ export default async function PanomPage() {
     approvedTaskPoints,
   });
 
-  const { yeni } = await syncCompetencies();
+  // Pano zaten müfredatı ve tamamlananları okudu: yeniden çekmeden aynı veriyle kalıcılaştır.
+  const yeni = await persistCompetencies(supabase, user!.id, curriculum, completedIds);
   const myRank = leaderboard.find((r) => r.userId === user!.id)?.sira ?? null;
   const trackBySlug = new Map(stats.perTrack.map((t) => [t.slug, t.ad]));
   const yeniAdlar = yeni.map((s) => trackBySlug.get(s) ?? s);
