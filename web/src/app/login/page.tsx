@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { ArrowRightIcon } from "@/components/ui/icons";
+import { StudentLoginForm } from "@/components/auth/StudentLoginForm";
 
 const HATA: Record<string, string> = {
   not_allowed: "Bu e-posta izin listesinde değil. Kulüp kaptanından davet iste.",
@@ -37,7 +38,7 @@ function LoginCard() {
           Tekrar hoş geldin
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted">
-          Kulüp hesabınla giriş yap. Yalnız izin listesindeki üyeler girebilir.
+          Öğrenci numaranla ya da kulüp Google hesabınla giriş yap. Yalnız izin listesindeki üyeler girebilir.
         </p>
         {hata && (
           <p
@@ -47,11 +48,20 @@ function LoginCard() {
             {hata}
           </p>
         )}
-        <div className="mt-6 flex justify-center">
-          <Button variant="accent" icon={<ArrowRightIcon size={16} />} onClick={signIn}>
+        <div className="mt-6">
+          <StudentLoginForm />
+        </div>
+        <div className="my-6 flex items-center gap-3 text-xs text-muted" aria-hidden="true">
+          <span className="h-px flex-1 bg-[var(--line)]" />
+          veya
+          <span className="h-px flex-1 bg-[var(--line)]" />
+        </div>
+        <div className="flex justify-center">
+          <Button variant="ghost" icon={<ArrowRightIcon size={16} />} onClick={signIn}>
             Google ile giriş yap
           </Button>
         </div>
+        <p className="mt-3 text-xs leading-5 text-muted">Admin hesapları yalnız Google ile girer.</p>
       </Card>
     </div>
   );
