@@ -3,7 +3,10 @@ import { createServerClient } from "@supabase/ssr";
 
 // /api/cron: oturum çerezi yoktur (GitHub Actions çağırır) ve kendi Bearer CRON_SECRET
 // doğrulamasını yapar. Buraya alınmazsa proxy onu /login'e yönlendirir ve cron hiç koşmaz.
-const PUBLIC_PATHS = ["/login", "/auth", "/offline", "/api/cron"];
+// /api/allowlist: Stratos sitesi çağırır, oturum çerezi yoktur ve kendi Bearer
+// ALLOWLIST_SYNC_TOKEN doğrulamasını yapar (token yoksa 401). Aksi halde proxy POST'u
+// /login'e 307 ile yönlendirir ve /login 405 verir.
+const PUBLIC_PATHS = ["/login", "/auth", "/offline", "/api/cron", "/api/allowlist"];
 
 export function isPublicPath(path: string): boolean {
   return PUBLIC_PATHS.some((p) => path === p || path.startsWith(p + "/"));

@@ -13,6 +13,12 @@ describe("isPublicPath", () => {
     expect(isPublicPath("/api/cron/video-tara")).toBe(true);
   });
 
+  it("allowlist uç noktası açık, kendi Bearer token doğrulamasını yapar", () => {
+    // Aksi halde site senkronu /login'e 307 ile yönlenir, POST /login 405 verir ve
+    // hiçbir üye akademiye gönderilemez.
+    expect(isPublicPath("/api/allowlist")).toBe(true);
+  });
+
   it("korumalı sayfalar açık değil", () => {
     expect(isPublicPath("/")).toBe(false);
     expect(isPublicPath("/mufredat")).toBe(false);
@@ -22,5 +28,6 @@ describe("isPublicPath", () => {
   it("önek benzerliğiyle kandırılamaz", () => {
     expect(isPublicPath("/loginhack")).toBe(false);
     expect(isPublicPath("/api/cronx")).toBe(false);
+    expect(isPublicPath("/api/allowlistx")).toBe(false);
   });
 });
