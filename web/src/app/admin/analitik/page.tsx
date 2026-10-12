@@ -4,7 +4,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Card } from "@/components/ui/Card";
 import { analitikVerisi } from "@/lib/admin/rapor";
 import { RaporIndir } from "@/components/admin/RaporIndir";
-import { PassiveNudgeButton } from "@/components/admin/PassiveNudgeButton";
+import { PassiveNudgeList } from "@/components/admin/PassiveNudgeList";
 import { TrackIcon } from "@/components/ui/TrackIcon";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { UyeKatilimTablosu } from "@/components/admin/UyeKatilimTablosu";
@@ -61,17 +61,7 @@ export default async function AnalitikPage() {
             Pasif üyeler ({pasifler.length})
           </h2>
           <p className="mb-3 text-sm text-muted">14+ gündür pasif ya da hiç aktivitesi olmayanlar. Bir dürtme iyi gelebilir.</p>
-          <div className="flex flex-col gap-2">
-            {pasifler.map((u) => (
-              <div key={u.id} className="flex items-center justify-between gap-3">
-                <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-accent-ink/25 bg-accent-wash px-3 py-1.5 text-xs font-semibold text-accent-fg dark:border-accent/25">
-                  <span className="truncate">{u.ad}</span>
-                  <span className="shrink-0">· {u.gun === null ? "hiç" : `${u.gun} gün`}</span>
-                </span>
-                <PassiveNudgeButton userId={u.id} />
-              </div>
-            ))}
-          </div>
+          <PassiveNudgeList uyeler={pasifler.map((u) => ({ id: u.id, ad: u.ad, gun: u.gun }))} />
         </Card>
       )}
 
