@@ -57,3 +57,33 @@ export async function sendPassiveNudge(userId: string): Promise<{ ok: boolean; e
     return { ok: false, error: "Beklenmeyen hata." };
   }
 }
+
+const NUDGE_ALL_LIMIT = 500;
+
+// Tüm pasif üyelere tek seferde dürtme: tek toplu insert, yalnız admin.
+export async function sendPassiveNudgeAll(
+  userIds: string[],
+): Promise<{ ok: boolean; sent?: number; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const gate = await requireAdmin(supabase);
+    if (!gate.ok) return { ok: false, error: gate.error };
+    const ids = Array.isArray(userIds)
+      ? [...new Set(userIds.filter((id): id is string => typeof id === "string" && id.length > 0))]
+      : [];
+    if (ids.length === 0) return { ok: false, error: "Gönderilecek üye yok." };
+    if (ids.length > NUDGE_ALL_LIMIT) return { ok: false, error: "Çok fazla üye seçildi." };
+    const mesaj = passiveNudgeMessage();
+    const { error } = await supabase
+      .from("notifications")
+      .insert(ids.map((user_id) => ({ user_id, mesaj, link: "/panom" })));
+    if (error) {
+      console.error("sendPassiveNudgeAll:", error);
+      return { ok: false, error: "Bildirimler gönderilemedi." };
+    }
+    return { ok: true, sent: ids.length };
+  } catch (e) {
+    console.error("sendPassiveNudgeAll:", e);
+    return { ok: false, error: "Beklenmeyen hata." };
+  }
+}

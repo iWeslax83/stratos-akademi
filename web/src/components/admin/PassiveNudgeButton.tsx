@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { sendPassiveNudge } from "@/app/actions/notifications";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useServerAction } from "@/lib/ui/useServerAction";
 
-export function PassiveNudgeButton({ userId }: { userId: string }) {
-  const [sent, setSent] = useState(false);
+export function PassiveNudgeButton({
+  userId,
+  sent,
+  onSent,
+}: {
+  userId: string;
+  sent: boolean;
+  onSent: (userId: string) => void;
+}) {
   const { pending, error, run } = useServerAction("Bildirim gönderilemedi");
 
   function onClick() {
-    run(() => sendPassiveNudge(userId), () => setSent(true));
+    run(() => sendPassiveNudge(userId), () => onSent(userId));
   }
 
   return (
