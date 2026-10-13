@@ -106,7 +106,11 @@ export async function analitikVerisi(
     attByQuiz.set(a.quiz_id, arr);
   }
   const quizler: QuizSatiri[] = curriculum
-    .flatMap((t) => t.modules.filter((m) => m.quiz).map((m) => ({ quiz: m.quiz!, yer: `${t.ad} · ${m.ad}` })))
+    .flatMap((t) =>
+      t.modules.flatMap((m) =>
+        m.quizzes.map((quiz) => ({ quiz, yer: `${t.ad} · ${m.ad} · ${quiz.zorluk === "zor" ? "Zor" : "Orta"}` })),
+      ),
+    )
     .map(({ quiz, yer }) => {
       const st = quizStat(attByQuiz.get(quiz.id) ?? [], esikById.get(quiz.id) ?? 70);
       return { baslik: quiz.baslik, yer, ...st };

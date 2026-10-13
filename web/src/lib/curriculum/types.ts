@@ -7,12 +7,15 @@ export type Lesson = {
   sira: number;
 };
 
+export type Zorluk = "orta" | "zor";
+export type ModuleQuiz = { id: string; baslik: string; zorluk: Zorluk };
+
 export type Module = {
   id: string;
   ad: string;
   aciklama: string | null;
   sira: number;
-  quiz: { id: string; baslik: string } | null;
+  quizzes: ModuleQuiz[];
   lessons: Lesson[];
 };
 

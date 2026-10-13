@@ -11,9 +11,12 @@ export type AdminQuestion = {
 };
 export type AdminQuiz = { id: string; baslik: string; gecme_esigi: number; questions: AdminQuestion[] };
 
-// Modülün quiz'ini doğru cevaplar DAHİL (service_role) okur. Quiz yoksa null.
+// Modülün (zorluk düzeyindeki) quiz'ini doğru cevaplar DAHİL (service_role) okur. Quiz yoksa null.
 // service_role anahtarı yoksa hata fırlatır (çağıran sayfa yakalar).
-export async function getQuizForAdmin(moduleId: string): Promise<AdminQuiz | null> {
+export async function getQuizForAdmin(
+  moduleId: string,
+  zorluk: "orta" | "zor" = "orta",
+): Promise<AdminQuiz | null> {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error("Servis anahtarı eksik (SUPABASE_SERVICE_ROLE_KEY).");
   }
@@ -23,6 +26,7 @@ export async function getQuizForAdmin(moduleId: string): Promise<AdminQuiz | nul
     .from("quizzes")
     .select("id, baslik, gecme_esigi")
     .eq("module_id", moduleId)
+    .eq("zorluk", zorluk)
     .maybeSingle();
   if (!quiz) return null;
 

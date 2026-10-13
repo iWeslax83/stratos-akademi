@@ -19,7 +19,7 @@ const curriculum: Curriculum = [
     aciklama: null,
     ikon: "🚀",
     sira: 1,
-    modules: [{ id: "m1", ad: "M1", aciklama: null, sira: 1, quiz: null, lessons: [L("a", 1), L("b", 2)] }],
+    modules: [{ id: "m1", ad: "M1", aciklama: null, sira: 1, quizzes: [], lessons: [L("a", 1), L("b", 2)] }],
   },
   {
     id: "t2",
@@ -28,7 +28,7 @@ const curriculum: Curriculum = [
     aciklama: null,
     ikon: "⚡",
     sira: 2,
-    modules: [{ id: "m2", ad: "M2", aciklama: null, sira: 1, quiz: null, lessons: [L("c", 1)] }],
+    modules: [{ id: "m2", ad: "M2", aciklama: null, sira: 1, quizzes: [], lessons: [L("c", 1)] }],
   },
 ];
 

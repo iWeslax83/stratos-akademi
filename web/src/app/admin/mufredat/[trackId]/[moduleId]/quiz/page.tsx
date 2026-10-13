@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shell/AppShell";
@@ -15,10 +16,13 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminQuizPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ trackId: string; moduleId: string }>;
+  searchParams: Promise<{ zorluk?: string }>;
 }) {
   const { trackId, moduleId } = await params;
+  const zorluk: "orta" | "zor" = (await searchParams).zorluk === "zor" ? "zor" : "orta";
   const supabase = await createClient();
   const user = await getSessionUser();
   const { data: profile } = await supabase
@@ -35,7 +39,7 @@ export default async function AdminQuizPage({
   let quiz: AdminQuiz | null = null;
   let loadError = false;
   try {
-    quiz = await getQuizForAdmin(moduleId);
+    quiz = await getQuizForAdmin(moduleId, zorluk);
   } catch (e) {
     console.error("getQuizForAdmin:", e);
     loadError = true;
@@ -55,6 +59,21 @@ export default async function AdminQuizPage({
         {modul.ad} · Quiz
       </h1>
 
+      <nav className="mt-3 flex gap-2" aria-label="Zorluk">
+        {(["orta", "zor"] as const).map((z) => (
+          <Link
+            key={z}
+            href={`/admin/mufredat/${trackId}/${moduleId}/quiz?zorluk=${z}`}
+            aria-current={z === zorluk ? "page" : undefined}
+            className={`rounded-md border px-3 py-1.5 text-sm font-semibold ${
+              z === zorluk ? "border-accent bg-accent/10 text-fg" : "border-[var(--line)] text-muted"
+            }`}
+          >
+            {z === "zor" ? "Zor" : "Orta"}
+          </Link>
+        ))}
+      </nav>
+
       {loadError ? (
         <Card className="mt-5 p-6">
           <p className="text-sm font-semibold text-danger-fg">
@@ -63,8 +82,8 @@ export default async function AdminQuizPage({
         </Card>
       ) : !quiz ? (
         <Card className="mt-5 p-6">
-          <p className="mb-4 text-sm text-muted">Bu modülün quizi yok.</p>
-          <ActionButton variant="accent" onAction={createQuiz.bind(null, moduleId)}>
+          <p className="mb-4 text-sm text-muted">Bu modülün {zorluk === "zor" ? "zor" : "orta"} seviye quizi yok.</p>
+          <ActionButton variant="accent" onAction={createQuiz.bind(null, moduleId, zorluk)}>
             Quiz oluştur
           </ActionButton>
         </Card>

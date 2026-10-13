@@ -21,7 +21,7 @@ const CUR: Curriculum = [
         ad: "Lehimleme",
         aciklama: null,
         sira: 1,
-        quiz: null,
+        quizzes: [],
         lessons: [lesson("l1", "Havya kullanımı"), lesson("l2", "İlk lehim")],
       },
     ],

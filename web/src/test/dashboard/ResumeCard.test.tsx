@@ -5,7 +5,7 @@ import type { FlatLesson } from "@/lib/curriculum/types";
 
 const resume: FlatLesson = {
   lesson: { id: "l1", baslik: "Drone Nasıl Uçar?", youtube_video_id: "dQw4w9WgXcQ", aciklama: null, sure_sn: 600, sira: 1 },
-  module: { id: "m1", ad: "Modül 2", aciklama: null, sira: 2, quiz: null, lessons: [] },
+  module: { id: "m1", ad: "Modül 2", aciklama: null, sira: 2, quizzes: [], lessons: [] },
   track: { id: "t1", slug: "ortak-temel", ad: "Ortak Temel", aciklama: null, ikon: "🚀", sira: 1, modules: [] },
 };
 

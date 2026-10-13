@@ -26,15 +26,21 @@ async function guard() {
 }
 
 // ---- QUIZ ----
-export async function createQuiz(moduleId: string): Promise<ActionResult> {
+export async function createQuiz(moduleId: string, zorluk: "orta" | "zor" = "orta"): Promise<ActionResult> {
   try {
     const { supabase, gate } = await guard();
     if (!gate.ok) return { ok: false, error: gate.error };
     const { error } = await supabase
       .from("quizzes")
-      .insert({ module_id: moduleId, baslik: "Modül Quizi", gecme_esigi: 70, sira: 0 });
+      .insert({
+        module_id: moduleId,
+        baslik: zorluk === "zor" ? "Modül Quizi (Zor)" : "Modül Quizi (Orta)",
+        zorluk,
+        gecme_esigi: 70,
+        sira: zorluk === "zor" ? 1 : 0,
+      });
     if (error) {
-      if (error.code === "23505") return { ok: false, error: "Bu modülde zaten bir quiz var." };
+      if (error.code === "23505") return { ok: false, error: "Bu modülde bu zorlukta zaten bir quiz var." };
       return { ok: false, error: errMsg(error) };
     }
     return { ok: true };

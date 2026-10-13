@@ -1,8 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Curriculum, Lesson, Module, Track } from "./types";
+import type { Curriculum, Lesson, Module, ModuleQuiz, Track } from "./types";
 
 type TrackRow = Omit<Track, "modules">;
-type ModuleRow = Omit<Module, "lessons" | "quiz"> & { track_id: string };
+type ModuleRow = Omit<Module, "lessons" | "quizzes"> & { track_id: string };
 type LessonRow = Lesson & { module_id: string };
 
 export async function getCurriculum(supabase: SupabaseClient): Promise<Curriculum> {
@@ -14,8 +14,17 @@ export async function getCurriculum(supabase: SupabaseClient): Promise<Curriculu
         .from("lessons")
         .select("id,module_id,baslik,youtube_video_id,aciklama,sure_sn,sira")
         .order("sira"),
-      supabase.from("quizzes").select("id,module_id,baslik"),
+      supabase.from("quizzes").select("id,module_id,baslik,zorluk"),
     ]);
+
+  // 0048 öncesi (zorluk kolonu yok) sorgu hata verir; müfredat yine açılsın diye zorluksuz yeniden dene.
+  let quizRows = (quizzes ?? null) as
+    | { id: string; module_id: string; baslik: string; zorluk?: string }[]
+    | null;
+  if (quizRows === null) {
+    const { data } = await supabase.from("quizzes").select("id,module_id,baslik");
+    quizRows = (data ?? []) as { id: string; module_id: string; baslik: string }[];
+  }
 
   const lessonsByModule = new Map<string, Lesson[]>();
   for (const row of (lessons ?? []) as LessonRow[]) {
@@ -25,9 +34,15 @@ export async function getCurriculum(supabase: SupabaseClient): Promise<Curriculu
     lessonsByModule.set(module_id, arr);
   }
 
-  const quizByModule = new Map<string, { id: string; baslik: string }>();
-  for (const row of (quizzes ?? []) as { id: string; module_id: string; baslik: string }[]) {
-    quizByModule.set(row.module_id, { id: row.id, baslik: row.baslik });
+  const quizzesByModule = new Map<string, ModuleQuiz[]>();
+  for (const row of quizRows) {
+    const arr = quizzesByModule.get(row.module_id) ?? [];
+    arr.push({ id: row.id, baslik: row.baslik, zorluk: row.zorluk === "zor" ? "zor" : "orta" });
+    quizzesByModule.set(row.module_id, arr);
+  }
+  // Orta önce, zor sonra.
+  for (const arr of quizzesByModule.values()) {
+    arr.sort((a, b) => (a.zorluk === b.zorluk ? 0 : a.zorluk === "orta" ? -1 : 1));
   }
 
   const modulesByTrack = new Map<string, Module[]>();
@@ -35,7 +50,7 @@ export async function getCurriculum(supabase: SupabaseClient): Promise<Curriculu
     const { track_id, ...rest } = row;
     const mod: Module = {
       ...rest,
-      quiz: quizByModule.get(rest.id) ?? null,
+      quizzes: quizzesByModule.get(rest.id) ?? [],
       lessons: lessonsByModule.get(rest.id) ?? [],
     };
     const arr = modulesByTrack.get(track_id) ?? [];
