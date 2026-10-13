@@ -20,8 +20,8 @@ const curriculum: Curriculum = [
     ikon: "🚀",
     sira: 1,
     modules: [
-      { id: "m1", ad: "M1", aciklama: null, sira: 1, quiz: null, lessons: [L("a", 1), L("b", 2)] },
-      { id: "m2", ad: "M2", aciklama: null, sira: 2, quiz: null, lessons: [L("c", 1)] },
+      { id: "m1", ad: "M1", aciklama: null, sira: 1, quizzes: [], lessons: [L("a", 1), L("b", 2)] },
+      { id: "m2", ad: "M2", aciklama: null, sira: 2, quizzes: [], lessons: [L("c", 1)] },
     ],
   },
   {
@@ -31,7 +31,7 @@ const curriculum: Curriculum = [
     aciklama: null,
     ikon: "⚡",
     sira: 2,
-    modules: [{ id: "m3", ad: "M3", aciklama: null, sira: 1, quiz: null, lessons: [L("d", 1)] }],
+    modules: [{ id: "m3", ad: "M3", aciklama: null, sira: 1, quizzes: [], lessons: [L("d", 1)] }],
   },
 ];
 
@@ -57,7 +57,7 @@ describe("moduleProgress", () => {
     ad: "M",
     aciklama: null,
     sira: 1,
-    quiz: null,
+    quizzes: [],
     lessons: [L("x", 1, 100), L("y", 2, 120)],
   };
   it("tamamlanan oranı ve kalan süreyi (tamamlanmamış derslerin sure_sn toplamı) verir", () => {

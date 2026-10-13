@@ -5,7 +5,7 @@ import type { Curriculum } from "@/lib/curriculum/types";
 const lesson = (id: string) => ({ id, baslik: id, youtube_video_id: "x", aciklama: null, sure_sn: 60, sira: 1 });
 const track = (slug: string, ids: string[]) => ({
   id: slug, slug, ad: slug, aciklama: null, ikon: null, sira: 1,
-  modules: [{ id: `${slug}-m`, ad: "m", aciklama: null, sira: 1, quiz: null, lessons: ids.map(lesson) }],
+  modules: [{ id: `${slug}-m`, ad: "m", aciklama: null, sira: 1, quizzes: [], lessons: ids.map(lesson) }],
 });
 
 describe("earnedTrackSlugs", () => {

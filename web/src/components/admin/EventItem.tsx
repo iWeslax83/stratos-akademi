@@ -60,7 +60,7 @@ export function EventItem({
         <ErrorText>{error}</ErrorText>
         <input type="hidden" name="id" value={id} />
         <input name="baslik" required defaultValue={baslik} className={inputCls} />
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <input name="baslangic" type="datetime-local" required defaultValue={toLocalInput(baslangic)} className={inputCls} />
           <input name="yer" defaultValue={yer ?? ""} placeholder="Yer" className={inputCls} />
         </div>

@@ -73,7 +73,8 @@ export function LessonPlayer({
         width: "100%",
         height: "100%",
         host: "https://www.youtube-nocookie.com",
-        playerVars: { rel: 0, modestbranding: 1 },
+        // Altyazı varsayılan açık ve Türkçe; videoda altyazı varsa YouTube Türkçeye çevirir.
+        playerVars: { rel: 0, modestbranding: 1, cc_load_policy: 1, cc_lang_pref: "tr", hl: "tr" },
         events: {
           onReady: () => {
             interval = setInterval(() => {
@@ -117,6 +118,9 @@ export function LessonPlayer({
       <div className="aspect-video w-full overflow-hidden rounded-core bg-black">
         <div ref={containerRef} className="h-full w-full" />
       </div>
+      <p className="mt-2 text-xs text-muted">
+        Video İngilizce mi? Oynatıcıdaki CC düğmesinden altyazıyı açıp Ayarlar &gt; Altyazı &gt; Otomatik çeviri &gt; Türkçe seçebilirsin.
+      </p>
       {done && (
         <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-success-fg">
           <CheckIcon size={16} />

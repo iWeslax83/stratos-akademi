@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 export function StatStrip({ items }: { items: { label: string; value: string }[] }) {
   return (
     <Card>
-      <dl className="grid grid-cols-2 sm:grid-flow-col sm:auto-cols-fr">
+      <dl className="grid grid-cols-2 sm:grid-flow-col sm:auto-cols-fr max-sm:[&>div:last-child:nth-child(odd)]:col-span-2">
         {items.map((k) => (
           <div
             key={k.label}

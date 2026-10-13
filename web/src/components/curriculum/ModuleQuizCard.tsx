@@ -6,10 +6,12 @@ import { buttonClasses } from "@/components/ui/Button";
 export function ModuleQuizCard({
   quizId,
   baslik,
+  zorluk = "orta",
   best,
 }: {
   quizId: string;
   baslik: string;
+  zorluk?: "orta" | "zor";
   best: { puan: number; gecti: boolean } | null;
 }) {
   return (
@@ -17,7 +19,7 @@ export function ModuleQuizCard({
       <div className="flex items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold text-accent-fg">
-            Modül Quizi
+            Modül Quizi · {zorluk === "zor" ? "Zor" : "Orta"}
           </span>
           <h3 className="mt-1 font-display text-lg font-bold text-fg">{baslik}</h3>
           {best && (

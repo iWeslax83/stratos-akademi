@@ -34,7 +34,7 @@ export function OneriKarti(p: Props) {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-[240px_1fr]">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-[240px_1fr]">
       <div className="aspect-video w-full overflow-hidden rounded-xl bg-black/5">
         <iframe
           className="h-full w-full"

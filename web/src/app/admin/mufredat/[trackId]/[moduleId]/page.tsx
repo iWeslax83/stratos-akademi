@@ -64,7 +64,7 @@ export default async function AdminLessonsPage({
           <li className="flex items-center justify-between border-b border-[var(--line)] py-4">
             <span className="text-sm font-semibold text-fg">Modül Quizi</span>
             <Link href={`/admin/mufredat/${trackId}/${moduleId}/quiz`} className={smallButtonClasses("soft")}>
-              Quiz&apos;i düzenle →
+              Quizleri düzenle →
             </Link>
           </li>
           <li className="flex items-center justify-between py-4">

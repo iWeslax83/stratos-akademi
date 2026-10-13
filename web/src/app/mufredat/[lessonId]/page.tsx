@@ -35,9 +35,11 @@ export default async function LessonPage({
   if (!found) notFound();
 
   const next = findNext(curriculum, lessonId);
-  const quiz = found.module.quiz;
-  const [quizBest, { count: gorevSayisi }] = await Promise.all([
-    quiz && user ? getBestScore(supabase, user.id, quiz.id) : Promise.resolve(null),
+  const quizzes = found.module.quizzes;
+  const [quizBests, { count: gorevSayisi }] = await Promise.all([
+    Promise.all(
+      quizzes.map((q) => (user ? getBestScore(supabase, user.id, q.id) : Promise.resolve(null))),
+    ),
     supabase
       .from("practical_tasks")
       .select("id", { count: "exact", head: true })
@@ -68,7 +70,9 @@ export default async function LessonPage({
         </p>
       )}
 
-      {quiz && <ModuleQuizCard quizId={quiz.id} baslik={quiz.baslik} best={quizBest} />}
+      {quizzes.map((q, i) => (
+        <ModuleQuizCard key={q.id} quizId={q.id} baslik={q.baslik} zorluk={q.zorluk} best={quizBests[i]} />
+      ))}
 
       {gorevSayisi != null && gorevSayisi > 0 && (
         <Link

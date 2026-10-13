@@ -92,7 +92,7 @@ export default async function AnalitikPage() {
         <UyeKatilimTablosu uyeler={uyeler} />
       </Card>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card className="p-6">
           <h2 className="mb-3 font-display text-lg font-bold text-fg">
             En az tamamlanan dersler
