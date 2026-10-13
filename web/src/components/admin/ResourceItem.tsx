@@ -39,7 +39,7 @@ export function ResourceItem({
         <ErrorText>{error}</ErrorText>
         <input type="hidden" name="id" value={id} />
         <input name="baslik" required defaultValue={baslik} className={inputCls} />
-        <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto]">
           <input name="url" type="url" required defaultValue={url} className={inputCls} />
           <select name="kategori" defaultValue={kategori} className={inputCls}>
             {KATEGORILER.map((k) => (

@@ -39,7 +39,7 @@ export function ResourceForm() {
         <span className="mb-1 block text-xs font-semibold text-muted">Başlık *</span>
         <input name="baslik" required autoComplete="off" placeholder="ör. F450 çerçeve datasheet" className={inputCls} />
       </label>
-      <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
         <label className="block">
           <span className="mb-1 block text-xs font-semibold text-muted">Bağlantı *</span>
           <input name="url" type="url" inputMode="url" required autoComplete="off" placeholder="https://…" className={inputCls} />

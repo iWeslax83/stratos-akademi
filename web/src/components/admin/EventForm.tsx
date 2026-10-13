@@ -35,7 +35,7 @@ export function EventForm() {
         <span className="mb-1 block text-xs font-semibold text-muted">Başlık *</span>
         <input name="baslik" required autoComplete="off" placeholder="ör. Sprint toplantısı" className={inputCls} />
       </label>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1 block text-xs font-semibold text-muted">Tarih / saat *</span>
           <input name="baslangic" type="datetime-local" required className={inputCls} />

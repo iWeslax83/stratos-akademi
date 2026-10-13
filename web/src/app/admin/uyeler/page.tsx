@@ -53,9 +53,9 @@ export default async function AdminUyelerPage() {
         ) : (
           members.map((m) => (
             <div key={m.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
-              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-fg">
+              <span className="w-full min-w-0 break-words text-sm font-semibold text-fg sm:w-auto sm:flex-1">
                 {m.ad ?? m.email}{" "}
-                <span className="text-xs font-normal text-muted">{m.email}</span>
+                <span className="block break-all text-xs font-normal text-muted sm:inline">{m.email}</span>
                 {m.id === selfId && <span className="ml-2 text-xs font-bold text-accent-fg">(sen)</span>}
               </span>
               <NameEditor userId={m.id} ad={m.ad} selfId={selfId} />
@@ -81,7 +81,7 @@ export default async function AdminUyelerPage() {
         ) : (
           pending.map((a) => (
             <div key={a.email} className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--line)] py-3 last:border-b-0">
-              <span className="min-w-0 flex-1 break-words text-sm font-semibold text-fg">{a.email}</span>
+              <span className="w-full min-w-0 break-all text-sm font-semibold text-fg sm:w-auto sm:flex-1">{a.email}</span>
               <RoleSelect email={a.email} role={a.role} userId={null} selfId={selfId} />
               <DeleteButton
                 onDelete={removeInvite.bind(null, a.email)}
