@@ -42,4 +42,22 @@ describe("QuizRunner", () => {
     expect(await screen.findByText(/Puanın: %100/)).toBeInTheDocument();
     expect(screen.getByText(/Geçtin/)).toBeInTheDocument();
   });
+
+  it("havuz 10'dan büyükse yalnız 10 soru gösterir", () => {
+    const big: Quiz = {
+      ...quiz,
+      questions: Array.from({ length: 25 }, (_, i) => ({
+        id: `b${i}`,
+        metin: `Havuz sorusu ${i}`,
+        sira: i,
+        options: [
+          { id: `b${i}o1`, metin: `A${i}`, sira: 1 },
+          { id: `b${i}o2`, metin: `B${i}`, sira: 2 },
+        ],
+      })),
+    };
+    render(<QuizRunner quiz={big} best={null} />);
+    expect(screen.getAllByText(/^Havuz sorusu \d+$/)).toHaveLength(10);
+    expect(screen.getByText(/havuz: 25 soru/)).toBeInTheDocument();
+  });
 });
