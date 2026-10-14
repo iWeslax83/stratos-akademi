@@ -9,6 +9,7 @@ import { FormError } from "@/components/ui/FormError";
 import { CheckIcon, XIcon } from "@/components/ui/icons";
 import { submitQuiz } from "@/app/actions/quiz";
 import { shuffleQuiz } from "@/lib/quiz/shuffle";
+import { pickQuestionIds } from "@/lib/quiz/pick";
 import type { Quiz, SubmitResult } from "@/lib/quiz/types";
 
 function newSeed(): number {
@@ -28,11 +29,16 @@ export function QuizRunner({
   const [isPending, startTransition] = useTransition();
   // Soru/şık sırasını her denemede karıştır (cevap paylaşımını zorlaştırır; puanlama ID bazlı, etkilenmez).
   const [seed, setSeed] = useState(newSeed);
-  const shown = useMemo(() => shuffleQuiz(quiz, seed), [quiz, seed]);
+  // Havuz büyükse her denemede seed'e göre alt küme sorulur (sunucu aynı kümeyi seed'den türetir).
+  const shown = useMemo(() => {
+    const ids = new Set(pickQuestionIds(quiz.questions.map((q) => q.id), seed));
+    const subset = { ...quiz, questions: quiz.questions.filter((q) => ids.has(q.id)) };
+    return shuffleQuiz(subset, seed);
+  }, [quiz, seed]);
   const router = useRouter();
 
-  const answeredCount = quiz.questions.filter((q) => (selected[q.id]?.size ?? 0) > 0).length;
-  const allAnswered = answeredCount === quiz.questions.length;
+  const answeredCount = shown.questions.filter((q) => (selected[q.id]?.size ?? 0) > 0).length;
+  const allAnswered = answeredCount === shown.questions.length;
 
   function toggle(qid: string, oid: string) {
     setSelected((prev) => {
@@ -49,10 +55,10 @@ export function QuizRunner({
       return;
     }
     const answers: Record<string, string[]> = {};
-    for (const q of quiz.questions) answers[q.id] = Array.from(selected[q.id] ?? []);
+    for (const q of shown.questions) answers[q.id] = Array.from(selected[q.id] ?? []);
     setError(null);
     startTransition(async () => {
-      const res = await submitQuiz(quiz.id, answers);
+      const res = await submitQuiz(quiz.id, answers, seed);
       if (res.ok && res.result) {
         setResult(res.result);
         router.refresh(); // deneme geçmişi + en iyi puanı (server) tazele
@@ -101,7 +107,7 @@ export function QuizRunner({
 
       {!result && (
         <p className="text-xs font-semibold text-muted">
-          {answeredCount}/{quiz.questions.length} soru yanıtlandı · bazı sorularda birden çok doğru olabilir
+          {answeredCount}/{shown.questions.length} soru yanıtlandı{quiz.questions.length > shown.questions.length && ` (havuz: ${quiz.questions.length} soru, her denemede farklı set)`} · bazı sorularda birden çok doğru olabilir
         </p>
       )}
 

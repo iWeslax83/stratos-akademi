@@ -3,11 +3,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { scoreQuiz } from "@/lib/quiz/score";
+import { QUIZ_SIZE, isValidSeed, pickQuestionIds } from "@/lib/quiz/pick";
 import type { AnswerMap, ScorableQuestion, SubmitResult } from "@/lib/quiz/types";
 
 export async function submitQuiz(
   quizId: string,
   answers: AnswerMap,
+  seed?: number,
 ): Promise<{ ok: boolean; error?: string; result?: SubmitResult }> {
   try {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -29,7 +31,13 @@ export async function submitQuiz(
     }
 
     const { data: questions } = await svc.from("questions").select("id").eq("quiz_id", quizId);
-    const qids = (questions ?? []).map((q: { id: string }) => q.id);
+    const allIds = (questions ?? []).map((q: { id: string }) => q.id);
+    // Havuz büyükse her deneme seed'e göre bir alt kümedir; hangi kümenin puanlanacağını
+    // sunucu seed'den kendisi türetir (istemci yalnız seed gönderir).
+    if (allIds.length > QUIZ_SIZE && !isValidSeed(seed)) {
+      return { ok: false, error: "Quiz oturumu geçersiz, sayfayı yenile." };
+    }
+    const qids = pickQuestionIds(allIds, isValidSeed(seed) ? seed : 0);
 
     // Açıklamalar best-effort: aciklama kolonu yoksa (migration öncesi) boş kalır,
     // puanlamayı (yukarıdaki kritik "id" sorgusu) ETKİLEMEZ.
