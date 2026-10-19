@@ -32,6 +32,28 @@ export function parseOkulNo(
   return { ok: true, okulNo };
 }
 
+// Başvurudaki ad hesabın görünen adı olur (Google adının önüne geçer). Başvurular karışık
+// harfle gelir ("HALİL UMUT SALCAN", "kağan değirmencioğlu"); her kelime Türkçe kurallarıyla
+// büyük harfle başlar. Gönderilmediyse null: eski site sürümü ad yollamaz.
+export function parseApplicantName(
+  raw: unknown,
+): { ok: true; name: string | null } | { ok: false; error: string } {
+  if (raw === undefined || raw === null) return { ok: true, name: null };
+  if (typeof raw !== "string") return { ok: false, error: "Geçersiz ad" };
+  const name = raw
+    .trim()
+    .split(/\s+/)
+    .map((word) =>
+      word
+        .split("-")
+        .map((part) => part.charAt(0).toLocaleUpperCase("tr") + part.slice(1).toLocaleLowerCase("tr"))
+        .join("-"),
+    )
+    .join(" ");
+  if (!name || name.length > 100) return { ok: false, error: "Geçersiz ad" };
+  return { ok: true, name };
+}
+
 // allowlist_student_no_key: aynı numara başka bir e-postaya bağlı (bkz. 0047).
 export function isStudentNoConflict(error: { code?: string; message?: string } | null): boolean {
   return error?.code === "23505" && /allowlist_student_no_key/.test(error.message ?? "");

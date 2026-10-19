@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { checkSyncToken, parseAllowlistEmail, parseOkulNo, isStudentNoConflict } from "@/lib/allowlist-sync";
+import { checkSyncToken, parseAllowlistEmail, parseApplicantName, parseOkulNo, isStudentNoConflict } from "@/lib/allowlist-sync";
 
 const TOKEN = "allowlist-token-0123456789";
 
@@ -50,5 +50,25 @@ describe("isStudentNoConflict", () => {
     expect(isStudentNoConflict({ code: "23505", message: 'violates unique constraint "allowlist_pkey"' })).toBe(false);
     expect(isStudentNoConflict({ code: "42501", message: msg })).toBe(false);
     expect(isStudentNoConflict(null)).toBe(false);
+  });
+});
+
+describe("parseApplicantName", () => {
+  test("Türkçe kurallarıyla her kelimenin ilk harfi büyük", () => {
+    expect(parseApplicantName("HALİL UMUT SALCAN")).toEqual({ ok: true, name: "Halil Umut Salcan" });
+    expect(parseApplicantName("ibrahim yüzak")).toEqual({ ok: true, name: "İbrahim Yüzak" });
+    expect(parseApplicantName("Ahmet Tuna KINDIRA")).toEqual({ ok: true, name: "Ahmet Tuna Kındıra" });
+    expect(parseApplicantName("Muhammet Ali ÇAMUR")).toEqual({ ok: true, name: "Muhammet Ali Çamur" });
+  });
+  test("fazla boşlukları toplar, tireli adları da düzeltir", () => {
+    expect(parseApplicantName("  ayşe   nur  ")).toEqual({ ok: true, name: "Ayşe Nur" });
+    expect(parseApplicantName("ali-rıza KAYA")).toEqual({ ok: true, name: "Ali-Rıza Kaya" });
+  });
+  test("ad gönderilmediyse null döner", () => {
+    expect(parseApplicantName(undefined)).toEqual({ ok: true, name: null });
+    expect(parseApplicantName(null)).toEqual({ ok: true, name: null });
+  });
+  test.each([[""], ["   "], [42], ["a".repeat(101)]])("reddeder: %j", (bad) => {
+    expect(parseApplicantName(bad).ok).toBe(false);
   });
 });
