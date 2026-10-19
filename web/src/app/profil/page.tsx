@@ -18,6 +18,7 @@ import { earnedCertificates } from "@/lib/certificate/eligibility";
 import Link from "next/link";
 import { TrackIcon } from "@/components/ui/TrackIcon";
 import { getSessionUser } from "@/lib/auth/session";
+import { smallButtonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,11 @@ export default async function ProfilPage() {
               {isAdmin && " · Kaptan"}
             </p>
           </div>
+          <form action="/auth/signout" method="post" className="ml-auto">
+            <button type="submit" className={smallButtonClasses("ghost")}>
+              Çıkış yap
+            </button>
+          </form>
         </div>
       </div>
 

@@ -66,6 +66,16 @@ function MenuBody({ isAdmin, onClose }: { isAdmin: boolean; onClose: () => void 
             ))}
           </>
         )}
+        <div className="my-1 border-t border-[var(--line)]" />
+        <form action="/auth/signout" method="post">
+          <button
+            type="submit"
+            role="menuitem"
+            className="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-muted hover:bg-black/5 hover:text-fg dark:hover:bg-white/10"
+          >
+            Çıkış yap
+          </button>
+        </form>
       </div>
     </>
   );
