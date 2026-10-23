@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { tamGorunenAd } from "./leaderboard";
 
 export type MemberProfile = {
   gorunenAd: string;
@@ -33,7 +34,7 @@ export async function getMemberProfile(
     const row = (Array.isArray(data) ? data[0] : data) as RawRow | undefined;
     if (!row || !row.gorunen_ad) return null;
     return {
-      gorunenAd: row.gorunen_ad,
+      gorunenAd: tamGorunenAd(row.tam_ad, row.gorunen_ad),
       tamAd: row.tam_ad ?? null,
       stratosihaAd: row.stratosiha_ad ?? null,
       puan: row.puan ?? 0,

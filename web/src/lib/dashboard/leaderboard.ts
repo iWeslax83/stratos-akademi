@@ -18,10 +18,15 @@ type RawRow = {
   sira: number;
 };
 
+// RPC'nin gorunen_ad'ı kısaltılmış ("Emir S."); sitede tam ad gösterilir.
+export function tamGorunenAd(tamAd: string | null | undefined, gorunenAd: string): string {
+  return tamAd?.trim() || gorunenAd;
+}
+
 function mapRows(data: RawRow[]): LeaderRow[] {
   return data.map((r) => ({
     userId: r.user_id,
-    gorunenAd: r.gorunen_ad,
+    gorunenAd: tamGorunenAd(r.tam_ad, r.gorunen_ad),
     tamAd: r.tam_ad ?? null,
     stratosihaAd: r.stratosiha_ad ?? null,
     puan: r.puan,
